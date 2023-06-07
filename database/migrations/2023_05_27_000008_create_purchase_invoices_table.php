@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('folder_id');
             $table->string('invoice_number', 30)->unique();
             $table->decimal('amount', 13);
+            $table->string('attach_file_path')->nullable();
 
             $table->index('invoice_number');
 
