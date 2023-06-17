@@ -37,8 +37,11 @@ class Folder extends Model
     {
         $lastFolder = Folder::query()->latest()->get()->first();
         if ($lastFolder) {
-            $this->number = date('y') . str_pad($lastFolder->id + 1, 3, '0', STR_PAD_LEFT) . '/IM' ;
+            $id = $lastFolder->id + 1;
+        } else {
+            $id = 1;
         }
+        $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
     }
 
     public function customer(): BelongsTo

@@ -138,7 +138,7 @@ class FolderCreateForm extends Component
             DB::commit();
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
-            redirect()->route('pending-folders.index');
+            redirect()->route('folders.show', $this->folder);
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }

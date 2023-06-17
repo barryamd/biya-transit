@@ -57,11 +57,11 @@ return [
         'icon'  => 'folder-closed',
         'roles' => 'admin|customer',
     ],
-    [
-        'title' => 'Utilisateurs',
-        'type'  => 'item',
-        'route' => 'users.index',
-        'icon'  => 'user',
-        'roles' => 'admin',
-    ],
+    // [
+    //     'title' => 'Utilisateurs',
+    //     'type'  => 'item',
+    //     'route' => 'users.index',
+    //     'icon'  => 'user',
+    //     'roles' => 'admin',
+    // ],
 ];
