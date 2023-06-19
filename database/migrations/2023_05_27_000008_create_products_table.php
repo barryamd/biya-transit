@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('designation', 100)
                 ->unique();
 
-            $table->index('code');
+            $table->index('designation');
 
             $table->timestamps();
         });
