@@ -13,13 +13,13 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 class FolderTable extends DataTableComponent
 {
     protected $model = Folder::class;
+    protected array $createButtonParams = [
+        'text'  => 'Nouveau dossier',
+        'route' => 'folders.create',
+        'roles' => 'admin',
+    ];
     public string|null $status = null;
     public int|null $customerId = null;
-
-    public function configure(): void
-    {
-        $this->setPrimaryKey('id');
-    }
 
     public function columns(): array
     {
@@ -31,7 +31,7 @@ class FolderTable extends DataTableComponent
                 ->sortable(),
             Column::make("Numero CNT", "num_cnt")
                 ->sortable(),
-            Column::make("Bateau", "ship")
+            Column::make("Poids total", "weight")
                 ->sortable(),
             Column::make("Port", "harbor")
                 ->sortable(),

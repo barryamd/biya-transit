@@ -13,9 +13,11 @@ trait HasFile
      * @param  \Illuminate\Http\UploadedFile  $file
      * @return void
      */
-    public function addFile(UploadedFile $file)
+    public function addFile(UploadedFile $file, $attribute = null)
     {
-        $attribute = $this->getFileAttribute();
+        if ($attribute == null) {
+            $attribute = $this->getFileAttribute();
+        }
         $path = $this::PATH;
 
         tap($this->$attribute, function ($previous) use ($file, $attribute, $path) {

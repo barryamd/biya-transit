@@ -14,9 +14,9 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('transporter_id');
-            $table->date('delivery_date');
-            $table->string('delivery_place');
-            $table->boolean('delivery_status')->default(0);
+            $table->date('date');
+            $table->string('place');
+            $table->boolean('status')->default(0);
             $table->boolean('customer_satisfaction')->nullable();
             $table->string('attach_file_path')->nullable();
 

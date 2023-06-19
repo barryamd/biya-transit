@@ -22,8 +22,12 @@ class DatabaseSeeder extends Seeder
              //'name' => 'Admin',
              'email' => 'admin@gmail.com',
          ]);
-        $role = Role::create(['name' => 'admin']);
+        $role = Role::create(['name' => 'Admin']);
         $user->assignRole($role);
-        Role::create(['name' => 'customer']);
+        Role::create(['name' => 'Paiements DVT|DDI']);
+        Role::create(['name' => "Exonerations"]);
+        Role::create(['name' => "Paiements TM|CT"]);
+        Role::create(['name' => "Livraison"]);
+        Role::create(['name' => 'Customer']);
     }
 }

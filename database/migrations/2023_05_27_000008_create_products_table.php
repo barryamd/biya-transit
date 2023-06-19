@@ -12,11 +12,8 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table
-                ->string('code')
-                ->default('50')
+            $table->string('designation', 100)
                 ->unique();
-            $table->string('designation', 100);
 
             $table->index('code');
 

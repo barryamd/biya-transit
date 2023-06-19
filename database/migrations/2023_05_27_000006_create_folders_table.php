@@ -15,12 +15,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('customer_id');
             $table->string('number', 30)->unique();
             $table->string('num_cnt', 30);
-            $table->string('ship', 30);
+            $table->string('weight', 30);
             $table->string('harbor', 30);
             $table->text('observation')->nullable();
-            $table->string('attach_file_path')->nullable();
-            $table
-                ->enum('status', ['En attente', 'En cours', 'Traité'])
+            $table->enum('status', ['En attente', 'En cours', 'Traité'])
                 ->default('En attente');
 
             $table->index('number');

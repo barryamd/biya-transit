@@ -15,8 +15,8 @@
                         <td>{{ $folder->num_cnt }}</td>
                     </tr>
                     <tr>
-                        <th>Bateau</th>
-                        <td>{{ $folder->ship }}</td>
+                        <th>Poids total de la marchandise</th>
+                        <td>{{ $folder->weight }}</td>
                     </tr>
                     <tr>
                         <th>Port</th>
@@ -45,10 +45,8 @@
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
                         <th style="width: 15%;">Numero du conteneur</th>
-                        <th style="width: 30%;">Designation</th>
                         <th style="width: 10%;">Poids</th>
-                        <th style="width: 15%;">Numero du colis</th>
-                        <th style="width: 10%">Date d'embarquement</th>
+                        <th style="width: 15%;">Nombre de colis</th>
                         <th style="width: 10%">Date d'arrivé</th>
                     </tr>
                     </thead>
@@ -60,16 +58,10 @@
                                 {{ $container->number }}
                             </td>
                             <td class="align-middle">
-                                {{ $container->designation }}
-                            </td>
-                            <td class="align-middle">
                                 {{ $container->weight }}
                             </td>
                             <td class="align-middle">
                                 {{ $container->package_number }}
-                            </td>
-                            <td class="align-middle">
-                                {{ $container->filling_date->format('d/m/Y') }}
                             </td>
                             <td class="align-middle">
                                 {{ $container->arrival_date->format('d/m/Y') }}

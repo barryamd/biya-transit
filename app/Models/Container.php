@@ -15,10 +15,8 @@ class Container extends Model
     protected $fillable = [
         'folder_id',
         'number',
-        'designation',
         'weight',
         'package_number',
-        'filling_date',
         'arrival_date',
     ];
 

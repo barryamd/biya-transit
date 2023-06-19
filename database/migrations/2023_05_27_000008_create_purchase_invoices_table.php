@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('purchase_invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
+            $table->enum('type', ['CNT', 'Facture']);
             $table->string('invoice_number', 30)->unique();
             $table->decimal('amount', 13);
             $table->string('attach_file_path')->nullable();

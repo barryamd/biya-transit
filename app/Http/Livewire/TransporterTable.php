@@ -15,7 +15,7 @@ class TransporterTable extends DataTableComponent
     protected array $createButtonParams = [
         'text'  => 'Nouveau transporteur',
         'modal' => 'transporterFormModal',
-        'roles' => 'admin',
+        'roles' => 'Admin',
     ];
     public Transporter $transporter;
     public string|null $email;

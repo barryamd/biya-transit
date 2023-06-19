@@ -23,30 +23,30 @@ class FolderCreateForm extends Component
     public Collection $invoices;
     public array $products = [];
     public array|string $invoicesFiles = [];
-    public $cntFile;
-    public string $productCode = '', $productDesignation = '';
+    public string $productDesignation = '';
+    public $invoiceTypes = ['CNT', 'Facture'];
 
     protected function rules() {
         return [
+            'folder.customer_id' => 'required',
             'folder.num_cnt'     => 'required',
-            'folder.ship'        => 'required',
+            'folder.weight'      => 'required',
             'folder.harbor'      => 'required',
             'folder.observation' => 'nullable',
-            'cntFile'            => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
             'products'           => 'required',
+            'invoices'           => 'nullable',
 
-//            'containers.*.folder_id'      => 'nullable',
-//            'containers.*.number'         => 'required',
-//            'containers.*.designation'    => 'required',
-//            'containers.*.weight'         => ['required', 'numeric'],
-//            'containers.*.package_number' => 'required',
-//            'containers.*.filling_date'   => ['required', 'date'],
-//            'containers.*.arrival_date'   => ['required', 'date'],
-//
-//            'invoices.*.folder_id'      => 'nullable',
-//            'invoices.*.invoice_number' => 'required',
-//            'invoices.*.amount'         => 'required',
-//            'invoicesFiles.*'           => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
+            'containers.*.folder_id'      => 'nullable',
+            'containers.*.number'         => 'required',
+            'containers.*.weight'         => ['required', 'numeric'],
+            'containers.*.package_number' => 'required',
+            'containers.*.arrival_date'   => ['required', 'date'],
+
+            'invoices.*.folder_id'      => 'nullable',
+            'invoices.*.type'           => 'required',
+            'invoices.*.invoice_number' => 'required',
+            'invoices.*.amount'         => 'required',
+            'invoicesFiles.*'           => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
 
@@ -54,25 +54,27 @@ class FolderCreateForm extends Component
     {
         $this->folder = $folder;
         $this->containers = $this->invoices = collect();
+
+        $user = Auth::user();
+        if ($user->hasRole('customer'))
+            $this->folder->customer_id = $user->customer->id;
     }
 
     public function addNewProduct()
     {
         $this->validate([
-            'productCode' => 'required',
             'productDesignation' => 'required'
         ]);
 
         try {
             $product = Product::query()->create([
-                'code' => $this->productCode,
                 'designation' => $this->productDesignation
             ]);
 
             $this->alert('success', "Le produit a été enregistré avec succès.");
-            $this->emit('newProductAdded', [$product->id, $product->code.' - '.$product->designation]);
+            $this->emit('newProductAdded', [$product->id, $product->designation]);
             $this->dispatchBrowserEvent('close-addProductModal');
-            $this->reset('productCode', 'productDesignation');
+            $this->reset('productDesignation');
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -115,14 +117,12 @@ class FolderCreateForm extends Component
     {
         $this->validate();
 
-        try {
+//        try {
             $this->folder->generateUniqueNumber();
-            $this->folder->customer_id = Auth::user()->customer->id;
 
             DB::beginTransaction();
 
             $this->folder->save();
-            $this->folder->addFile($this->cntFile);
             $this->folder->products()->sync($this->products);
             $this->folder->containers()->createMany($this->containers);
 
@@ -139,9 +139,9 @@ class FolderCreateForm extends Component
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);
-        } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+//        } catch (\Exception $e) {
+//            throw new UnprocessableEntityHttpException($e->getMessage());
+//        }
     }
 
     public function render()

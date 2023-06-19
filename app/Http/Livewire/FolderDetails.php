@@ -4,7 +4,6 @@ namespace App\Http\Livewire;
 
 use App\Models\Folder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class FolderDetails extends Component
@@ -24,13 +23,20 @@ class FolderDetails extends Component
 
     public function download($collection, $modelId)
     {
-        if ($collection == 'purchase_invoices')
+        if ($collection == 'purchase_invoices') {
             $model = $this->purchaseInvoices->where('id', $modelId)->first();
+        }
 
-        if (isset($model))
-            return response()->download(storage_path($model->attach_file_path));
-            //return response()->download($model->file_url);
+        if (isset($model)) {
+            $filePath = public_path('uploads/'.$model->attach_file_path);
+
+            if (file_exists($filePath)) {
+                return response()->download($filePath);
+            } else {
+                abort(404, 'File not found');
+            }
+        }
+
         return null;
-        //return Storage::disk()->download('invoice.pdf');
     }
 }

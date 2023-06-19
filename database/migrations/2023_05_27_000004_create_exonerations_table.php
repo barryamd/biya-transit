@@ -13,7 +13,9 @@ return new class extends Migration {
         Schema::create('exonerations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->integer('amount');
+            $table->string('number', 30)->unique();
+            $table->date('date');
+            $table->string('responsible');
 
             $table->timestamps();
         });

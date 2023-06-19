@@ -34,15 +34,13 @@ class AjaxRequestController extends Controller
 
     public function getProducts(Request $request): JsonResponse
     {
-        $query = Product::query()->select('id', 'code', 'designation')->limit(5)
+        $query = Product::query()->select('id', 'designation')->limit(5)
             ->orderby('designation');
 
         $search = $request->search;
         if ($search != '') {
             $query->where(function($query) use ($search) {
                 $query->whereNotNull('designation')->where('designation', 'LIKE', $search . '%');
-            })->orWhere(function($query) use ($search) {
-                $query->whereNotNull('code')->where('code', 'LIKE', $search . '%');
             });
         }
         $records = $query->get();
@@ -51,7 +49,7 @@ class AjaxRequestController extends Controller
         foreach($records as $record){
             $response[] = array(
                 "id" => $record->id,
-                "text" => ($record->code ? $record->code.' - ' : '').$record->designation
+                "text" => $record->designation
             );
         }
         return response()->json($response);
@@ -85,6 +83,8 @@ class AjaxRequestController extends Controller
         $search = $request->search;
         if ($search != '') {
             $query->where(function($query) use ($search) {
+                $query->whereNotNull('name')->where('name', 'LIKE', $search . '%');
+            })->orWhere(function($query) use ($search) {
                 $query->whereNotNull('nif')->where('nif', 'LIKE', $search . '%');
             })->orWhere(function($query) use ($search) {
                 $query->whereNotNull('phone')->where('phone', 'LIKE', $search . '%');

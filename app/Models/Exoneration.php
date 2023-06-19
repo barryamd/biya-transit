@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\HasFile;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Exoneration extends Model
 {
     use HasFactory;
-    use Searchable;
+    use HasFile;
 
-    protected $fillable = ['folder_id', 'amount'];
+    public const PATH = 'exonerations';
 
-    protected array $searchableFields = ['*'];
+    protected $fillable = ['folder_id', 'number', 'date', 'responsible'];
 
     public function folder(): BelongsTo
     {

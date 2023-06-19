@@ -12,7 +12,6 @@ class Delivery extends Model
 {
     use HasFactory;
     use HasFile;
-    use Searchable;
 
     public const PATH = 'deliveries';
 
@@ -25,8 +24,6 @@ class Delivery extends Model
         'delivery_status',
         'customer_satisfaction',
     ];
-
-    protected array $searchableFields = ['*'];
 
     protected $casts = [
         'delivery_date' => 'date',

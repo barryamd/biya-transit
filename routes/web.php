@@ -42,6 +42,7 @@ Route::middleware([
     Route::view('closed-folders','folders.index')->name('closed-folders.index');
     Route::view('transporters','transporters.index')->name('transporters.index');
 
+    Route::post('/getCustomers', [AjaxRequestController::class, 'getCustomers'])->name('getCustomers');
     Route::post('/getProducts', [AjaxRequestController::class, 'getProducts'])->name('getProducts');
     Route::post('/getTransporters', [AjaxRequestController::class, 'getTransporters'])->name('getTransporters');
 });

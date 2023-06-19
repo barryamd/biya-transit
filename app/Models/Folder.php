@@ -10,22 +10,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-//use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Folder extends Model
 {
     use HasFactory;
-    //use InteractsWithMedia;
-    use HasFile;
     use Searchable;
-
-    public const PATH = 'folders';
 
     protected $fillable = [
         'customer_id',
         'number',
         'num_cnt',
-        'ship',
+        'weight',
         'harbor',
         'observation',
         'status',
@@ -54,9 +49,14 @@ class Folder extends Model
         return $this->hasMany(Container::class);
     }
 
-    public function purchaseInvoices(): HasMany
+    public function products(): BelongsToMany
     {
-        return $this->hasMany(PurchaseInvoice::class);
+        return $this->belongsToMany(Product::class);
+    }
+
+    public function ddiOpening(): HasOne
+    {
+        return $this->hasOne(DdiOpening::class);
     }
 
     public function exoneration(): HasOne
@@ -64,37 +64,18 @@ class Folder extends Model
         return $this->hasOne(Exoneration::class);
     }
 
-    public function payments(): HasMany
+    public function declaration(): HasOne
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasOne(Declaration::class);
     }
 
-    public function paymentDvt(): HasOne
+    public function deliveryNote(): HasOne
     {
-        return $this->hasOne(Payment::class)->where('type', 'DVT');
+        return $this->hasOne(DeliveryNote::class);
     }
 
-    public function paymentDdi(): HasOne
-    {
-        return $this->hasOne(Payment::class)->where('type', 'DDI');
-    }
-    public function paymentTm(): HasOne
-    {
-        return $this->hasOne(Payment::class)->where('type', 'TM');
-    }
-
-    public function paymentCt(): HasOne
-    {
-        return $this->hasOne(Payment::class)->where('type', 'CT');
-    }
-
-    public function delivery(): HasOne
+    public function deliveryDetails(): HasOne
     {
         return $this->hasOne(Delivery::class);
-    }
-
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class);
     }
 }

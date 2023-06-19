@@ -14,10 +14,8 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
             $table->string('number', 30)->unique();
-            $table->text('designation')->nullable();
             $table->decimal('weight');
             $table->string('package_number', 30);
-            $table->date('filling_date');
             $table->date('arrival_date')->nullable();
 
             $table->index('number');
