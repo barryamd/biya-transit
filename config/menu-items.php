@@ -23,6 +23,13 @@ return [
         'roles' => 'Admin',
     ],
     [
+        'title' => 'Types de documents',
+        'type'  => 'item',
+        'route' => 'document-types.index',
+        'icon'  => 'folder-tree',
+        'roles' => 'Admin',
+    ],
+    [
         'title' => 'Ajouter un dossier',
         'type'  => 'item',
         'route' => 'folders.create',

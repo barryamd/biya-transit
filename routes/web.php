@@ -33,6 +33,7 @@ Route::middleware([
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::view('users', 'users.index')->name('users.index');
     Route::view('customers','customers.index')->name('customers.index');
+    Route::view('document-types','document-types.index')->name('document-types.index');
     Route::view('folders','folders.index')->name('folders.index');
     Route::get('folders/create', FolderCreateForm::class)->name('folders.create');
     Route::get('folders/{folder}/edit', FolderEditForm::class)->name('folders.edit');

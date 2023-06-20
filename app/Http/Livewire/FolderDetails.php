@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Document;
 use App\Models\Folder;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -9,11 +10,11 @@ use Livewire\Component;
 class FolderDetails extends Component
 {
     public Folder $folder;
-    public Collection $purchaseInvoices;
+    public Collection $documents;
 
     public function mount()
     {
-        $this->purchaseInvoices = $this->folder->purchaseInvoices;
+        $this->documents = Document::with('type')->where('folder_id', $this->folder->id)->get();
     }
 
     public function render()
@@ -23,8 +24,8 @@ class FolderDetails extends Component
 
     public function download($collection, $modelId)
     {
-        if ($collection == 'purchase_invoices') {
-            $model = $this->purchaseInvoices->where('id', $modelId)->first();
+        if ($collection == 'folders') {
+            $model = $this->documents->where('id', $modelId)->first();
         }
 
         if (isset($model)) {

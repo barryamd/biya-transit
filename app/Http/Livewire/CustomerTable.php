@@ -18,7 +18,7 @@ class CustomerTable extends DataTableComponent
     protected array $createButtonParams = [
         'text'  => 'Nouveau client',
         'modal' => 'customerFormModal',
-        'roles' => 'admin',
+        'roles' => 'Admin',
     ];
     public Customer $customer;
     public string|null $email;

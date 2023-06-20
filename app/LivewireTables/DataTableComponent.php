@@ -5,6 +5,7 @@ namespace App\LivewireTables;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 //use Maatwebsite\Excel\Excel;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 
 abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataTableComponent
 {
@@ -273,5 +274,84 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
 
             $this->clearSelected();
         }
+    }
+
+
+    public function badge($text, $type = 'secondary', $margin = 0): string
+    {
+        return '<span class="badge badge-' . $type . ' ml-' . $margin . '">' . __($text) . '</span>';
+    }
+
+    public function button($route, $param, $type, $title, $icon, $name = '', $target = '_self'): Column
+    {
+        return Column::make($param)->format(
+            fn($value, $row) => '<a
+                    title="'. $title . '"
+                    data-name="' . $name . '"
+                    href="' . route($route, $param) . '"
+                    class="px-3 btn btn-xs btn-' . $type . '"
+                    target="' . $target . '">
+                    <i class="far fa-' . $icon . '"></i>
+                </a>'
+        );
+    }
+
+    public function button2($route, $param, $type, $title, $icon, $name = '', $target = '_self'): Column|LinkColumn
+    {
+        return LinkColumn::make('Edit')
+            ->title(fn($row) => '<i class="far fa-' . $icon . '"></i>')
+            ->location(fn($row) => route($route, $param))
+            ->attributes(function($row) use($title, $name, $type, $target) {
+                return [
+                    'title' => $title,
+                    'data-name' => $name,
+                    'target' => $target,
+                    'class' => "px-3 btn btn-xs btn-$type",
+                ];
+            });
+    }
+
+    public function viewButton($route, $param): LinkColumn|Column
+    {
+        return LinkColumn::make('View')
+            ->title(fn($row) => '<i class="far fa-eye"></i>')
+            ->location(fn($row) => route($route, $param))
+            ->attributes(function($row) {
+                return [
+                    'title' => __('Show'),
+                    'target' => '_self',
+                    'class' => 'btn text-success text-lg',
+                ];
+            });
+    }
+
+    public function editButton($route, $param): LinkColumn|Column
+    {
+        return LinkColumn::make('Edit')
+            ->title(fn($row) => '<i class="far fa-edit"></i>')
+            ->location(fn($row) => route($route, $param))
+            ->attributes(function($row) {
+                return [
+                    'title' => __('Edit'),
+                    'target' => '_self',
+                    'class' => 'btn text-warning text-lg',
+                ];
+            });
+    }
+
+    public function deleteButton($route, $param): LinkColumn|Column
+    {
+        return LinkColumn::make('Delete')
+            ->title(fn($row) => '<i class="far fa-trash-alt"></i>')
+            ->location(fn($row) => route($route, $param))
+            ->attributes(function($row) {
+                return [
+                    'wire:click' => "delete({{ $row->id }})",
+                    'title' => __('Delete'),
+                    'target' => '_self',
+                    'class' => 'btn text-danger text-lg',
+                ];
+            });
+        // '<button wire:click="delete({{ $row->id }})" class="btn text-danger text-lg" title="{{__('Delete') }}"><i class="fas fa-trash"></i></button>'
     }
 }

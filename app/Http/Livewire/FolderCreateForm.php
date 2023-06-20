@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\DocumentType;
 use App\Models\Folder;
 use App\Models\Product;
-use App\Models\PurchaseInvoice;
+use App\Models\Document;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,21 +21,21 @@ class FolderCreateForm extends Component
 
     public Folder $folder;
     public Collection $containers;
-    public Collection $invoices;
+    public Collection $documents;
     public array $products = [];
-    public array|string $invoicesFiles = [];
+    public array|string $documentsFiles = [];
     public string $productDesignation = '';
-    public $invoiceTypes = ['CNT', 'Facture'];
+    public Collection|array $documentTypes = [];
 
     protected function rules() {
         return [
-            'folder.customer_id' => 'required',
+            'folder.customer_id' => 'nullable',
             'folder.num_cnt'     => 'required',
             'folder.weight'      => 'required',
             'folder.harbor'      => 'required',
             'folder.observation' => 'nullable',
             'products'           => 'required',
-            'invoices'           => 'nullable',
+            'documents'           => 'nullable',
 
             'containers.*.folder_id'      => 'nullable',
             'containers.*.number'         => 'required',
@@ -42,21 +43,21 @@ class FolderCreateForm extends Component
             'containers.*.package_number' => 'required',
             'containers.*.arrival_date'   => ['required', 'date'],
 
-            'invoices.*.folder_id'      => 'nullable',
-            'invoices.*.type'           => 'required',
-            'invoices.*.invoice_number' => 'required',
-            'invoices.*.amount'         => 'required',
-            'invoicesFiles.*'           => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'documents.*.folder_id' => 'nullable',
+            'documents.*.type_id'   => 'required',
+            'documents.*.number'    => 'required',
+            'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
 
     public function mount(Folder $folder)
     {
         $this->folder = $folder;
-        $this->containers = $this->invoices = collect();
+        $this->containers = $this->documents = collect();
+        $this->documentTypes = DocumentType::all()->pluck('label', 'id');
 
         $user = Auth::user();
-        if ($user->hasRole('customer'))
+        if ($user->hasRole('Customer'))
             $this->folder->customer_id = $user->customer->id;
     }
 
@@ -70,11 +71,9 @@ class FolderCreateForm extends Component
             $product = Product::query()->create([
                 'designation' => $this->productDesignation
             ]);
-
+            $this->closeModal();
             $this->alert('success', "Le produit a été enregistré avec succès.");
             $this->emit('newProductAdded', [$product->id, $product->designation]);
-            $this->dispatchBrowserEvent('close-addProductModal');
-            $this->reset('productDesignation');
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -88,7 +87,6 @@ class FolderCreateForm extends Component
             'designation' => null,
             'weight' => null,
             'package_number' => null,
-            'filling_date' => null,
             'arrival_date' => null,
         ]);
     }
@@ -98,19 +96,19 @@ class FolderCreateForm extends Component
         $this->containers = $this->containers->except([$index])->values();
     }
 
-    public function addInvoice()
+    public function addDocument()
     {
-        $this->invoices->add([
+        $this->documents->add([
             'folder_id' => null,
-            'invoice_number' => null,
-            'amount' => null,
+            'type_id' => null,
+            'number' => null,
             'attach_file' => null,
         ]);
     }
 
-    public function removeInvoice($index)
+    public function removeDocument($index)
     {
-        $this->invoices = $this->invoices->except([$index])->values();
+        $this->documents = $this->documents->except([$index])->values();
     }
 
     public function save()
@@ -126,13 +124,13 @@ class FolderCreateForm extends Component
             $this->folder->products()->sync($this->products);
             $this->folder->containers()->createMany($this->containers);
 
-            //$this->folder->purchaseInvoices()->createMany($this->invoices);
-            //$invoices = PurchaseInvoice::query()->where('folder_id', $this->folder->id)->get();
-            foreach ($this->invoices as $index => $invoiceInputs) {
-                $invoiceInputs['folder_id'] = $this->folder->id;
-                $invoice = new PurchaseInvoice($invoiceInputs);
-                $invoice->save();
-                $invoice->addFile($this->invoicesFiles[$index]);
+            //$this->folder->purchaseDocuments()->createMany($this->documents);
+            //$documents = PurchaseDocument::query()->where('folder_id', $this->folder->id)->get();
+            foreach ($this->documents as $index => $documentInputs) {
+                $documentInputs['folder_id'] = $this->folder->id;
+                $document = new Document($documentInputs);
+                $document->save();
+                $document->addFile($this->documentsFiles[$index]);
             }
 
             DB::commit();
@@ -142,6 +140,12 @@ class FolderCreateForm extends Component
 //        } catch (\Exception $e) {
 //            throw new UnprocessableEntityHttpException($e->getMessage());
 //        }
+    }
+
+    public function closeModal()
+    {
+        $this->dispatchBrowserEvent('close-addProductModal');
+        $this->productDesignation = '';
     }
 
     public function render()

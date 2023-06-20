@@ -49,6 +49,11 @@ class Folder extends Model
         return $this->hasMany(Container::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(DocumentType::class);
+    }
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);

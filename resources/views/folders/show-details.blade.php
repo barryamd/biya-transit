@@ -76,29 +76,29 @@
     <hr>
     <div class="row">
         <div class="col-12">
-            <h5>Les factures d'achats</h5>
+            <h5>Les documents joints</h5>
             <div class="table-responsive table-bordered-">
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 30%;">Numero de la facture</th>
-                        <th style="width: 30%;">Montant de la facture</th>
+                        <th style="width: 30%;">Type de document</th>
+                        <th style="width: 35%;">Numero du document</th>
                         <th style="width: 30%;">Fichier jointe</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($purchaseInvoices as $i => $invoice)
+                    @foreach ($documents as $i => $document)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
-                                {{ $invoice->invoice_number }}
+                                {{ $document->type->label }}
+                            </td>
+                            <td>
+                                {{ $document->number }}
                             </td>
                             <td class="align-middle">
-                                {{ moneyFormat($invoice->amount) }}
-                            </td>
-                            <td class="align-middle">
-                                <button wire:click="download('purchase_invoices', {{$invoice->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
+                                <button wire:click="download('folders', {{$document->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
                             </td>
                         </tr>
                     @endforeach

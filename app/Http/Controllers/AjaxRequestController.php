@@ -96,7 +96,7 @@ class AjaxRequestController extends Controller
         foreach($records as $record){
             $response[] = array(
                 "id" => $record->id,
-                "text" => $record->fif.'-'.$record->name
+                "text" => $record->nif.'-'.$record->name
             );
         }
         return response()->json($response);

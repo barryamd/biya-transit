@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('purchase_invoices', function (Blueprint $table) {
+        Schema::table('declarations', function (Blueprint $table) {
             $table
                 ->foreign('folder_id')
                 ->references('id')
@@ -25,7 +25,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('purchase_invoices', function (Blueprint $table) {
+        Schema::table('declarations', function (Blueprint $table) {
             $table->dropForeign(['folder_id']);
         });
     }

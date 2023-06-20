@@ -77,46 +77,43 @@
             <hr>
             <div class="row">
                 <div class="col-12">
-                    <h5>Ajouter les details des factures</h5>
+                    <h5>Joindre des documents</h5>
                     <div class="table-responsive table-bordered-">
                         <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                             <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">#</th>
-                                <th style="width: 15%;">Type de fichier</th>
-                                <th style="width: 25%;">Numéro</th>
-                                <th style="width: 25%;">Montant</th>
-                                <th style="width: 25%;">Fichier jointe</th>
+                                <th style="width: 30%;">Type de document</th>
+                                <th style="width: 30%;">Numéro du document</th>
+                                <th style="width: 30%;">Fichier jointe</th>
                                 <th class="text-center" style="width: 5%">
-                                    <button wire:click.prevent="addInvoice" title="Ajouter" class="btn btn-sm btn-primary w-100-">
+                                    <button wire:click.prevent="addDocument" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach ($invoices as $i => $invoice)
+                            @foreach ($documents as $i => $document)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
-                                        <select wire:model.defer="invoices.{{$i}}.type" class="form-control px-1" required>
-                                            @foreach($invoiceTypes as $type)
-                                                <option value="{{$type}}">{{ $type }}</option>
+                                        <select wire:model.defer="documents.{{$i}}.type_id" class="form-control px-1" required>
+                                            <option value="">-- Selectionner un type --</option>
+                                            @foreach($documentTypes as $value => $type)
+                                                <option value="{{$value}}">{{ $type }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" wire:model.defer="invoices.{{$i}}.invoice_number" class="form-control px-1" required>
+                                        <input type="text" wire:model.defer="documents.{{$i}}.number" class="form-control px-1" required>
                                     </td>
                                     <td class="align-middle">
-                                        <input type="number" wire:model.defer="invoices.{{$i}}.amount" class="form-control px-1" required>
-                                    </td>
-                                    <td class="align-middle">
-                                        <input type="file" wire:model.lazy="invoicesFiles.{{$i}}" class="form-control px-1" required>
-                                        @error('invoicesFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                        <input type="file" wire:model.lazy="documentsFiles.{{$i}}" class="form-control px-1" required>
+                                        @error('documentsFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                        <button wire:click.prevent="removeInvoice('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                        <button wire:click.prevent="removeDocument('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </td>
