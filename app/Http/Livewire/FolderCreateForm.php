@@ -9,6 +9,7 @@ use App\Models\Document;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -30,22 +31,25 @@ class FolderCreateForm extends Component
     protected function rules() {
         return [
             'folder.customer_id' => 'nullable',
-            'folder.num_cnt'     => 'required',
-            'folder.weight'      => 'required',
-            'folder.harbor'      => 'required',
-            'folder.observation' => 'nullable',
-            'products'           => 'required',
-            'documents'           => 'nullable',
+            'folder.num_cnt'     => [
+                'required', 'string',
+                Rule::unique('folders', 'num_cnt')
+            ],
+            'folder.weight'      => ['required', 'string'],
+            'folder.harbor'      => ['required', 'string'],
+            'folder.observation' => ['nullable', 'string'],
+            'products'           => ['required'],
+            'documents'          => ['nullable'],
 
             'containers.*.folder_id'      => 'nullable',
-            'containers.*.number'         => 'required',
-            'containers.*.weight'         => ['required', 'numeric'],
-            'containers.*.package_number' => 'required',
+            'containers.*.number'         => ['required', 'string'],
+            'containers.*.weight'         => ['required', 'string'],
+            'containers.*.package_number' => ['required', 'string'],
             'containers.*.arrival_date'   => ['required', 'date'],
 
             'documents.*.folder_id' => 'nullable',
             'documents.*.type_id'   => 'required',
-            'documents.*.number'    => 'required',
+            'documents.*.number'    => ['required','string', Rule::unique('documents', 'number')],
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
@@ -64,7 +68,10 @@ class FolderCreateForm extends Component
     public function addNewProduct()
     {
         $this->validate([
-            'productDesignation' => 'required'
+            'productDesignation' => [
+                'required', 'string',
+                Rule::unique('products', 'designation')
+            ]
         ]);
 
         try {
