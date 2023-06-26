@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <button class="btn btn-primary nextBtn float-right" wire:click="submitDdiOpeningStep"
-                        type="button">Suivant</button>
+                        type="button">Sauvegarder et Passer</button>
             </div>
         </div>
 
@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <button class="btn btn-primary nextBtn float-right " wire:click="submitExonerationStep"
-                        type="button">Suivant</button>
+                        type="button">Sauvegarder et Passer</button>
             </div>
         </div>
 
@@ -141,9 +141,22 @@
                             @error('receiptFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <x-form.input label="Numero du bon" wire:model.defer="declaration.bon_number" required></x-form.input>
+                    </div>
+                    <div class="col-md-4">
+                        <x-form.date label="Date du bon" wire:model.defer="declaration.bon_date" required></x-form.date>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <x-form.file-upload label="Copie du bon" wire:model.lazy="bonFile" required></x-form.file-upload>
+                            @error('bonFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                        </div>
+                    </div>
                 </div>
                 <button class="btn btn-primary nextBtn float-right " wire:click="submitDeclarationStep"
-                        type="button">Suivant</button>
+                        type="button">Sauvegarder et Passer</button>
             </div>
         </div>
 
@@ -165,7 +178,7 @@
                     </div>
                 </div>
                 <button class="btn btn-primary nextBtn float-right " wire:click="submitDeliveryNoteStep"
-                        type="button">Suivant</button>
+                        type="button">Sauvegarder et Passer</button>
             </div>
         </div>
 
@@ -186,12 +199,39 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <x-form.select2-ajax label="Transporteur" wire:model.defer="delivery.transporter_id" routeName="getTransporters"
+                        <x-form.select2-ajax label="Transporteur" wire:model.lazy="delivery.transporter_id" routeName="getTransporters"
                                              required placeholder="Rechercher par la plaque"></x-form.select2-ajax>
                     </div>
+                    @if($transporter)
+                    <div class="col-12">
+                        <h5>Informations du transporteur</h5>
+                        <div class="table-responsive table-bordered-">
+                            <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                                <tbody>
+                                <tr>
+                                    <th style="width: 40%">Numéro d'immatriculation</th>
+                                    <td>{{ $transporter->numberplate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Marque</th>
+                                    <td>{{ $transporter->marque }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Nom du chauffeur</th>
+                                    <td>{{ $transporter->driver_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Téléphone du chauffeur</th>
+                                    <td>{{ $transporter->driver_phone }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 <button class="btn btn-primary nextBtn float-right " wire:click="submitDeliveryDetailsStep"
-                        type="button">Sauvgarder et Fermer</button>
+                        type="button">Sauvegarder et Fermer le dossier</button>
             </div>
         </div>
     </x-card>

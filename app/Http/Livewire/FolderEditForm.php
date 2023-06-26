@@ -8,6 +8,7 @@ use App\Models\Delivery;
 use App\Models\DeliveryNote;
 use App\Models\Exoneration;
 use App\Models\Folder;
+use App\Models\Transporter;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -28,38 +29,45 @@ class FolderEditForm extends Component
     public Declaration|null $declaration = null;
     public DeliveryNote|null $deliveryNote = null;
     public Delivery|null $delivery = null;
+    public Transporter|null $transporter = null;
 
     public array $products = [], $exonerationProducts = [];
 
-    public $ddiFile, $exonerationFile, $declarationFile, $liquidationFile, $receiptFile, $deliveryNoteFile, $deliveryFile;
+    public $ddiFile, $exonerationFile, $declarationFile, $liquidationFile,
+        $receiptFile, $bonFile, $deliveryNoteFile, $deliveryFile;
 
-    protected $rules = [
-        'ddiOpening.dvt_number'        => ['required'],
-        'ddiOpening.dvt_obtained_date' => ['required', 'date'],
-        'ddiOpening.ddi_number'        => ['required'],
-        'ddiOpening.ddi_obtained_date' => ['required', 'date'],
+    public function getRules()
+    {
+        return [
+            'ddiOpening.dvt_number'        => ['required'],
+            'ddiOpening.dvt_obtained_date' => ['required', 'date'],
+            'ddiOpening.ddi_number'        => ['nullable'],
+            'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
 
-        'exoneration.number'      => ['required'],
-        'exoneration.date'        => ['required', 'date'],
-        'exoneration.responsible' => ['required'],
+            'exoneration.number'      => ['nullable'],
+            'exoneration.date'        => [Rule::requiredIf($this->exoneration->number), 'date'],
+            'exoneration.responsible' => [Rule::requiredIf($this->exoneration->number), 'required'],
 
-        'declaration.number'               => ['required'],
-        'declaration.date'                 => ['required', 'date'],
-        'declaration.destination_office'   => ['required'],
-        'declaration.verifier'             => ['required'],
-        'declaration.liquidation_bulletin' => ['required'],
-        'declaration.liquidation_date'     => ['required', 'date'],
-        'declaration.receipt_number'       => ['required'],
-        'declaration.receipt_date'         => ['required', 'date'],
+            'declaration.number'               => ['required'],
+            'declaration.date'                 => ['required', 'date'],
+            'declaration.destination_office'   => ['required'],
+            'declaration.verifier'             => ['required'],
+            'declaration.liquidation_bulletin' => ['required'],
+            'declaration.liquidation_date'     => ['required', 'date'],
+            'declaration.receipt_number'       => ['required'],
+            'declaration.receipt_date'         => ['required', 'date'],
+            'declaration.bon_number'           => ['required'],
+            'declaration.bon_date'             => ['required', 'date'],
 
-        'deliveryNote.bcm' => ['required'],
-        'deliveryNote.bct' => ['required'],
-        'deliveryNoteFile' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'deliveryNote.bcm' => ['required'],
+            'deliveryNote.bct' => ['required'],
+            'deliveryNoteFile' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
 
-        'delivery.transporter_id' => ['required'],
-        'delivery.date'  => ['required', 'date'],
-        'delivery.place' => ['required'],
-    ];
+            'delivery.transporter_id' => ['required'],
+            'delivery.date'  => ['required', 'date'],
+            'delivery.place' => ['required'],
+        ];
+    }
 
     public function mount()
     {
@@ -99,6 +107,13 @@ class FolderEditForm extends Component
     public function render()
     {
         return view('folders.edit-form');
+    }
+
+    public function updated($property, $value)
+    {
+        if ($property == 'delivery.transporter_id') {
+            $this->transporter = Transporter::findOrFail($value);
+        }
     }
 
     public function submitDdiOpeningStep()
@@ -157,9 +172,12 @@ class FolderEditForm extends Component
             'declaration.liquidation_date'     => ['required', 'date'],
             'declaration.receipt_number'       => ['required', 'string', Rule::unique('declarations', 'receipt_number')],
             'declaration.receipt_date'         => ['required', 'date'],
+            'declaration.bon_number'           => ['required'],
+            'declaration.bon_date'             => ['required', 'date'],
             'declarationFile' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'liquidationFile' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'receiptFile'     => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'bonFile'         => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ]);
 
         try {
@@ -173,6 +191,9 @@ class FolderEditForm extends Component
             }
             if ($this->receiptFile) {
                 $this->declaration->addFile($this->receiptFile, 'receipt_file_path');
+            }
+            if ($this->bonFile) {
+                $this->declaration->addFile($this->bonFile, 'bon_file_path');
             }
             $this->currentStep = 4;
 

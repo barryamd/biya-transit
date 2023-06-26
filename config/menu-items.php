@@ -64,6 +64,27 @@ return [
         'icon'  => 'folder-closed',
         'roles' => 'Admin|Customer',
     ],
+    [
+        'title' => 'Factures',
+        'type'  => 'item',
+        'route' => 'invoices.index',
+        'icon'  => 'invoice',
+        'roles' => 'Admin',
+    ],
+    [
+        'title' => 'Services',
+        'type'  => 'item',
+        'route' => 'services.index',
+        'icon'  => 'folder',
+        'roles' => 'Admin',
+    ],
+    [
+        'title' => 'TVAs',
+        'type'  => 'item',
+        'route' => 'tvas.index',
+        'icon'  => 'folder',
+        'roles' => 'Admin',
+    ],
     // [
     //     'title' => 'Utilisateurs',
     //     'type'  => 'item',

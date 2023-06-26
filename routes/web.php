@@ -42,8 +42,12 @@ Route::middleware([
     Route::view('progress-folders','folders.index')->name('progress-folders.index');
     Route::view('closed-folders','folders.index')->name('closed-folders.index');
     Route::view('transporters','transporters.index')->name('transporters.index');
+    Route::view('tvas','tvas.index')->name('tvas.index');
+    Route::view('services','services.index')->name('services.index');
+    Route::view('invoices','invoices.index')->name('invoices.index');
 
     Route::post('/getCustomers', [AjaxRequestController::class, 'getCustomers'])->name('getCustomers');
     Route::post('/getProducts', [AjaxRequestController::class, 'getProducts'])->name('getProducts');
     Route::post('/getTransporters', [AjaxRequestController::class, 'getTransporters'])->name('getTransporters');
+    Route::post('/getFolders', [AjaxRequestController::class, 'getFolders'])->name('getFolders');
 });

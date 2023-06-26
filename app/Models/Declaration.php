@@ -26,7 +26,10 @@ class Declaration extends Model
         'liquidation_file_path',
         'receipt_number',
         'receipt_date',
-        'receipt_file_path'
+        'receipt_file_path',
+        'bon_number',
+        'bon_date',
+        'bon_file_path'
     ];
 
     public function folder(): BelongsTo

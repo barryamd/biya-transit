@@ -27,6 +27,9 @@ return new class extends Migration
             $table->string('receipt_number', 30)->unique();
             $table->date('receipt_date');
             $table->string('receipt_file_path')->nullable();
+            $table->string('bon_number', 30)->unique();
+            $table->date('bon_date');
+            $table->string('bon_file_path')->nullable();
 
             $table->index('number');
             $table->index('liquidation_bulletin');
