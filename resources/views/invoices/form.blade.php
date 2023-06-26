@@ -35,9 +35,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($invoices as $i => $invoice)
+                        @foreach ($amounts as $i => $amount)
                             <tr>
-                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center ">{{ $loop->iteration }}</td>
                                 <td>
                                     <select wire:model.defer="invoices.{{$i}}.service_id" class="form-control px-1" required>
                                         <option value="">-- Selectionner un service rendu --</option>

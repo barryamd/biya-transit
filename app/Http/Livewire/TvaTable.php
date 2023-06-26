@@ -26,7 +26,7 @@ class TvaTable extends DataTableComponent
             Column::make("Taux", "rate")
                 ->sortable()->searchable(),
             Column::make('Actions', 'id')
-                ->view('tavs.action-buttons')
+                ->view('tvas.action-buttons')
         ];
     }
 

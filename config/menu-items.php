@@ -26,7 +26,7 @@ return [
         'title' => 'Types de documents',
         'type'  => 'item',
         'route' => 'document-types.index',
-        'icon'  => 'folder-tree',
+        'icon'  => 'list',
         'roles' => 'Admin',
     ],
     [
@@ -68,21 +68,21 @@ return [
         'title' => 'Factures',
         'type'  => 'item',
         'route' => 'invoices.index',
-        'icon'  => 'invoice',
+        'icon'  => 'file-invoice',
         'roles' => 'Admin',
     ],
     [
         'title' => 'Services',
         'type'  => 'item',
         'route' => 'services.index',
-        'icon'  => 'folder',
+        'icon'  => 'list',
         'roles' => 'Admin',
     ],
     [
         'title' => 'TVAs',
         'type'  => 'item',
         'route' => 'tvas.index',
-        'icon'  => 'folder',
+        'icon'  => 'list',
         'roles' => 'Admin',
     ],
     // [

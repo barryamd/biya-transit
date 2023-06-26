@@ -10,4 +10,6 @@ class Tva extends Model
     use HasFactory;
 
     protected $fillable = ['rate'];
+
+    public $timestamps = false;
 }
