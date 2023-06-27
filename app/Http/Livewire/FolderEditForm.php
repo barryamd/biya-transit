@@ -35,6 +35,9 @@ class FolderEditForm extends Component
 
     public $ddiFile, $exonerationFile, $declarationFile, $liquidationFile,
         $receiptFile, $bonFile, $deliveryNoteFile, $deliveryFile;
+    public bool $exonerationExist = false;
+
+    protected $listeners = ['confirmed', 'cancelled'];
 
     public function getRules()
     {
@@ -45,8 +48,8 @@ class FolderEditForm extends Component
             'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
 
             'exoneration.number'      => ['nullable'],
-            'exoneration.date'        => [Rule::requiredIf($this->exoneration->number), 'date'],
-            'exoneration.responsible' => [Rule::requiredIf($this->exoneration->number), 'required'],
+            'exoneration.date'        => ['nullable'],
+            'exoneration.responsible' => ['nullable'],
 
             'declaration.number'               => ['required'],
             'declaration.date'                 => ['required', 'date'],
@@ -83,6 +86,7 @@ class FolderEditForm extends Component
         $this->exoneration = $this->folder->exoneration;
         if ($this->exoneration) {
             $this->currentStep = 3;
+            $this->exonerationExist = true;
         } else {
             $this->exoneration = new Exoneration();
         }
@@ -104,11 +108,6 @@ class FolderEditForm extends Component
         $this->delivery = $this->folder->deliveryDetails ?? new Delivery();
     }
 
-    public function render()
-    {
-        return view('folders.edit-form');
-    }
-
     public function updated($property, $value)
     {
         if ($property == 'delivery.transporter_id') {
@@ -119,11 +118,11 @@ class FolderEditForm extends Component
     public function submitDdiOpeningStep()
     {
         $this->validate([
-            'ddiOpening.dvt_number'        => ['required', 'string', Rule::unique('ddi_openings', 'dvt_number')],
+            'ddiOpening.dvt_number'        => ['required', 'string'],
             'ddiOpening.dvt_obtained_date' => ['required', 'date'],
-            'ddiOpening.ddi_number'        => ['required', 'string', Rule::unique('ddi_openings', 'ddi_number')],
-            'ddiOpening.ddi_obtained_date' => ['required', 'date'],
-            'ddiFile' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'ddiOpening.ddi_number'        => ['nullable', 'string'],
+            'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
+            'ddiFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ]);
 
         try {
@@ -132,9 +131,14 @@ class FolderEditForm extends Component
             if ($this->ddiFile) {
                 $this->ddiOpening->addFile($this->ddiFile);
             }
-            $this->currentStep = 2;
 
-            $this->alert('success', "La facture a été enregistré avec succès.");
+            //$this->alert('success', "La facture a été enregistré avec succès.");
+            $this->confirm("Utilisez-vous des exonerations ?", [
+                'confirmButtonText' => 'Oui',
+                'cancelButtonText' => 'Non',
+                'onConfirmed' => 'confirmed',
+                'onDismissed' => 'cancelled'
+            ]);
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -240,8 +244,10 @@ class FolderEditForm extends Component
             if ($this->deliveryFile) {
                 $this->delivery->addFile($this->deliveryFile);
             }
+            $this->folder->update(['status' => 'Fermé']);
 
-            $this->alert('success', "Les détails de la livraison ont été enregistrés avec succès.");
+            $this->flash('success', "Les détails de la livraison ont été enregistrés avec succès.");
+            redirect()->route('closed-folders.index');
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -249,6 +255,25 @@ class FolderEditForm extends Component
 
     public function back($step)
     {
-        $this->currentStep = $step;
+        if ($step == 2 && !$this->exoneration->id) {
+            $this->currentStep = 1;
+        } else {
+            $this->currentStep = $step;
+        }
+    }
+
+    public function confirmed()
+    {
+        $this->currentStep = 2;
+    }
+
+    public function cancelled()
+    {
+        $this->currentStep = 3;
+    }
+
+    public function render()
+    {
+        return view('folders.edit-form');
     }
 }

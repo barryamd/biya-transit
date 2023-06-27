@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('weight', 30);
             $table->string('harbor', 30);
             $table->text('observation')->nullable();
-            $table->enum('status', ['En attente', 'En cours', 'Traité'])
+            $table->enum('status', ['En attente', 'En cours', 'Fermé'])
                 ->default('En attente');
 
             $table->index('number');

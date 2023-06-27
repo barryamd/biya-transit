@@ -46,14 +46,14 @@
                         <x-form.date label="Date d'obtention DVT" wire:model.defer="ddiOpening.dvt_obtained_date" required></x-form.date>
                     </div>
                     <div class="col-md-6">
-                        <x-form.input label="Numéro DDI" wire:model.defer="ddiOpening.ddi_number" required></x-form.input>
+                        <x-form.input label="Numéro DDI" wire:model.defer="ddiOpening.ddi_number"></x-form.input>
                     </div>
                     <div class="col-md-6">
-                        <x-form.date label="Date d'obtention DDI" wire:model.defer="ddiOpening.ddi_obtained_date" required></x-form.date>
+                        <x-form.date label="Date d'obtention DDI" wire:model.defer="ddiOpening.ddi_obtained_date"></x-form.date>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile" required></x-form.file-upload>
+                            <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile"></x-form.file-upload>
                             @error('ddiFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
                         </div>
                     </div>

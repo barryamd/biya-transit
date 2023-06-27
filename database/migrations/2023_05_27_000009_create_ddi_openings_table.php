@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('dvt_number', 30)->unique();
             $table->date('dvt_obtained_date');
             $table->string('ddi_number', 30)->unique();
-            $table->date('ddi_obtained_date');
+            $table->date('ddi_obtained_date')->nullable();
             $table->string('attach_file_path')->nullable();
 
             $table->index('dvt_number');
