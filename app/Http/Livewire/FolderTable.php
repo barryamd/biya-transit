@@ -21,6 +21,14 @@ class FolderTable extends DataTableComponent
     public string|null $status = null;
     public int|null $customerId = null;
 
+    public function mount()
+    {
+        $user = Auth::user();
+        if ($user->hasRole('Customer')) {
+            $this->customerId = $user->customer ? $user->customer->id : null;
+        }
+    }
+
     public function columns(): array
     {
         return [
