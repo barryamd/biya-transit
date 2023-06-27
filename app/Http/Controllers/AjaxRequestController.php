@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Transporter;
 use Illuminate\Http\JsonResponse;
@@ -10,6 +11,28 @@ use Illuminate\Http\Request;
 
 class AjaxRequestController extends Controller
 {
+    public function getFolders(Request $request): JsonResponse
+    {
+        $query = Folder::query()->select('id', 'number')->limit(5);
+
+        $search = $request->search;
+        if ($search != '') {
+            $query->where(function($query) use ($search) {
+                $query->whereNotNull('number')->where('number', 'LIKE', $search . '%');
+            });
+        }
+        $records = $query->get();
+
+        $response = array();
+        foreach($records as $record){
+            $response[] = array(
+                "id" => $record->id,
+                "text" => $record->number
+            );
+        }
+        return response()->json($response);
+    }
+
     public function getTransporters(Request $request): JsonResponse
     {
         $query = Transporter::query()->select('id', 'numberplate')->limit(5);

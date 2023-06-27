@@ -25,10 +25,10 @@ class InvoiceForm extends Component
 
     protected function rules() {
         return [
-            'invoice.invoice_id' => 'nullable',
+            'invoice.folder_id'  => 'required',
             'invoice.subtotal'   => ['required', 'numeric'],
             'invoice.tva_id'     => 'nullable',
-            'invoice.tax'        => ['required', 'numeric'],
+            'invoice.tax'        => ['nullable', 'numeric'],
             'invoice.total'      => ['required', 'numeric'],
             'amounts.*.service_id' => 'required',
             'amounts.*.amount'     => ['required', 'numeric'],
@@ -41,6 +41,7 @@ class InvoiceForm extends Component
         if ($invoice->id) {
             $this->amounts = $invoice->amounts;
         } else {
+            $this->invoice->tax = 0;
             $this->amounts = collect();
         }
         $this->services = Service::all()->pluck('name', 'id');
@@ -50,9 +51,15 @@ class InvoiceForm extends Component
     public function updated($property, $value)
     {
         if ($property == 'invoice.tva_id') {
-            $this->tva = Tva::findOrFail($value);
-            $this->invoice->tax = $this->invoice->subtotal * $this->tva->rate / 100;
-            $this->invoice->total = $this->invoice->subtotal + $this->invoice->tax;
+            if ($value) {
+                $this->tva = Tva::findOrFail($value);
+                $this->invoice->tax = $this->invoice->subtotal * $this->tva->rate / 100;
+                $this->invoice->total = $this->invoice->subtotal + $this->invoice->tax;
+            } else {
+                $this->invoice->tva_id = null;
+                $this->invoice->tax = 0;
+                $this->invoice->total = $this->invoice->subtotal;
+            }
         }
     }
 

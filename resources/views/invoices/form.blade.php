@@ -9,7 +9,7 @@
     <x-slot name="form">
         <div class="row">
             <div class="col-md-6">
-                <x-form.select2-ajax label="Client" wire:model="folder.folder_id" routeName="getFolders" id="folder"
+                <x-form.select2-ajax label="Dossier" wire:model="invoice.folder_id" routeName="getFolders" id="folder"
                                      required placeholder="Rechercher le dossier"></x-form.select2-ajax>
             </div>
             <div class="col-md-6">
@@ -39,7 +39,7 @@
                             <tr>
                                 <td class="text-center ">{{ $loop->iteration }}</td>
                                 <td>
-                                    <select wire:model.defer="invoices.{{$i}}.service_id" class="form-control px-1" required>
+                                    <select wire:model.defer="amounts.{{$i}}.service_id" class="form-control px-1" required>
                                         <option value="">-- Selectionner un service rendu --</option>
                                         @foreach($services as $value => $service)
                                             <option value="{{$value}}">{{ $service }}</option>
@@ -47,7 +47,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" wire:model.lazy="invoices.{{$i}}.amount" wire:change="updateTotal" class="form-control px-1" required>
+                                    <input type="text" wire:model.lazy="amounts.{{$i}}.amount" wire:change="setTotal" class="form-control px-1" required>
                                 </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                                     <button wire:click.prevent="removeAmount('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
@@ -59,6 +59,40 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+        <hr class="pt-0 mt-0 text-gray">
+        <div class="row">
+            <div class="col-md-5 pl-3 pr-5">
+            </div>
+            <div class="col-md-7">
+                <table class="table table-sm table-head-fixed- text-nowrap-">
+                    <tbody>
+                    @if($invoice->tva_id)
+                        <tr>
+                            <th style="width: 50%">Sous-Total</th>
+                            <td class="text-right" style=" width: 45%">
+                                {{ moneyFormat($invoice->subtotal, 0, '') }}
+                            </td>
+                            <td style="width: 20px;">GNF</td>
+                        </tr>
+                        <tr>
+                            <th>TVA</th>
+                            <td class="text-right">
+                                {{ moneyFormat($invoice->tax, 0, '') }}
+                            </td>
+                            <td>GNF</td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <th>Total</th>
+                        <td class="text-right">
+                            <span class="text-nowrap">{{ moneyFormat($invoice->total, 0, '') }}</span>
+                        </td>
+                        <td>GNF</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </x-slot>

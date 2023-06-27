@@ -5,6 +5,7 @@ use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\FolderCreateForm;
 use App\Http\Livewire\FolderDetails;
 use App\Http\Livewire\FolderEditForm;
+use App\Http\Livewire\InvoiceDetails;
 use App\Http\Livewire\InvoiceForm;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,7 @@ Route::middleware([
     Route::view('invoices','invoices.index')->name('invoices.index');
     Route::get('invoices/create', InvoiceForm::class)->name('invoices.create');
     Route::get('invoices/invoice/edit', InvoiceForm::class)->name('invoices.edit');
+    Route::get('invoices/{invoice}/show', InvoiceDetails::class)->name('invoices.show');
 
     Route::post('/getCustomers', [AjaxRequestController::class, 'getCustomers'])->name('getCustomers');
     Route::post('/getProducts', [AjaxRequestController::class, 'getProducts'])->name('getProducts');

@@ -1,70 +1,26 @@
-@section('title', 'Details du dossier: '.$folder->number)
+@section('title', 'Details de la facture: '.$invoice->number)
 <x-show-section>
-    <!-- title row -->
     <div class="row">
         <div class="col-12">
-            <div class="table-responsive table-bordered-">
-                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
-                    <tbody>
-                    <tr>
-                        <th style="width: 40%">Numero du dossier</th>
-                        <td>{{ $folder->number }}</td>
-                    </tr>
-                    <tr>
-                        <th>Numero CNT</th>
-                        <td>{{ $folder->num_cnt }}</td>
-                    </tr>
-                    <tr>
-                        <th>Poids total de la marchandise</th>
-                        <td>{{ $folder->weight }}</td>
-                    </tr>
-                    <tr>
-                        <th>Port</th>
-                        <td>{{ $folder->harbor }}</td>
-                    </tr>
-                    <tr>
-                        <th>Observation</th>
-                        <td>{{ $folder->observation }}</td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>{{ $folder->status }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-12">
-            <h5>Les details des conteneurs et colis</h5>
+            <h5>Facture N°: {{$invoice->number}}</h5>
             <div class="table-responsive table-bordered-">
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 15%;">Numero du conteneur</th>
-                        <th style="width: 10%;">Poids</th>
-                        <th style="width: 15%;">Nombre de colis</th>
-                        <th style="width: 10%">Date d'arrivé</th>
+                        <th style="width: 45%;">Service</th>
+                        <th style="width: 50%;">Prix</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($folder->containers as $i => $container)
+                    @foreach ($amounts as $i => $amount)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center ">{{ $loop->iteration }}</td>
                             <td>
-                                {{ $container->number }}
+                                {{ $amount->service->name }}
                             </td>
-                            <td class="align-middle">
-                                {{ $container->weight }}
-                            </td>
-                            <td class="align-middle">
-                                {{ $container->package_number }}
-                            </td>
-                            <td class="align-middle">
-                                {{ $container->arrival_date->format('d/m/Y') }}
+                            <td>
+                                {{ moneyFormat($amount->amount) }}
                             </td>
                         </tr>
                     @endforeach
@@ -73,38 +29,38 @@
             </div>
         </div>
     </div>
-    <hr>
+    <hr class="pt-0 mt-0 text-gray">
     <div class="row">
-        <div class="col-12">
-            <h5>Les documents joints</h5>
-            <div class="table-responsive table-bordered-">
-                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
-                    <thead>
+        <div class="col-md-5 pl-3 pr-5">
+        </div>
+        <div class="col-md-7">
+            <table class="table table-sm table-head-fixed- text-nowrap-">
+                <tbody>
+                @if($invoice->tva_id)
                     <tr>
-                        <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 30%;">Type de document</th>
-                        <th style="width: 35%;">Numero du document</th>
-                        <th style="width: 30%;">Fichier jointe</th>
+                        <th style="width: 50%">Sous-Total</th>
+                        <td class="text-right" style=" width: 45%">
+                            {{ moneyFormat($invoice->subtotal, 0, '') }}
+                        </td>
+                        <td style="width: 20px;">GNF</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($documents as $i => $document)
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
-                                {{ $document->type->label }}
-                            </td>
-                            <td>
-                                {{ $document->number }}
-                            </td>
-                            <td class="align-middle">
-                                <button wire:click="download('folders', {{$document->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <th>TVA</th>
+                        <td class="text-right">
+                            {{ moneyFormat($invoice->tax, 0, '') }}
+                        </td>
+                        <td>GNF</td>
+                    </tr>
+                @endif
+                <tr>
+                    <th>Total</th>
+                    <td class="text-right">
+                        <span class="text-nowrap">{{ moneyFormat($invoice->total, 0, '') }}</span>
+                    </td>
+                    <td>GNF</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
