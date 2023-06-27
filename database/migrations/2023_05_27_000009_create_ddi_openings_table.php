@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('folder_id');
             $table->string('dvt_number', 30)->unique();
             $table->date('dvt_obtained_date');
-            $table->string('ddi_number', 30)->unique();
+            $table->string('ddi_number', 30)->nullable();
             $table->date('ddi_obtained_date')->nullable();
             $table->string('attach_file_path')->nullable();
 
