@@ -14,12 +14,17 @@ class InvoiceTable extends DataTableComponent
 {
     protected $model = Folder::class;
     protected array $createButtonParams = [
-        'text'  => 'Nouvelle facture',
+        'title' => 'Nouvelle facture',
         'route' => 'invoices.create',
-        'roles' => 'Admin',
+        'permission' => 'create-invoice',
     ];
     public string|null $status = null;
     public int|null $customerId = null;
+
+    public function mount()
+    {
+        $this->authorize('view-invoice');
+    }
 
     public function columns(): array
     {
@@ -28,6 +33,8 @@ class InvoiceTable extends DataTableComponent
             LinkColumn::make("Numero de la facture")
                 ->title(fn($row) => $row->number)
                 ->location(fn($row) => route('invoices.show', $row))
+                ->sortable(),
+            Column::make("Numero du dossier", 'folder.number')
                 ->sortable(),
             Column::make("Sous-total", "subtotal")
                 ->sortable(),
@@ -46,6 +53,6 @@ class InvoiceTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Invoice::with('tva');
+        return Invoice::with('folder')->with('tva');
     }
 }

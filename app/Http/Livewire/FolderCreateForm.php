@@ -6,6 +6,7 @@ use App\Models\DocumentType;
 use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Document;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class FolderCreateForm extends Component
 {
+    use AuthorizesRequests;
     use LivewireAlert;
     use WithFileUploads;
 
@@ -56,6 +58,8 @@ class FolderCreateForm extends Component
 
     public function mount(Folder $folder)
     {
+        $this->authorize('create-folder');
+
         $this->folder = $folder;
         $this->containers = $this->documents = collect();
         $this->documentTypes = DocumentType::all()->pluck('label', 'id');

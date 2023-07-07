@@ -2,12 +2,14 @@
 
 namespace App\LivewireTables;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 
 abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataTableComponent
 {
+    use AuthorizesRequests;
     use LivewireAlert;
 
     protected array $createButtonParams = [];
@@ -261,6 +263,18 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
 
     //------------------------------------------------------------------------------------------------------------------
 
+    public function enableOrDisable($id, $column)
+    {
+        try {
+            $model = $this->model::findOrFail($id);
+            $model->$column = !$model->$column;
+            $model->save();
+            $this->alert('success', "Le changement d'état a été enregistré avec succès.");
+        } catch (\Exception $exception) {
+            $this->alert('error', "Erreur! .".$exception->getMessage());
+        }
+    }
+
     public function enable()
     {
         if ($this->model) {
@@ -319,7 +333,7 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
     {
         return LinkColumn::make($title)
             ->title(fn($row) => '<i class="fa fa-edit"></i>')
-            ->location(fn($row) => route($route, $row->$param))
+            ->location(fn($value) => dd($value))
             ->attributes(function($row) use($title) {
                 return [
                     'title' => __($title),

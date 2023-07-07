@@ -9,6 +9,7 @@ use App\Models\DeliveryNote;
 use App\Models\Exoneration;
 use App\Models\Folder;
 use App\Models\Transporter;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class FolderEditForm extends Component
 {
+    use AuthorizesRequests;
     use LivewireAlert;
     use WithFileUploads;
 
@@ -74,6 +76,8 @@ class FolderEditForm extends Component
 
     public function mount()
     {
+        $this->authorize('edit-folder');
+
         $this->products = $this->folder->products->pluck('designation', 'id')->toArray();
 
         $this->ddiOpening = $this->folder->ddiOpening;

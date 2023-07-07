@@ -1,15 +1,8 @@
-<div class="d-flex align-items-center mt-2">
-    @if(isset($roles) && Auth::user()->hasAnyRole($roles))
-        @if($value)
-            <span class="badge bg-gradient-success">{{__('messages.common.active')}}</span>
-        @else
-            <span class="badge bg-gradient-danger">{{ __('messages.common.de_active') }}</span>
-        @endif
-    @else
-        <label class="form-check form-switch form-switch-sm">
-            <input name="status" data-id="{{$row->id}}" class="form-check-input status" type="checkbox"
-                   value="1" {{ $row->status == 0 ? '' : 'checked'}} id="status{{$row->id}}">
-            <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-        </label>
-    @endif
+<div class="text-center">
+    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+        <input type="checkbox" value="1" class="custom-control-input" id="customSwitch{{$row->id}}"
+            {{ $value ? 'checked' : ''}} wire:click="enableOrDisable('{{$row->id}}', '{{$column}}')"
+        >
+        <label class="custom-control-label" for="customSwitch{{$row->id}}"></label>
+    </div>
 </div>

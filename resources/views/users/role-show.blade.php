@@ -48,6 +48,26 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <th>Gestion des dossiers</th>
+                        <td>
+                            <x-form.checkbox label="Voir un dossier" wire:model.defer="rolePermissions" value="view-folder" disabled></x-form.checkbox>
+                        </td>
+                        <td>
+                            <x-form.checkbox label="Ouvrir un dossier" wire:model.defer="rolePermissions" value="create-folder" disabled></x-form.checkbox>
+                        </td>
+                        <td>
+                            <x-form.checkbox label="Traiter tous le dossier" wire:model.defer="rolePermissions" value="edit-folder" disabled></x-form.checkbox>
+                            <x-form.checkbox label="Ajouter DDI" wire:model.defer="rolePermissions" value="add-ddi-opening" disabled></x-form.checkbox>
+                            <x-form.checkbox label="Ajouter Exonération" wire:model.defer="rolePermissions" value="add-exoneration" disabled></x-form.checkbox>
+                            <x-form.checkbox label="Ajouter Déclaration" wire:model.defer="rolePermissions" value="add-declaration" disabled></x-form.checkbox>
+                            <x-form.checkbox label="Ajouter Bon de livraison" wire:model.defer="rolePermissions" value="add-delivery-note" disabled></x-form.checkbox>
+                            <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" value="add-delivery-details" disabled></x-form.checkbox>
+                        </td>
+                        <td>
+                            <x-form.checkbox label="Supprimer un dossier" wire:model.defer="rolePermissions" value="delete-folder" disabled></x-form.checkbox>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

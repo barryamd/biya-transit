@@ -7,6 +7,8 @@ use App\Http\Livewire\FolderDetails;
 use App\Http\Livewire\FolderEditForm;
 use App\Http\Livewire\InvoiceDetails;
 use App\Http\Livewire\InvoiceForm;
+use App\Http\Livewire\RoleForm;
+use App\Http\Livewire\RoleShow;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,9 +35,17 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
+
     Route::view('users', 'users.index')->name('users.index');
+    Route::view('roles','users.index')->name('roles.index');
+    Route::get('roles/create', RoleForm::class)->name('roles.create');
+    Route::get('roles/{role}/edit', RoleForm::class)->name('roles.edit');
+    Route::get('roles/{role}/show', RoleShow::class)->name('roles.show');
+
     Route::view('customers','customers.index')->name('customers.index');
-    Route::view('document-types','document-types.index')->name('document-types.index');
+
+    Route::view('transporters','transporters.index')->name('transporters.index');
+
     Route::view('folders','folders.index')->name('folders.index');
     Route::get('folders/create', FolderCreateForm::class)->name('folders.create');
     Route::get('folders/{folder}/edit', FolderEditForm::class)->name('folders.edit');
@@ -43,9 +53,13 @@ Route::middleware([
     Route::view('pending-folders','folders.index')->name('pending-folders.index');
     Route::view('progress-folders','folders.index')->name('progress-folders.index');
     Route::view('closed-folders','folders.index')->name('closed-folders.index');
-    Route::view('transporters','transporters.index')->name('transporters.index');
+
+    Route::view('document-types','document-types.index')->name('document-types.index');
     Route::view('tvas','tvas.index')->name('tvas.index');
     Route::view('services','services.index')->name('services.index');
+
+    Route::view('expenses','expenses.index')->name('expenses.index');
+
     Route::view('invoices','invoices.index')->name('invoices.index');
     Route::get('invoices/create', InvoiceForm::class)->name('invoices.create');
     Route::get('invoices/invoice/edit', InvoiceForm::class)->name('invoices.edit');

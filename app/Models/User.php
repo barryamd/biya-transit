@@ -30,6 +30,7 @@ class User extends Authenticatable
         // 'name',
         'email',
         'password',
+        'first_name', 'last_name', 'birth_date', 'birth_place', 'phone_number', 'address'
     ];
 
     /**
@@ -97,5 +98,10 @@ class User extends Authenticatable
     public function customer(): HasOne
     {
         return $this->hasOne(Customer::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' .$this->last_name;
     }
 }

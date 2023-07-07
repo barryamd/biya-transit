@@ -14,7 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('active')->after('email')->default(true);
+            $table->string('first_name', 30);
+            $table->string('last_name', 30);
+            $table->date('birth_date')->nullable();
+            $table->string('birth_place', 30)->nullable();
+            $table->string('phone_number', 30)->nullable();
+            $table->string('address')->nullable();
+            $table->boolean('active')->default(true);
         });
     }
 
@@ -26,7 +32,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('type', 'active');
+            $table->dropColumn('active','first_name','last_name','birth_date','birth_place','phone_number','address');
         });
     }
 };

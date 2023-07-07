@@ -31,11 +31,13 @@
                 @if($item['type'] == 'group')
                     <li class="nav-header">{{ $item['title'] }}</li>
                     @foreach($item['children'] as $menu)
-                        @if($menu['type'] == 'collapse')
-                            <x-nav-collapse :menu="$menu"></x-nav-collapse>
-                        @elseif($menu['type'] == 'item')
-                            <x-nav-item :item="$menu"></x-nav-item>
-                        @endisset
+                        @can($menu['permission'])
+                            @if($menu['type'] == 'collapse')
+                                <x-nav-collapse :menu="$menu"></x-nav-collapse>
+                            @elseif($menu['type'] == 'item')
+                                <x-nav-item :item="$menu"></x-nav-item>
+                            @endisset
+                        @endcan
                     @endforeach
                     <hr style="width: 100%;text-align:left;margin: 5px;background-color: #ffffff;">
                 @elseif($item['type'] == 'collapse')

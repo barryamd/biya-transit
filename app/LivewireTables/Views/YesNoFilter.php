@@ -3,30 +3,30 @@
 namespace App\LivewireTables\Views;
 
 use Illuminate\Database\Eloquent\Builder;
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Filter;
 use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 
-class BooleanFilter extends SelectFilter
+class YesNoFilter extends SelectFilter
 {
     public static function make(string $name, string $key = null, ?array $attributes = []): Filter
     {
+        if ($key == null)
+            $key = str_lower($name);
         return parent::make($name, $key)
-            //->setFilterPillTitle('User Status')
             ->setFilterPillValues([
                 '1' => 'Active',
                 '0' => 'Inactive',
             ])
             ->options([
                 ''    => __('All'),
-                'yes' => __('Yes'),
-                'no'  => __('No'),
+                '1' => __('Yes'),
+                '0'  => __('No'),
             ])
-            ->filter(function(Builder $builder, string $value) {
+            ->filter(function(Builder $builder, string $value) use ($key) {
                 if ($value === '1') {
-                    $builder->where('active', true);
+                    $builder->where($key, true);
                 } elseif ($value === '0') {
-                    $builder->where('active', false);
+                    $builder->where($key, false);
                 }
             });
     }

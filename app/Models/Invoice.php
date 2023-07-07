@@ -24,6 +24,11 @@ class Invoice extends Model
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
     }
 
+    public function folder(): BelongsTo
+    {
+        return $this->belongsTo(Folder::class);
+    }
+
     public function tva(): BelongsTo
     {
         return $this->belongsTo(Tva::class);

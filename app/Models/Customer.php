@@ -13,12 +13,9 @@ class Customer extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = [
-        'user_id',
-        'nif',
-        'name',
-        'phone',
-    ];
+    protected $fillable = ['user_id', 'nif'];
+
+    public $timestamps = false;
 
     protected array $searchableFields = ['*'];
 

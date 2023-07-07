@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Views\Column\DateColumn;
+use App\LivewireTables\Views\Column\SwitchColumn;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -11,69 +12,84 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Customer;
+use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class CustomerTable extends DataTableComponent
 {
-    protected $model = Customer::class;
+    protected $model = User::class;
     protected array $createButtonParams = [
-        'text'  => 'Nouveau client',
+        'title' => 'Nouveau client',
         'modal' => 'customerFormModal',
-        'roles' => 'Admin',
+        'permission' => 'create-customer',
     ];
+    public User $user;
     public Customer $customer;
-    public string|null $email;
+    public string|null $nif;
+    public string $password = '', $password_confirmation = '';
 
     public function mount()
     {
-        $this->customer = new Customer();
+        $this->authorize('view-customer');
+        $this->user = new User();
+        $this->customer = new  Customer();
     }
 
     public function columns(): array
     {
         return [
-            Column::make("NIF", "nif")
+            Column::make("NIF", "customer.nif")
                 ->sortable()->searchable(),
-            Column::make("Nom", "name")
-                ->sortable(),
-            Column::make("Téléphone", "phone")
+            Column::make("Nom", "first_name")
+                ->format(fn($value, $row) => $row->full_name)
                 ->sortable()->searchable(),
-            Column::make("Email", "user.email")
-                ->sortable(),
+            Column::make("Téléphone", "phone_number")
+                ->sortable()->searchable(),
+            Column::make("Email", "email")
+                ->sortable()->searchable(),
+            SwitchColumn::make('Active')
+                ->sortable()
+                ->collapseOnMobile(),
             DateColumn::make("Date d'ajout", "created_at")
-                ->sortable(),
+                ->sortable()
+                ->collapseOnTablet(),
             Column::make('Actions', 'id')
                 ->view('customers.action-buttons')
+                ->collapseOnMobile()
+                ->excludeFromColumnSelect()
         ];
     }
 
     public function builder(): Builder
     {
-        return Customer::with('user');
+        return User::with('customer')->whereHas('customer');
     }
 
     protected function rules(): array
     {
         return [
-            'customer.nif' => [
+            'nif' => [
                 'required', 'string',
                 Rule::unique('customers', 'nif')->ignore($this->customer->id)
             ],
-            'customer.name' => ['required', 'string'],
-            'customer.phone'     => [
+            'user.first_name' => ['required', 'string', 'max:255'],
+            'user.last_name'  => ['required', 'string', 'max:255'],
+            'user.phone_number'     => [
                 'required', 'string',
-                Rule::unique('customers', 'phone')->ignore($this->customer->id)
+                Rule::unique('users', 'phone_number')->ignore($this->user->id)
             ],
-            'email' => [
-                $this->isEditMode ? 'nullable' : 'required', 'string', 'email',
-                Rule::unique('users', 'email')->ignore($this->customer->user_id)
+            'user.email' => [
+                'required', 'string', 'email', 'max:255',
+                Rule::unique('users', 'email')->ignore($this->user->id)
             ],
+            'user.address'      => ['nullable', 'string', 'max:255'],
         ];
     }
 
     public function openEditModal(int $id, $modalId = null)
     {
         try {
-            $this->customer = $this->model::findOrFail($id);
+            $this->user = $this->model::findOrFail($id);
+            $this->nif = $this->user->customer->nif;
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-customerFormModal');
         } catch (\Exception $exception) {
@@ -86,21 +102,20 @@ class CustomerTable extends DataTableComponent
         $this->validate();
 
         try {
-            if ($this->isEditMode) {
-                $this->customer->save();
-            } else {
-                $user = DB::transaction(function () {
-                    return tap(User::create([
-                        //'name' => $this->username,
-                        'email' => $this->email,
-                        'password' => Hash::make($this->customer->nif),
-                    ]), function (User $user) {
-                        $user->assignRole('customer');
-                        $this->customer->user_id = $user->id;
-                        $this->customer->saveOrFail();
-                    });
-                });
-                $user->password = $this->customer->nif;
+            if (!$this->isEditMode)
+                $this->user->password = Hash::make($this->password);
+            DB::transaction(function () {
+                $this->user->saveOrFail();
+                if ($this->isEditMode) {
+                    Customer::query()->update(['user_id' => $this->user->id, 'nif' => $this->nif]);
+                } else {
+                    $this->user->assignRole('Customer');
+                    Customer::query()->create(['user_id' => $this->user->id, 'nif' => $this->nif]);
+                }
+            });
+
+            if (!$this->isEditMode) {
+                $this->user->password = $this->password;
                 //event(new Registered($user));
             }
 
@@ -114,9 +129,10 @@ class CustomerTable extends DataTableComponent
     public function closeModal($modalId = null)
     {
         $this->dispatchBrowserEvent('close-customerFormModal');
-        $this->emitSelf('refresh');
-        $this->customer = new Customer();
         $this->isEditMode = false;
+        $this->user = new User();
+        $this->password = '';
+        $this->password_confirmation = '';
     }
 
     public function customView(): string

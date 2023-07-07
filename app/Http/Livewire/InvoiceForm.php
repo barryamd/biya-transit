@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Tva;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class InvoiceForm extends Component
 {
+    use AuthorizesRequests;
     use LivewireAlert;
     use WithFileUploads;
 
@@ -37,6 +39,9 @@ class InvoiceForm extends Component
 
     public function mount(invoice $invoice)
     {
+        $action = $invoice->id ? 'edit' : 'create';
+        $this->authorize($action.'-invoice');
+
         $this->invoice = $invoice;
         if ($invoice->id) {
             $this->amounts = $invoice->amounts;

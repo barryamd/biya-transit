@@ -14,11 +14,16 @@ class TvaTable extends DataTableComponent
 
     protected $model = Tva::class;
     protected array $createButtonParams = [
-        'text'  => 'Nouveau tva',
+        'title' => 'Nouveau tva',
         'modal' => 'tvaFormModal',
-        'roles' => 'Admin',
+        'permission' => 'edit-settings',
     ];
     public string $rate = '';
+
+    public function mount()
+    {
+        $this->authorize('edit-settings');
+    }
 
     public function columns(): array
     {

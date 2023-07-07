@@ -14,15 +14,17 @@ class FolderTable extends DataTableComponent
 {
     protected $model = Folder::class;
     protected array $createButtonParams = [
-        'text'  => 'Nouveau dossier',
+        'title' => 'Nouveau dossier',
         'route' => 'folders.create',
-        'roles' => 'admin',
+        'permission' => 'create-folder',
     ];
     public string|null $status = null;
     public int|null $customerId = null;
 
     public function mount()
     {
+        $this->authorize('view-folder');
+
         $user = Auth::user();
         if ($user->hasRole('Customer')) {
             $this->customerId = $user->customer ? $user->customer->id : null;
@@ -50,7 +52,7 @@ class FolderTable extends DataTableComponent
             Column::make("Client", "customer.name")
                 ->sortable(),
             Column::make('Actions', 'id')
-                ->view('folders.action-buttons')->hideIf(Auth::user()->hasRole('customer'))
+                ->view('folders.action-buttons')
         ];
     }
 

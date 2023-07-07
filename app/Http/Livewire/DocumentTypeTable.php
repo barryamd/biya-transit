@@ -13,11 +13,16 @@ class DocumentTypeTable extends DataTableComponent
 
     protected $model = DocumentType::class;
     protected array $createButtonParams = [
-        'text'  => 'Nouveau type de document',
+        'title'  => 'Nouveau type de document',
         'modal' => 'documentTypeFormModal',
-        'roles' => 'Admin',
+        'permission' => 'edit-settings',
     ];
     public string $label = '';
+
+    public function mount()
+    {
+        $this->authorize('edit-settings');
+    }
 
     public function columns(): array
     {

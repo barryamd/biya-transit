@@ -13,15 +13,17 @@ class TransporterTable extends DataTableComponent
     protected $model = Transporter::class;
 
     protected array $createButtonParams = [
-        'text'  => 'Nouveau transporteur',
+        'title' => 'Nouveau transporteur',
         'modal' => 'transporterFormModal',
-        'roles' => 'Admin',
+        'permission' => 'create-transporter',
     ];
     public Transporter $transporter;
     public string|null $email;
 
     public function mount()
     {
+        $this->authorize('view-transporter');
+
         $this->transporter = new Transporter();
     }
 
