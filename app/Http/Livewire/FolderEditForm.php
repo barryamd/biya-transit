@@ -135,6 +135,7 @@ class FolderEditForm extends Component
             if ($this->ddiFile) {
                 $this->ddiOpening->addFile($this->ddiFile);
             }
+            $this->folder->update(['status' => 'En cours']);
 
             //$this->alert('success', "La facture a été enregistré avec succès.");
             $this->confirm("Utilisez-vous des exonerations ?", [

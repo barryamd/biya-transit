@@ -26,8 +26,8 @@ class FolderTable extends DataTableComponent
         $this->authorize('view-folder');
 
         $user = Auth::user();
-        if ($user->hasRole('Customer')) {
-            $this->customerId = $user->customer ? $user->customer->id : null;
+        if ($user->customer) {
+            $this->customerId = $user->customer->id;
         }
     }
 
@@ -49,8 +49,8 @@ class FolderTable extends DataTableComponent
                 ->sortable()->hideIf((bool)$this->status),
             DateColumn::make("Date d'ouverture", "created_at")
                 ->sortable(),
-            Column::make("Client", "customer.name")
-                ->sortable(),
+            Column::make("Client", "customer.nif")
+                ->format(fn($value, $row) => $row->customer->user->full_name),
             Column::make('Actions', 'id')
                 ->view('folders.action-buttons')
         ];
@@ -58,7 +58,7 @@ class FolderTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Folder::query()
+        return Folder::query()->with('customer.user')->select('folders.*')
             ->when($this->status, fn(Builder $query, $status) => $query->where('status', '=', $status))
             ->when($this->customerId, fn(Builder $query, $customerId) => $query->where('customer_id', '=', $customerId));
     }

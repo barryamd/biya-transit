@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Actions\Fortify\PasswordValidationRules;
 use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Views\Column\DateColumn;
 use App\LivewireTables\Views\Column\SwitchColumn;
@@ -16,6 +17,8 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class CustomerTable extends DataTableComponent
 {
+    use PasswordValidationRules;
+
     protected $model = User::class;
     protected array $createButtonParams = [
         'title' => 'Nouveau client',
@@ -39,9 +42,11 @@ class CustomerTable extends DataTableComponent
         return [
             Column::make("NIF", "customer.nif")
                 ->sortable()->searchable(),
-            Column::make("Nom", "first_name")
+            Column::make("Prenoms et Nom", "first_name")
                 ->format(fn($value, $row) => $row->full_name)
                 ->sortable()->searchable(),
+            Column::make("", "last_name")
+                ->hideIf(true)->searchable(),
             Column::make("Téléphone", "phone_number")
                 ->sortable()->searchable(),
             Column::make("Email", "email")
@@ -82,6 +87,7 @@ class CustomerTable extends DataTableComponent
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
             'user.address'      => ['nullable', 'string', 'max:255'],
+            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules()
         ];
     }
 
@@ -89,7 +95,8 @@ class CustomerTable extends DataTableComponent
     {
         try {
             $this->user = $this->model::findOrFail($id);
-            $this->nif = $this->user->customer->nif;
+            $this->customer = $this->user->customer;
+            $this->nif = $this->customer->nif;
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-customerFormModal');
         } catch (\Exception $exception) {
@@ -109,7 +116,7 @@ class CustomerTable extends DataTableComponent
                 if ($this->isEditMode) {
                     Customer::query()->update(['user_id' => $this->user->id, 'nif' => $this->nif]);
                 } else {
-                    $this->user->assignRole('Customer');
+                    $this->user->givePermissionTo(['create-folder', 'view-folder']);
                     Customer::query()->create(['user_id' => $this->user->id, 'nif' => $this->nif]);
                 }
             });

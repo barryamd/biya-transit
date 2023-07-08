@@ -6,6 +6,7 @@ use App\Models\DocumentType;
 use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -65,8 +66,9 @@ class FolderCreateForm extends Component
         $this->documentTypes = DocumentType::all()->pluck('label', 'id');
 
         $user = Auth::user();
-        if ($user->hasRole('Customer'))
+        if ($user->customer) {
             $this->folder->customer_id = $user->customer->id;
+        }
     }
 
     public function addNewProduct()

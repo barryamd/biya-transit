@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Transporter;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -101,25 +102,25 @@ class AjaxRequestController extends Controller
 
     public function getCustomers(Request $request): JsonResponse
     {
-        $query = Customer::query()->select('id', 'nif', 'name')->limit(5)->orderby('name');
+        $query = User::with('customer')->select('id', 'first_name', 'last_name')
+            ->limit(5)->orderby('first_name')->orderBy('last_name');
 
         $search = $request->search;
         if ($search != '') {
-            $query->where(function($query) use ($search) {
-                $query->whereNotNull('name')->where('name', 'LIKE', $search . '%');
-            })->orWhere(function($query) use ($search) {
+            $query->whereHas('customer', function($query) use ($search) {
                 $query->whereNotNull('nif')->where('nif', 'LIKE', $search . '%');
-            })->orWhere(function($query) use ($search) {
-                $query->whereNotNull('phone')->where('phone', 'LIKE', $search . '%');
-            });
+            })
+                ->orWhere('first_name', 'LIKE', $search . '%')
+                ->orWhere('last_name', 'LIKE', $search . '%');
+                //->orWhere('phone', 'LIKE', '%' . $search . '%');
         }
         $records = $query->get();
 
         $response = array();
         foreach($records as $record){
             $response[] = array(
-                "id" => $record->id,
-                "text" => $record->nif.'-'.$record->name
+                "id" => $record->customer->id,
+                "text" => $record->full_name
             );
         }
         return response()->json($response);

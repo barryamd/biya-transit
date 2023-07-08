@@ -9,6 +9,7 @@ use App\Http\Livewire\InvoiceDetails;
 use App\Http\Livewire\InvoiceForm;
 use App\Http\Livewire\RoleForm;
 use App\Http\Livewire\RoleShow;
+use App\Models\Folder;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,4 +70,8 @@ Route::middleware([
     Route::post('/getProducts', [AjaxRequestController::class, 'getProducts'])->name('getProducts');
     Route::post('/getTransporters', [AjaxRequestController::class, 'getTransporters'])->name('getTransporters');
     Route::post('/getFolders', [AjaxRequestController::class, 'getFolders'])->name('getFolders');
+
+    Route::get('invoice/{invoice}/print', function (Folder $folder) {
+        return view('invoices.print', compact('folder'));
+    })->name('invoice.print');
 });
