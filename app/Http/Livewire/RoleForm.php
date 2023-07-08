@@ -67,7 +67,7 @@ class RoleForm extends Component
             'customer'    => 'Gestion des clients',
             'transporter' => 'Gestion des transporteurs',
             'expense'     => 'Gestion des dépenses',
-            'invoice'     => 'Gestion des clients',
+            'invoice'     => 'Gestion des factures',
             'folder'      => 'Gestion des dossiers',
             'pending-folder'  => 'Gestion des dossiers',
             'progress-folder' => 'Gestion des dossiers',
