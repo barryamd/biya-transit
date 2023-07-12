@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AjaxRequestController;
+use App\Http\Controllers\PrintController;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\FolderCreateForm;
 use App\Http\Livewire\FolderDetails;
@@ -71,7 +72,5 @@ Route::middleware([
     Route::post('/getTransporters', [AjaxRequestController::class, 'getTransporters'])->name('getTransporters');
     Route::post('/getFolders', [AjaxRequestController::class, 'getFolders'])->name('getFolders');
 
-    Route::get('invoice/{invoice}/print', function (Folder $folder) {
-        return view('invoices.print', compact('folder'));
-    })->name('invoice.print');
+    Route::get('invoice/{folder}/print', [PrintController::class, 'generateInvoice'])->name('invoice.print');
 });

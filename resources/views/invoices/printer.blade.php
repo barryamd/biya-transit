@@ -1,6 +1,6 @@
-@section('title', 'Details de la facture: '.$invoice->number)
-<x-show-section>
+@extends('layouts.print')
 
+@section('content')
     <div class="row">
         <div class="col-12">
             <div><span class="float-right">Conakry le {{ $folder->created_at->format('d/m/Y') }}</span></div>
@@ -95,15 +95,8 @@
 
     <hr class="pt-0 mt-0 text-gray">
 
-    <div class="row">
-        <div class="col-12">
-            <a href="{{ route('invoice.print', $invoice->folder) }}" class="btn btn-default">
-                <i class="fas fa-print"></i> Imprimer
-            </a>
-        </div>
+    <div class="row pt-3">
+        <div class="col-6"><b>DOCUMENTS JOINS</b><br>Copie du dossier</div>
+        <div class="col-6"><b>DIRECTEUR GENERALE</b></div>
     </div>
-
-    <x-slot name="footer">
-        <x-cancel-button class="float-left">{{__('Back')}}</x-cancel-button>
-    </x-slot>
-</x-show-section>
+@endsection

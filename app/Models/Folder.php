@@ -83,4 +83,9 @@ class Folder extends Model
     {
         return $this->hasOne(Delivery::class);
     }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }

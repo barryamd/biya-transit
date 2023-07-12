@@ -17,7 +17,7 @@ class ServiceTable extends DataTableComponent
         'modal' => 'serviceFormModal',
         'permission' => 'edit-settings',
     ];
-    public string $name = '';
+    public string $name = '', $description = '';
 
     public function mount()
     {
@@ -29,6 +29,7 @@ class ServiceTable extends DataTableComponent
         return [
             Column::make("Nom", "name")
                 ->sortable()->searchable(),
+            Column::make("Description", "description"),
             Column::make('Actions', 'id')
                 ->view('services.action-buttons')
         ];
@@ -38,6 +39,7 @@ class ServiceTable extends DataTableComponent
     {
         return [
             'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
         ];
     }
 

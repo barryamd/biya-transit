@@ -32,19 +32,8 @@ class RoleShow extends Component
         $this->role = $role->name;
         $this->rolePermissions = $role->permissions()->pluck('id')->toArray();
 
-        $permissions = Permission::all()->filter(function ($item) {
-            if (!Str::contains($item->name, ['folder', 'add'])){
-                return $item;
-            }
-            return null;
-        })->pluck('name', 'id')->toArray();
-
-        $tables = array_map(function ($item) {
-            return Str::after($item,'-');
-        }, $permissions);
-
+        $permissions = Permission::all()->pluck('name', 'id')->toArray();
         $this->permissions = array_flip($permissions);
-        $this->tables = array_unique($tables);
         $this->groupPermissions = [
             'dashboard'   => 'Tableau de bord',
             'user'        => 'Gestion des utilisateurs',
@@ -55,10 +44,8 @@ class RoleShow extends Component
             'expense'     => 'Gestion des dépenses',
             'invoice'     => 'Gestion des factures',
             'folder'      => 'Gestion des dossiers',
-            'pending-folder'  => 'Gestion des dossiers',
-            'progress-folder' => 'Gestion des dossiers',
-            'closed-folder'   => 'Gestion des dossiers',
         ];
+        $this->tables = ['user', 'role', 'customer', 'transporter', 'expense', 'invoice'];
     }
 
     public function render()

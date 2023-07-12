@@ -59,18 +59,17 @@
                         <tr>
                             <th>Gestion des dossiers</th>
                             <td>
-                                <x-form.checkbox label="Voir un dossier" wire:model.defer="rolePermissions" value="view-folder"></x-form.checkbox>
+                                <x-form.checkbox label="Voir un dossier" wire:model.defer="rolePermissions" :value="$permissions['view-folder']"></x-form.checkbox>
                             </td>
                             <td>
-                                <x-form.checkbox label="Ouvrir un dossier" wire:model.defer="rolePermissions" value="create-folder"></x-form.checkbox>
+                                <x-form.checkbox label="Créer un dossier" wire:model.defer="rolePermissions" :value="$permissions['create-folder']"></x-form.checkbox>
                             </td>
                             <td>
-                                <x-form.checkbox label="Traiter tous le dossier" wire:model.defer="rolePermissions" value="edit-folder"></x-form.checkbox>
-                                <x-form.checkbox label="Ajouter DDI" wire:model.defer="rolePermissions" value="add-ddi-opening"></x-form.checkbox>
-                                <x-form.checkbox label="Ajouter Exonération" wire:model.defer="rolePermissions" value="add-exoneration"></x-form.checkbox>
-                                <x-form.checkbox label="Ajouter Déclaration" wire:model.defer="rolePermissions" value="add-declaration"></x-form.checkbox>
-                                <x-form.checkbox label="Ajouter Bon de livraison" wire:model.defer="rolePermissions" value="add-delivery-note"></x-form.checkbox>
-                                <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" value="add-delivery-details"></x-form.checkbox>
+                                <x-form.checkbox label="Ajouter DDI" wire:model.defer="rolePermissions" :value="$permissions['add-ddi-opening']"></x-form.checkbox>
+                                <x-form.checkbox label="Ajouter Exonération" wire:model.defer="rolePermissions" :value="$permissions['add-exoneration']"></x-form.checkbox>
+                                <x-form.checkbox label="Ajouter Déclaration" wire:model.defer="rolePermissions" :value="$permissions['add-declaration']"></x-form.checkbox>
+                                <x-form.checkbox label="Ajouter Bon de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-note']"></x-form.checkbox>
+                                <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-details']"></x-form.checkbox>
                             </td>
                             <td>
                                 <x-form.checkbox label="Supprimer un dossier" wire:model.defer="rolePermissions" value="delete-folder"></x-form.checkbox>

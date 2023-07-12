@@ -25,8 +25,8 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 5%">#</th>
-                            <th style="width: 40%;">Service</th>
-                            <th style="width: 50%;">Prix</th>
+                            <th style="width: 60%;">Service</th>
+                            <th style="width: 30%;">Prix</th>
                             <th class="text-center" style="width: 5%">
                                 <button wire:click.prevent="addAmount" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                     <i class="fas fa-plus"></i>
@@ -47,7 +47,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" wire:model.lazy="amounts.{{$i}}.amount" wire:change="setTotal" class="form-control px-1" required>
+                                    <input type="text" wire:model.lazy="amounts.{{$i}}.amount" wire:change="setTotal" class="form-control px-1 text-right" required>
                                 </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                                     <button wire:click.prevent="removeAmount('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">

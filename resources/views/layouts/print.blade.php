@@ -24,69 +24,31 @@
         <!-- Header -->
         <header class="row" style="border-bottom: 3px solid black">
             <div class="col-3 p-4" style="height: 165px">
-                <img src="{{ asset('uploads/'.$shop->logo) }}" height="100%">
+                <img src="{{ asset('uploads/'.$setting->logo) }}" height="100%">
             </div>
             <div class="col-7 pt-2" style="height: 140px">
-                <h2 class="text-center text-bold">{{ $shop->name }}</h2>
+                <h2 class="text-center text-bold">{{ $setting->name }}</h2>
                 <address class="text-center text-lg">
-                    {{ $shop->address }}<br>
-                    <b>Email:</b> {{ $shop->email }}<br/>
-                    <b>Contacts:</b> {{ $shop->phone1 }}, {{ $shop->phone1 }}<br/>
+                    {{ $setting->address }}<br>
+                    <b>Email:</b> {{ $setting->email }}<br/>
+                    <b>Contacts:</b> {{ $setting->phone1 }}, {{ $setting->phone1 }}<br/>
                 </address>
             </div>
-            @isset($reparation)
             <div class="col-2 pt-4" style="height: 140px">
-                {!! QrCode::generate(isset($sale) ? $sale->number : $reparation->repair_code) !!}
-                {{--<div class="text-center text-bold">{{ $shop->phone1 }}</div>
-                <div class="text-center text-bold">{{ $shop->phone2 }}</div>
-                <div class="text-center text-bold">{{ $shop->phone3 }}</div>--}}
+                {!! QrCode::generate($folder->number) !!}
             </div>
-            @endisset
         </header>
         <br>
 
         <!-- Main content -->
         <section class="invoice">
-            @isset($slot)
-                {{ $slot }}
-            @else
-                @yield('content')
-            @endisset
+            @yield('content')
         </section>
 
-        @if((!isset($footer) || $footer) && isset($shop))
         <!-- Footer -->
-        <footer class="main-footer">
-            {{--
-            <p style="margin-left:15px;">
-                RCCM/GC-KAL/023.754/2008 -SA. 50 000.000 FG -RCCM/GC-KAL/022.103A/2008 - TVA : {{ $shop->vat_no }} NIF: {{ $shop->nif }}
-            </p>
-            <div class="table-responsive">
-                <table class="table">
-                    <table class="table">
-                        <tr>
-                            <td>Code Banque</td>
-                            <td>Code Agence</td>
-                            <td>N° compte</td>
-                            <td>Cle</td>
-                        </tr>
-                        <tr>
-                            <td>{{ $shop->bank_code }}</td>
-                            <td>{{ $shop->agenbcy_code }}</td>
-                            <td>{{ $shop->account_number }}</td>
-                            <td>{{ $shop->cle }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>IBAN : {{ $shop->iban }}	BIC : {{ $shop->bic }}</p>
-                            </td>
-                        </tr>
-                    </table>
-                </table>
-            </div>
-            --}}
+        <footer class="main-footer text-center">
+            Siège Boulevard du Commerce en face du Siège ORANGE GUINEE, Quartier Almamya Commune de Ratoma
         </footer>
-        @endif
     </div>
 
     <!-- Scripts -------------------------------------------------------------------------------------------------->

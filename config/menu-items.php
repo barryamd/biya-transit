@@ -1,13 +1,13 @@
 <?php
 
 return [
-    [
-        'title' => 'Dashboard',
-        'type'  => 'item',
-        'route' => 'dashboard',
-        'icon'  => 'tachometer-alt',
-        'permission' => 'dashboard',
-    ],
+//    [
+//        'title' => 'Dashboard',
+//        'type'  => 'item',
+//        'route' => 'dashboard',
+//        'icon'  => 'tachometer-alt',
+//        'permission' => 'dashboard',
+//    ],
     [
         'title' => 'Clients',
         'type'  => 'item',

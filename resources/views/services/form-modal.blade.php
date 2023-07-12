@@ -8,5 +8,6 @@
     </x-slot>
     <x-slot name="content">
         <x-form.input label="Nom" wire:model.defer="name" required></x-form.input>
+        <x-form.textarea label="Description" wire:model.defer="description"></x-form.textarea>
     </x-slot>
 </x-form-modal>
