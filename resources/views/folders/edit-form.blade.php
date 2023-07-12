@@ -72,7 +72,7 @@
                 @can('add-exoneration')
                     <div class="row">
                         <div class="col-md-6">
-                            <x-form.input label="Numero d'exonération" wire:model.defer="exoneration.number" required></x-form.input>
+                            <x-form.input label="Numéro d'exonération" wire:model.defer="exoneration.number" required></x-form.input>
                         </div>
                         <div class="col-md-6">
                             <x-form.date label="Date d'exonération" wire:model.defer="exoneration.date" required></x-form.date>
@@ -104,7 +104,7 @@
                 @can('add-declaration')
                     <div class="row">
                         <div class="col-md-4">
-                            <x-form.input label="Numero de declaration" wire:model.defer="declaration.number" required></x-form.input>
+                            <x-form.input label="Numéro de declaration" wire:model.defer="declaration.number" required></x-form.input>
                         </div>
                         <div class="col-md-4">
                             <x-form.date label="Date de declaration" wire:model.defer="declaration.date" required></x-form.date>
@@ -125,7 +125,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numero bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin" required></x-form.input>
+                            <x-form.input label="Numéro bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin" required></x-form.input>
                         </div>
                         <div class="col-md-4">
                             <x-form.date label="Date de liquidation" wire:model.defer="declaration.liquidation_date" required></x-form.date>
@@ -138,7 +138,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numero de la quittance" wire:model.defer="declaration.receipt_number" required></x-form.input>
+                            <x-form.input label="Numéro de la quittance" wire:model.defer="declaration.receipt_number" required></x-form.input>
                         </div>
                         <div class="col-md-4">
                             <x-form.date label="Date de la quittance" wire:model.defer="declaration.receipt_date" required></x-form.date>
@@ -151,7 +151,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numero du bon" wire:model.defer="declaration.bon_number" required></x-form.input>
+                            <x-form.input label="Numéro du bon" wire:model.defer="declaration.bon_number" required></x-form.input>
                         </div>
                         <div class="col-md-4">
                             <x-form.date label="Date du bon" wire:model.defer="declaration.bon_date" required></x-form.date>
@@ -247,7 +247,7 @@
                         @endif
                     </div>
                     <button class="btn btn-primary nextBtn float-right " wire:click="submitDeliveryDetailsStep"
-                            type="button">Sauvegarder et Fermer le dossier</button>
+                            type="button">Sauvegarder</button>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
                 @endcan

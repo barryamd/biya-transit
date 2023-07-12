@@ -70,6 +70,7 @@
                                 <x-form.checkbox label="Ajouter Déclaration" wire:model.defer="rolePermissions" :value="$permissions['add-declaration']"></x-form.checkbox>
                                 <x-form.checkbox label="Ajouter Bon de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-note']"></x-form.checkbox>
                                 <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-details']"></x-form.checkbox>
+                                <x-form.checkbox label="Fermer un dossier" wire:model.defer="rolePermissions" :value="$permissions['close-folder']"></x-form.checkbox>
                             </td>
                             <td>
                                 <x-form.checkbox label="Supprimer un dossier" wire:model.defer="rolePermissions" value="delete-folder"></x-form.checkbox>

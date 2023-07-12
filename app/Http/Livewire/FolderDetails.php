@@ -5,10 +5,13 @@ namespace App\Http\Livewire;
 use App\Models\Document;
 use App\Models\Folder;
 use Illuminate\Support\Collection;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 
 class FolderDetails extends Component
 {
+    use LivewireAlert;
+
     public Folder $folder;
     public Collection $documents;
 
@@ -37,7 +40,13 @@ class FolderDetails extends Component
                 abort(404, 'File not found');
             }
         }
-
         return null;
+    }
+
+    public function closeFolder()
+    {
+        $this->folder->update(['status' => 'Fermé']);
+        $this->flash('success', "Le dossier a été fermé avec succès.");
+        redirect()->route('closed-folders.index');
     }
 }

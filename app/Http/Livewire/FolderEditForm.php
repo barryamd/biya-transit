@@ -249,10 +249,8 @@ class FolderEditForm extends Component
             if ($this->deliveryFile) {
                 $this->delivery->addFile($this->deliveryFile);
             }
-            $this->folder->update(['status' => 'Fermé']);
 
-            $this->flash('success', "Les détails de la livraison ont été enregistrés avec succès.");
-            redirect()->route('closed-folders.index');
+            $this->alert('success', "Les détails de la livraison ont été enregistrés avec succès.");
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -280,5 +278,24 @@ class FolderEditForm extends Component
     public function render()
     {
         return view('folders.edit-form');
+    }
+
+    public function download($collection, $modelId)
+    {
+        if ($collection == 'folders') {
+            $model = $this->documents->where('id', $modelId)->first();
+        }
+
+        if (isset($model)) {
+            $filePath = public_path('uploads/'.$model->attach_file_path);
+
+            if (file_exists($filePath)) {
+                return response()->download($filePath);
+            } else {
+                abort(404, 'File not found');
+            }
+        }
+
+        return null;
     }
 }

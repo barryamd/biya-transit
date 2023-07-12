@@ -45,6 +45,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'add-declaration']);
         Permission::create(['name' => 'add-delivery-note']);
         Permission::create(['name' => 'add-delivery-details']);
+        Permission::create(['name' => 'close-folder']);
         Permission::create(['name' => 'edit-settings']);
 /*
         Permission::create(['name' => 'edit articles']);

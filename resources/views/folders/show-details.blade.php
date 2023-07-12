@@ -7,11 +7,11 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <tbody>
                     <tr>
-                        <th style="width: 40%">Numero du dossier</th>
+                        <th style="width: 40%">Numéro du dossier</th>
                         <td>{{ $folder->number }}</td>
                     </tr>
                     <tr>
-                        <th>Numero CNT</th>
+                        <th>Numéro CNT</th>
                         <td>{{ $folder->num_cnt }}</td>
                     </tr>
                     <tr>
@@ -44,7 +44,7 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 15%;">Numero du conteneur</th>
+                        <th style="width: 15%;">Numéro du conteneur</th>
                         <th style="width: 10%;">Poids</th>
                         <th style="width: 15%;">Nombre de colis</th>
                         <th style="width: 10%">Date d'arrivé</th>
@@ -83,7 +83,7 @@
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
                         <th style="width: 30%;">Type de document</th>
-                        <th style="width: 35%;">Numero du document</th>
+                        <th style="width: 35%;">Numéro du document</th>
                         <th style="width: 30%;">Fichier jointe</th>
                     </tr>
                     </thead>
@@ -110,5 +110,10 @@
 
     <x-slot name="footer">
         <x-cancel-button class="float-left">{{__('Back')}}</x-cancel-button>
+        @if($folder->status == 'En cours')
+        @can('close-folder')
+            <button wire:click="closeFolder" class="btn btn-success float-right">Fermer le dossier</button>
+        @endcan
+        @endif
     </x-slot>
 </x-show-section>
