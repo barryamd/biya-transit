@@ -17,7 +17,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-class FolderCreateForm extends Component
+class FolderForm extends Component
 {
     use AuthorizesRequests;
     use LivewireAlert;
@@ -26,14 +26,20 @@ class FolderCreateForm extends Component
     public Folder $folder;
     public Collection $containers;
     public Collection $documents;
-    public array $products = [];
+    public Collection|array $products = [], $oldProducts = [];
     public array|string $documentsFiles = [];
     public string $productDesignation = '';
     public Collection|array $documentTypes = [];
 
+    protected $messages = [
+        'containers' => 'Il faut au moins un conteneur',
+        'documents' => 'Il faut au moins un document',
+    ];
+
     protected function rules() {
         return [
             'folder.customer_id' => 'nullable',
+            'folder.type'        => 'required',
             'folder.num_cnt'     => [
                 'required', 'string',
                 Rule::unique('folders', 'num_cnt')
@@ -42,41 +48,50 @@ class FolderCreateForm extends Component
             'folder.harbor'      => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
             'products'           => ['required'],
-            'documents'          => ['nullable'],
 
+            'containers'                  => 'required',
             'containers.*.folder_id'      => 'nullable',
             'containers.*.number'         => ['required', 'string'],
             'containers.*.weight'         => ['required', 'string'],
             'containers.*.package_number' => ['required', 'string'],
             'containers.*.arrival_date'   => ['required', 'date'],
 
+            'documents'             => 'required',
             'documents.*.folder_id' => 'nullable',
             'documents.*.type_id'   => 'required',
-            'documents.*.number'    => ['required','string', Rule::unique('documents', 'number')],
+            'documents.*.number'    => ['required','string', Rule::unique('documents', 'number')->ignore($this->folder->id)],
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
 
     public function mount(Folder $folder)
     {
-        $this->authorize('create-folder');
+        $this->authorize(($folder->id ? 'edit' : 'create').'-folder');
 
         $this->folder = $folder;
-        $this->containers = $this->documents = collect();
-        $this->documentTypes = DocumentType::all()->pluck('label', 'id');
+        if ($this->folder->id) {
+            $this->containers = $this->folder->containers;
+            $this->documents = $this->folder->documents;
 
-        $user = Auth::user();
-        if ($user->customer) {
-            $this->folder->customer_id = $user->customer->id;
+            $this->oldProducts = $this->folder->products->pluck('designation', 'id')->toArray();
+        } else {
+            $this->containers = collect();
+            $this->documents = collect();
+
+            $user = Auth::user();
+            if ($user->customer) {
+                $this->folder->customer_id = $user->customer->id;
+            }
         }
+
+        $this->documentTypes = DocumentType::all()->pluck('label', 'id');
     }
 
     public function addNewProduct()
     {
         $this->validate([
             'productDesignation' => [
-                'required', 'string',
-                Rule::unique('products', 'designation')
+                'required', 'string', Rule::unique('products', 'designation')
             ]
         ]);
 
@@ -85,7 +100,7 @@ class FolderCreateForm extends Component
                 'designation' => $this->productDesignation
             ]);
             $this->closeModal();
-            $this->alert('success', "Le produit a été enregistré avec succès.");
+            //$this->alert('success', "Le produit a été enregistré avec succès.");
             $this->emit('newProductAdded', [$product->id, $product->designation]);
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
@@ -137,13 +152,17 @@ class FolderCreateForm extends Component
             $this->folder->products()->sync($this->products);
             $this->folder->containers()->createMany($this->containers);
 
-            //$this->folder->purchaseDocuments()->createMany($this->documents);
-            //$documents = PurchaseDocument::query()->where('folder_id', $this->folder->id)->get();
             foreach ($this->documents as $index => $documentInputs) {
                 $documentInputs['folder_id'] = $this->folder->id;
-                $document = new Document($documentInputs);
-                $document->save();
-                $document->addFile($this->documentsFiles[$index]);
+                if (array_key_exists('id', $documentInputs)) {
+                    $document = $this->folder->documents->where('id', $documentInputs['id'])->first();
+                    $document->update($documentInputs);
+                } else {
+                    $document = Document::query()->create($documentInputs);
+                }
+                if (array_key_exists($index, $this->documentFiles)) {
+                    $document->addFile($this->documentFiles[$index]);
+                }
             }
 
             DB::commit();
@@ -163,6 +182,6 @@ class FolderCreateForm extends Component
 
     public function render()
     {
-        return view('folders.create-form');
+        return view('folders.form');
     }
 }

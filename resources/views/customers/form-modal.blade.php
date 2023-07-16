@@ -18,6 +18,9 @@
                 <x-form.input label="NIF" wire:model.defer="nif" required></x-form.input>
             </div>
             <div class="col-md-6">
+                <x-form.input label="Nom de l'entreprise" wire:model.defer="name"></x-form.input>
+            </div>
+            <div class="col-md-6">
                 <x-form.input label="Adresse Email" type="email" wire:model.defer="user.email" required></x-form.input>
             </div>
             <div class="col-md-6">

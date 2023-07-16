@@ -8,17 +8,21 @@
                                          required placeholder="Rechercher le client"></x-form.select2-ajax>
                 </div>
                 <div class="col-md-6">
+                    <x-form.select label="Type de dossier" wire:model="folder.type" :options="['IMPORT' => 'IMPORT', 'EXPORT'=> 'EXPORT']"
+                                         required placeholder="Selectionner le type"></x-form.select>
+                </div>
+                <div class="col-md-6">
                     <x-form.input label="Numero BL" wire:model.defer="folder.num_cnt" required></x-form.input>
                 </div>
                 <div class="col-md-6">
-                    <x-form.input label="Poids Total de la marchandise" wire:model.defer="folder.weight" required></x-form.input>
+                    <x-form.input label="Poids Total de la marchandise"  type="number" step="000.00" wire:model.defer="folder.weight" required></x-form.input>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Port" wire:model.defer="folder.harbor" required></x-form.input>
                 </div>
                 <div class="col-md-9">
-                    <x-form.select2-ajax label="Designation" wire:model="products" routeName="getProducts" id="products"
-                                         required placeholder="Rechercher les produits" multiple></x-form.select2-ajax>
+                    <x-form.select2-ajax label="Designation" wire:model.lazy="products" :values="$oldProducts" multiple routeName="getProducts"
+                                         id="products" required placeholder="Rechercher les produits"></x-form.select2-ajax>
                 </div>
                 <div class="col-md-3 pt-4">
                     <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#addProductModal">
@@ -71,6 +75,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @error('containers') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
                     </div>
                 </div>
             </div>
@@ -121,6 +126,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @error('documents') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
                     </div>
                 </div>
             </div>
@@ -137,9 +143,24 @@
         <x-slot name="content">
             <x-form.input label="Designation du produit" wire:model.defer="productDesignation" required></x-form.input>
         </x-slot>
+        <x-slot name="footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {{ __('Close') }}
+            </button>
+            <button wire:click="addNewProduct" class="btn btn-primary me-2">
+                <i class="fa fa-check-circle"></i> {{ __('Save') }}
+            </button>
+        </x-slot>
     </x-form-modal>
 </div>
 @push('scripts')
+    @if($folder->id)
+        <script>
+            $(document).ready(function() {
+                $('#customer').select2().val(@this.get({{$folder->customer_id}})).trigger('change.select2');
+            });
+        </script>
+    @endif
     <script>
         Livewire.on('newProductAdded', data => {
             $('#products').append(new Option(data[1], data[0], true, true)).trigger({

@@ -2,7 +2,7 @@
     'label' => null,
     'name' => null,
     'id' => Str::random(5),
-    'value' => null,
+    'values' => [],
     'valueLabel' => '',
     'placeholder' => __('Search ...'),
     'routeName' => null,
@@ -15,9 +15,9 @@
     @endif
     <!-- For defining select2 -->
     <select name='{{ $name }}' id='{{ $id }}' {{ $attributes->merge(['class' => 'form-control']) }} style="width: 100%;">
-        @if($value)
+        @foreach($values as $value => $valueLabel)
             <option value="{{$value}}" selected="selected">{{$valueLabel}}</option>
-        @endif
+        @endforeach
     </select>
     @error($name)
     <div class="invalid-feedback">

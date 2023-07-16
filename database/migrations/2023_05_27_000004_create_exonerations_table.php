@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('number', 30)->unique();
             $table->date('date');
             $table->string('responsible');
+            $table->string('attach_file_path')->nullable();
 
             $table->timestamps();
         });

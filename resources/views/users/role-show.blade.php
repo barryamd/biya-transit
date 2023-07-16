@@ -49,13 +49,9 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <th>Gestion des dossiers</th>
-                        <td>
-                            <x-form.checkbox label="Voir un dossier" wire:model.defer="rolePermissions" :value="$permissions['view-folder']" disabled></x-form.checkbox>
-                        </td>
-                        <td>
-                            <x-form.checkbox label="Créer un dossier" wire:model.defer="rolePermissions" :value="$permissions['create-folder']" disabled></x-form.checkbox>
-                        </td>
+                        <th></th>
+                        <td></td>
+                        <td></td>
                         <td>
                             <x-form.checkbox label="Ajouter DDI" wire:model.defer="rolePermissions" :value="$permissions['add-ddi-opening']" disabled></x-form.checkbox>
                             <x-form.checkbox label="Ajouter Exonération" wire:model.defer="rolePermissions" :value="$permissions['add-exoneration']" disabled></x-form.checkbox>
@@ -64,9 +60,7 @@
                             <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-details']" disabled></x-form.checkbox>
                             <x-form.checkbox label="Fermer un dossier" wire:model.defer="rolePermissions" :value="$permissions['close-folder']"></x-form.checkbox>
                         </td>
-                        <td>
-                            <x-form.checkbox label="Supprimer un dossier" wire:model.defer="rolePermissions" value="delete-folder" disabled></x-form.checkbox>
-                        </td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>

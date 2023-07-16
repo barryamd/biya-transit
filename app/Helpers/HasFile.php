@@ -38,9 +38,10 @@ trait HasFile
      *
      * @return void
      */
-    public function deleteFile()
+    public function deleteFile($attribute = null)
     {
-        $attribute = $this->getFileAttribute();
+        if ($attribute == null)
+            $attribute = $this->getFileAttribute();
 
         Storage::disk($this->fileDisk())->delete($this->$attribute);
 

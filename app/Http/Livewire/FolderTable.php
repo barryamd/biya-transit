@@ -39,6 +39,8 @@ class FolderTable extends DataTableComponent
                 ->title(fn($row) => $row->number)
                 ->location(fn($row) => route('folders.show', $row))
                 ->sortable(),
+            Column::make("Type de dossier", 'type')
+                ->sortable(),
             Column::make("Numero CNT", "num_cnt")
                 ->sortable(),
             Column::make("Poids total", "weight")

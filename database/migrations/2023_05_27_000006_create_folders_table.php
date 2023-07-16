@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('folders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('customer_id');
+            $table->enum('type', ['IMPORT', 'EXPORT']);
             $table->string('number', 30)->unique();
             $table->string('num_cnt', 30);
             $table->string('weight', 30);

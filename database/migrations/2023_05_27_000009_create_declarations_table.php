@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('destination_office');
             $table->string('verifier', 30);
-            $table->string('file_path')->nullable();
+            $table->string('declaration_file_path')->nullable();
             $table->string('liquidation_bulletin', 20);
             $table->date('liquidation_date');
             $table->string('liquidation_file_path')->nullable();

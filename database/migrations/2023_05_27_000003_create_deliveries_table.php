@@ -18,7 +18,8 @@ return new class extends Migration {
             $table->string('place');
             $table->boolean('status')->default(0);
             $table->boolean('customer_satisfaction')->nullable();
-            $table->string('attach_file_path')->nullable();
+            $table->string('exit_file_path')->nullable();
+            $table->string('return_file_path')->nullable();
 
             $table->timestamps();
         });

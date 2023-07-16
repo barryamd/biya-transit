@@ -20,7 +20,7 @@ class Declaration extends Model
         'date',
         'destination_office',
         'verifier',
-        'file_path',
+        'declaration_file_path',
         'liquidation_bulletin',
         'liquidation_date',
         'liquidation_file_path',

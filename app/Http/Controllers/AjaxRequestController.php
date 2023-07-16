@@ -7,6 +7,7 @@ use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Transporter;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -107,8 +108,11 @@ class AjaxRequestController extends Controller
 
         $search = $request->search;
         if ($search != '') {
-            $query->whereHas('customer', function($query) use ($search) {
-                $query->whereNotNull('nif')->where('nif', 'LIKE', $search . '%');
+            $query->whereHas('customer', function(Builder $query) use ($search) {
+                $query->where('nif', 'LIKE', $search . '%')
+                    ->where(function (Builder $query) use($search) {
+                        $query->whereNotNull('name')->where('name', 'LIKE', $search . '%');
+                    });
             })
                 ->orWhere('first_name', 'LIKE', $search . '%')
                 ->orWhere('last_name', 'LIKE', $search . '%');

@@ -1,13 +1,13 @@
 <?php
 
 return [
-//    [
-//        'title' => 'Dashboard',
-//        'type'  => 'item',
-//        'route' => 'dashboard',
-//        'icon'  => 'tachometer-alt',
-//        'permission' => 'dashboard',
-//    ],
+    [
+        'title' => 'Dashboard',
+        'type'  => 'item',
+        'route' => 'dashboard',
+        'icon'  => 'tachometer-alt',
+        'permission' => 'dashboard',
+    ],
     [
         'title' => 'Clients',
         'type'  => 'item',
@@ -99,6 +99,13 @@ return [
         'icon'       => 'cog',
         'permission' => 'edit-settings',
         'children'   => [
+            [
+                'title'      => 'Paramètres générales',
+                'type'       => 'item',
+                'route'      => 'settings',
+                'icon'       => 'cog',
+                'permission' => 'edit-settings',
+            ],
             [
                 'title' => 'Types de documents',
                 'type'  => 'item',

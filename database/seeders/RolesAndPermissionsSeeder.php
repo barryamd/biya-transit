@@ -47,6 +47,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'add-delivery-details']);
         Permission::create(['name' => 'close-folder']);
         Permission::create(['name' => 'edit-settings']);
+        Permission::create(['name' => 'view-dashboard']);
 /*
         Permission::create(['name' => 'edit articles']);
         Permission::create(['name' => 'delete articles']);

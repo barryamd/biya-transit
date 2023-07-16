@@ -12,7 +12,7 @@ class Product extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = ['code', 'designation'];
+    protected $fillable = ['designation'];
 
     protected array $searchableFields = ['*'];
 

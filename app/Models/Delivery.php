@@ -20,7 +20,8 @@ class Delivery extends Model
         'transporter_id',
         'delivery_date',
         'delivery_place',
-        'attach_file',
+        'exit_file_path',
+        'return_file_path',
         'delivery_status',
         'customer_satisfaction',
     ];

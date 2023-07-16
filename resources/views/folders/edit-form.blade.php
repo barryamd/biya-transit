@@ -55,8 +55,20 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile"></x-form.file-upload>
-                                @error('ddiFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($ddiOpening->attach_file_path)
+                                    <label>Fichier DDI</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('ddi_openings')" class="btn btn-sm btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('ddi_openings')" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile"></x-form.file-upload>
+                                    @error('ddiFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -85,13 +97,29 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-form.file-upload label="Fichier DDI" wire:model.lazy="exonerationFile" required></x-form.file-upload>
-                                @error('exonerationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($exoneration->attach_file_path)
+                                    <label>Fichier Exonération</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('exonerations')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('exonerations')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Fichier Exonération" wire:model.lazy="exonerationFile"></x-form.file-upload>
+                                    @error('exonerationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary nextBtn float-right " wire:click="submitExonerationStep"
-                            type="button">Sauvegarder et Passer</button>
+                    <div>
+                        @can('add-ddi-opening')
+                            <button class="btn btn-secondary" wire:click="back(1)" type="button">Retourner</button>
+                        @endcan
+                        <button class="btn btn-primary nextBtn float-right" wire:click="submitExonerationStep" type="button">Sauvegarder et Passer</button>
+                    </div>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
                 @endcan
@@ -100,7 +128,7 @@
 
         <div class="row setup-content {{ $currentStep != 3 ? 'd-none' : '' }}" id="step-3">
             <div class="col-md-12">
-                <h4>Declarations</h4>
+                <h4>Déclarations</h4>
                 @can('add-declaration')
                     <div class="row">
                         <div class="col-md-4">
@@ -117,23 +145,47 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-form.file-upload label="Copie de la declaration" wire:model.lazy="declarationFile" required></x-form.file-upload>
-                                @error('declarationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($declaration->declaration_file_path)
+                                    <label>Copie de la declaration</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('declarations', 'declaration_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'declaration_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Copie de la declaration" wire:model.lazy="declarationFile"></x-form.file-upload>
+                                    @error('declarationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-4">
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numéro bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin" required></x-form.input>
+                            <x-form.input label="Numéro du bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin" required></x-form.input>
                         </div>
                         <div class="col-md-4">
                             <x-form.date label="Date de liquidation" wire:model.defer="declaration.liquidation_date" required></x-form.date>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-form.file-upload label="Copie du bulletin de liquidation" wire:model.lazy="liquidationFile" required></x-form.file-upload>
-                                @error('liquidationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($declaration->liquidation_file_path)
+                                    <label>Copie du bulletin de liquidation</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'liquidation_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Copie du bulletin de liquidation" wire:model.lazy="liquidationFile"></x-form.file-upload>
+                                    @error('liquidationFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
 
@@ -145,8 +197,20 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-form.file-upload label="Copie de la quittance" wire:model.lazy="receiptFile" required></x-form.file-upload>
-                                @error('receiptFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($declaration->receipt_file_path)
+                                    <label>Copie de la quittance</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('declarations', 'receipt_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'receipt_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Copie de la quittance" wire:model.lazy="receiptFile"></x-form.file-upload>
+                                    @error('receiptFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
 
@@ -158,13 +222,29 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-form.file-upload label="Copie du bon" wire:model.lazy="bonFile" required></x-form.file-upload>
-                                @error('bonFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($declaration->bon_file_path)
+                                    <label>Copie du bon</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('declarations', 'bon_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'bon_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Copie du bon" wire:model.lazy="bonFile"></x-form.file-upload>
+                                    @error('bonFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary nextBtn float-right " wire:click="submitDeclarationStep"
-                            type="button">Sauvegarder et Passer</button>
+                    <div>
+                        @can('add-exoneration')
+                            <button class="btn btn-secondary" wire:click="back(2)" type="button">Retourner</button>
+                        @endcan
+                        <button class="btn btn-primary nextBtn float-right" wire:click="submitDeclarationStep" type="button">Sauvegarder et Passer</button>
+                    </div>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
                 @endcan
@@ -173,24 +253,62 @@
 
         <div class="row setup-content {{ $currentStep != 4 ? 'd-none' : '' }}" id="step-4">
             <div class="col-md-12">
-                <h4>Bon de livraison</h4>
+                <h4>Bons de livraison</h4>
                 @can('add-delivery-note')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <x-form.input label="Bon de compagnie maritime" wire:model.defer="deliveryNote.bcm" required></x-form.input>
-                        </div>
-                        <div class="col-md-6">
-                            <x-form.input label="Bon conakry terminal" wire:model.defer="deliveryNote.bct" required></x-form.input>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <x-form.file-upload label="Fichier de la facture" wire:model.lazy="deliveryNoteFile" required></x-form.file-upload>
-                                @error('deliveryNoteFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
-                            </div>
-                        </div>
+                    <div class="table-responsive table-bordered-">
+                        <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                            <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">#</th>
+                                <th style="width: 30%;">Bon de compagnie maritime <span class="text-danger">*</span></th>
+                                <th style="width: 30%;">Bon conakry terminal <span class="text-danger">*</span></th>
+                                <th style="width: 30%;">Fichier jointe</th>
+                                <th class="text-center" style="width: 5%">
+                                    <button wire:click.prevent="addDeliveryNote" title="Ajouter" class="btn btn-sm btn-primary w-100-">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($deliveryNotes as $i => $deliveryNote)
+                                <tr>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>
+                                        <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bcm" class="form-control" required>
+                                    </td>
+                                    <td>
+                                        <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bct" class="form-control" required>
+                                    </td>
+                                    <td class="align-middle">
+                                        @if($deliveryNote['attach_file_path'])
+                                            <button wire:click="downloadFile('delivery_notes', 'attach_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
+                                                <i class="fas fa-download"></i> Telecharger
+                                            </button>
+                                            <button wire:click="deleteFile('delivery_notes', 'attach_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        @else
+                                            <input type="file" wire:model.lazy="deliveryNoteFiles.{{$i}}" class="form-control px-1" required>
+                                            @error('deliveryNoteFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                        @endif
+                                    </td>
+                                    <td class="text-center" style="padding-right: 0.3rem; width: 5px">
+                                        <button wire:click.prevent="removeDeliveryNote('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <button class="btn btn-primary nextBtn float-right " wire:click="submitDeliveryNoteStep"
-                            type="button">Sauvegarder et Passer</button>
+                    <div>
+                        @can('add-declaration')
+                            <button class="btn btn-secondary" wire:click="back(3)" type="button">Retourner</button>
+                        @endcan
+                        <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryNoteStep" type="button">Sauvegarder et Passer</button>
+                    </div>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
                 @endcan
@@ -203,15 +321,45 @@
                 @can('add-delivery-details')
                     <div class="row">
                         <div class="col-md-6">
-                            <x-form.date label="Date de livraison" wire:model.defer="delivery.date" required></x-form.date>
+                            <x-form.date label="Date de la livraison" wire:model.defer="delivery.date" required></x-form.date>
                         </div>
                         <div class="col-md-6">
-                            <x-form.input label="Lieu de livraison" wire:model.defer="delivery.place" required></x-form.input>
+                            <x-form.input label="Lieu de la livraison" wire:model.defer="delivery.place" required></x-form.input>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <x-form.file-upload label="Bon de sorti du conteneur" wire:model.lazy="deliveryFile" required></x-form.file-upload>
-                                @error('deliveryFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @if($delivery->exit_file_path)
+                                    <label>Bon de sorti du conteneur</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('deliveries', 'exit_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Bon de sorti du conteneur" wire:model.lazy="deliveryExitFile"></x-form.file-upload>
+                                    @error('deliveryExitFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @if($delivery->return_file_path)
+                                    <label>Bon de retour</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('deliveries', 'return_file_path')" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Bon de retour" wire:model.lazy="deliveryReturnFile"></x-form.file-upload>
+                                    @error('deliveryReturnFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -246,8 +394,12 @@
                             </div>
                         @endif
                     </div>
-                    <button class="btn btn-primary nextBtn float-right " wire:click="submitDeliveryDetailsStep"
-                            type="button">Sauvegarder</button>
+                    <div>
+                        @can('add-delivery-note')
+                            <button class="btn btn-secondary" wire:click="back(4)" type="button">Retourner</button>
+                        @endcan
+                        <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryDetailsStep" type="button">Sauvegarder</button>
+                    </div>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
                 @endcan

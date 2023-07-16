@@ -14,7 +14,7 @@ class DeliveryNote extends Model
 
     public const PATH = 'delivery_notes';
 
-    protected $fillable = ['bcm', 'bct'];
+    protected $fillable = ['id', 'folder_id', 'bcm', 'bct', 'attach_file_path'];
 
     public function folder(): BelongsTo
     {

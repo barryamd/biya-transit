@@ -51,7 +51,7 @@ class Folder extends Model
 
     public function documents(): HasMany
     {
-        return $this->hasMany(DocumentType::class);
+        return $this->hasMany(Document::class);
     }
 
     public function products(): BelongsToMany
@@ -74,9 +74,9 @@ class Folder extends Model
         return $this->hasOne(Declaration::class);
     }
 
-    public function deliveryNote(): HasOne
+    public function deliveryNotes(): HasMany
     {
-        return $this->hasOne(DeliveryNote::class);
+        return $this->hasMany(DeliveryNote::class);
     }
 
     public function deliveryDetails(): HasOne

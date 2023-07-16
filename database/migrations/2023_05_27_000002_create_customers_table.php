@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('nif', 50)->unique();
+            $table->string('name', 50)->nullable();
             $table->index('nif');
 
             $table->foreign('user_id')->references('id')->on('users')

@@ -27,7 +27,7 @@ class CustomerTable extends DataTableComponent
     ];
     public User $user;
     public Customer $customer;
-    public string|null $nif;
+    public string|null $nif, $name;
     public string $password = '', $password_confirmation = '';
 
     public function mount()
@@ -78,7 +78,11 @@ class CustomerTable extends DataTableComponent
             ],
             'user.first_name' => ['required', 'string', 'max:255'],
             'user.last_name'  => ['required', 'string', 'max:255'],
-            'user.phone_number'     => [
+            'name' => [
+                'nullable', 'string',
+                Rule::unique('customers', 'name')->ignore($this->customer->id)
+            ],
+            'user.phone_number' => [
                 'required', 'string',
                 Rule::unique('users', 'phone_number')->ignore($this->user->id)
             ],
@@ -86,7 +90,7 @@ class CustomerTable extends DataTableComponent
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
-            'user.address'      => ['nullable', 'string', 'max:255'],
+            'user.address' => ['nullable', 'string', 'max:255'],
             'password' => $this->isEditMode ? 'nullable' : $this->passwordRules()
         ];
     }
@@ -97,6 +101,7 @@ class CustomerTable extends DataTableComponent
             $this->user = $this->model::findOrFail($id);
             $this->customer = $this->user->customer;
             $this->nif = $this->customer->nif;
+            $this->name = $this->customer->name;
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-customerFormModal');
         } catch (\Exception $exception) {
@@ -114,10 +119,10 @@ class CustomerTable extends DataTableComponent
             DB::transaction(function () {
                 $this->user->saveOrFail();
                 if ($this->isEditMode) {
-                    Customer::query()->update(['user_id' => $this->user->id, 'nif' => $this->nif]);
+                    Customer::query()->update(['user_id' => $this->user->id, 'nif' => $this->nif, 'name' => $this->name]);
                 } else {
-                    $this->user->givePermissionTo(['create-folder', 'view-folder']);
-                    Customer::query()->create(['user_id' => $this->user->id, 'nif' => $this->nif]);
+                    $this->user->givePermissionTo(['view-folder', 'create-folder', 'edit-folder']);
+                    Customer::query()->create(['user_id' => $this->user->id, 'nif' => $this->nif, 'name' => $this->name]);
                 }
             });
 

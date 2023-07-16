@@ -3,14 +3,15 @@
 use App\Http\Controllers\AjaxRequestController;
 use App\Http\Controllers\PrintController;
 use App\Http\Livewire\Dashboard;
-use App\Http\Livewire\FolderCreateForm;
+use App\Http\Livewire\FolderForm;
 use App\Http\Livewire\FolderDetails;
-use App\Http\Livewire\FolderEditForm;
+use App\Http\Livewire\FolderProcessForm;
 use App\Http\Livewire\InvoiceDetails;
 use App\Http\Livewire\InvoiceForm;
 use App\Http\Livewire\RoleForm;
 use App\Http\Livewire\RoleShow;
-use App\Models\Folder;
+use App\Http\Livewire\Settings;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,7 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('settings', Settings::class)->name('settings');
 
     Route::view('users', 'users.index')->name('users.index');
     Route::view('roles','users.index')->name('roles.index');
@@ -49,8 +51,9 @@ Route::middleware([
     Route::view('transporters','transporters.index')->name('transporters.index');
 
     Route::view('folders','folders.index')->name('folders.index');
-    Route::get('folders/create', FolderCreateForm::class)->name('folders.create');
-    Route::get('folders/{folder}/edit', FolderEditForm::class)->name('folders.edit');
+    Route::get('folders/create', FolderForm::class)->name('folders.create');
+    Route::get('folders/{folder}/edit', FolderForm::class)->name('folders.edit');
+    Route::get('folders/{folder}/process', FolderProcessForm::class)->name('folders.process');
     Route::get('folders/{folder}/show', FolderDetails::class)->name('folders.show');
     Route::view('pending-folders','folders.index')->name('pending-folders.index');
     Route::view('progress-folders','folders.index')->name('progress-folders.index');

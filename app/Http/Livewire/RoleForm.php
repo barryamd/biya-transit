@@ -59,7 +59,7 @@ class RoleForm extends Component
             'invoice'     => 'Gestion des factures',
             'folder'      => 'Gestion des dossiers',
         ];
-        $this->tables = ['user', 'role', 'customer', 'transporter', 'expense', 'invoice'];
+        $this->tables = ['user', 'role', 'customer', 'transporter', 'expense', 'invoice', 'folder'];
     }
 
     public function save()
