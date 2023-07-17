@@ -160,8 +160,8 @@ class FolderForm extends Component
                 } else {
                     $document = Document::query()->create($documentInputs);
                 }
-                if (array_key_exists($index, $this->documentFiles)) {
-                    $document->addFile($this->documentFiles[$index]);
+                if (array_key_exists($index, $this->documentsFiles)) {
+                    $document->addFile($this->documentsFiles[$index]);
                 }
             }
 
