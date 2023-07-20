@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('containers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->string('number', 30)->unique();
+            $table->string('number', 30);
             $table->decimal('weight');
             $table->string('package_number', 30);
             $table->date('arrival_date')->nullable();

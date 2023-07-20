@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
             $table->unsignedInteger('type_id');
-            $table->string('number', 30)->unique();
+            $table->string('number', 30)();
             $table->string('attach_file_path')->nullable();
 
             $table->index('number');
