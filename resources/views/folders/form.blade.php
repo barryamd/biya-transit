@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <x-form.select2-ajax label="Client" wire:model="folder.customer_id" routeName="getCustomers" id="customer"
-                                         required placeholder="Rechercher le client"></x-form.select2-ajax>
+                                         :selectedOptions="$selectedCustomer" required placeholder="Rechercher le client"></x-form.select2-ajax>
                 </div>
                 <div class="col-md-6">
                     <x-form.select label="Type de dossier" wire:model="folder.type" :options="['IMPORT' => 'IMPORT', 'EXPORT'=> 'EXPORT']"
@@ -21,7 +21,7 @@
                     <x-form.input label="Port" wire:model.defer="folder.harbor" required></x-form.input>
                 </div>
                 <div class="col-md-9">
-                    <x-form.select2-ajax label="Designation" wire:model.lazy="products" :values="$oldProducts" multiple routeName="getProducts"
+                    <x-form.select2-ajax label="Designation" wire:model="selectedProducts" :selectedOptions="$products" multiple routeName="getProducts"
                                          id="products" required placeholder="Rechercher les produits"></x-form.select2-ajax>
                 </div>
                 <div class="col-md-3 pt-4">

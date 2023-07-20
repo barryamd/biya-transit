@@ -139,7 +139,7 @@ class UserTable extends DataTableComponent
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
-            'password' => $this->passwordRules(),
+            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules(),
             'role' => 'required',
             'user.first_name' => ['required', 'string', 'max:255'],
             'user.last_name'  => ['required', 'string', 'max:255'],
@@ -157,7 +157,7 @@ class UserTable extends DataTableComponent
         ];
     }
 
-    public function openEditModal($userId, $modalId)
+    public function openEditModal($userId, $modalId = null)
     {
         try {
             $this->user = User::find($userId);

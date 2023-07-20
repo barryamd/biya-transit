@@ -2,8 +2,7 @@
     'label' => null,
     'name' => null,
     'id' => Str::random(5),
-    'values' => [],
-    'valueLabel' => '',
+    'selectedOptions' => [],
     'placeholder' => __('Search ...'),
     'routeName' => null,
     'multiple' => false,
@@ -15,9 +14,6 @@
     @endif
     <!-- For defining select2 -->
     <select name='{{ $name }}' id='{{ $id }}' {{ $attributes->merge(['class' => 'form-control']) }} style="width: 100%;">
-        @foreach($values as $value => $valueLabel)
-            <option value="{{$value}}" selected="selected">{{$valueLabel}}</option>
-        @endforeach
     </select>
     @error($name)
     <div class="invalid-feedback">
@@ -32,12 +28,12 @@
     // CSRF Token
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $(document).ready(function(){
-        $( "#{{$id}}" ).select2({
+        const _select = $("#{{$id}}");
+        _select.select2({
             multiple: '{{$multiple}}',
             placeholder: "-- {{$placeholder}} --",
-            minimumInputLength: 2,
             ajax: {
-                url: "{{route($routeName)}}",
+                url: "{{route($routeName)}}", // L'URL de l'API pour charger les options via Ajax
                 type: "post",
                 dataType: 'json',
                 delay: 250,
@@ -47,15 +43,32 @@
                         search: params.term // search term
                     };
                 },
-                processResults: function (response) {
+                processResults: function (data) {
                     return {
-                        results: response
+                        results: data
                     };
                 },
                 cache: true
             },
+            minimumInputLength: 1, // Permet de charger toutes les options au chargement de la page
+            // Autres options Select2...
+        })//.val(@json($selectedOptions)).trigger('change.select2');
+
+        _select.on('select2:select', (e) => @this.set('{{$name}}', _select.val()));
+
+        for (let selectedOption of @json($selectedOptions)) {
+            // create the option and append to Select2
+            var option = new Option(selectedOption.text, selectedOption.id, true, true);
+            _select.append(option);
+        }
+
+        // manually trigger the `select2:select` event
+        _select.trigger({
+            type: 'select2:select',
+            params: {
+                data: data
+            }
         });
-        $('#{{$id}}').on('select2:select', (e) => @this.set('{{$name}}', $('#{{$id}}').val()) );
     });
 </script>
 @endpush

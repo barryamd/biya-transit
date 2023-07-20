@@ -224,7 +224,7 @@ class FolderProcessForm extends Component
             $this->declaration->folder_id = $this->folder->id;
             $this->declaration->save();
             if ($this->declarationFile) {
-                $this->declaration->addFile($this->declarationFile, 'file_path');
+                $this->declaration->addFile($this->declarationFile, 'declaration_file_path');
             }
             if ($this->liquidationFile) {
                 $this->declaration->addFile($this->liquidationFile, 'liquidation_file_path');

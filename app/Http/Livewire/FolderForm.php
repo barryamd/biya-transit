@@ -24,9 +24,10 @@ class FolderForm extends Component
     use WithFileUploads;
 
     public Folder $folder;
+    public $selectedCustomer = [];
     public Collection $containers;
     public Collection $documents;
-    public Collection|array $products = [], $oldProducts = [];
+    public Collection|array $selectedProducts = [], $products = [];
     public array|string $documentsFiles = [];
     public string $productDesignation = '';
     public Collection|array $documentTypes = [];
@@ -47,7 +48,7 @@ class FolderForm extends Component
             'folder.weight'      => ['required', 'string'],
             'folder.harbor'      => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
-            'products'           => ['required'],
+            'selectedProducts'   => ['required'],
 
             'containers'                  => 'required',
             'containers.*.folder_id'      => 'nullable',
@@ -59,7 +60,11 @@ class FolderForm extends Component
             'documents'             => 'required',
             'documents.*.folder_id' => 'nullable',
             'documents.*.type_id'   => 'required',
-            'documents.*.number'    => ['required','string', Rule::unique('documents', 'number')->ignore($this->folder->id)],
+            'documents.*.number'    => ['required','string'],
+//                Rule::unique('documents', 'number')->where(function ($query) {
+//                    return $query->where('folder_id', $this->folder->id);
+//                }),
+//                Rule::unique('documents', 'number')->ignore($this->folder->id)],
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
@@ -70,10 +75,19 @@ class FolderForm extends Component
 
         $this->folder = $folder;
         if ($this->folder->id) {
-            $this->containers = $this->folder->containers;
-            $this->documents = $this->folder->documents;
+            $this->folder->load('customer.user');
+            $this->selectedCustomer = [[
+                'id' => $this->folder->customer->id,
+                'text' => $this->folder->customer->user->full_name
+            ]];
 
-            $this->oldProducts = $this->folder->products->pluck('designation', 'id')->toArray();
+            $this->containers = $this->folder->containers->collect();
+            $this->documents = $this->folder->documents->collect();
+
+            $this->selectedProducts = $this->folder->products->pluck('id')->toArray();
+            $this->products = $this->folder->products->map(function ($product) {
+                return ['id' => $product->id, 'text' => $product->designation];
+            })->toArray();
         } else {
             $this->containers = collect();
             $this->documents = collect();
@@ -149,8 +163,16 @@ class FolderForm extends Component
             DB::beginTransaction();
 
             $this->folder->save();
-            $this->folder->products()->sync($this->products);
+            $this->folder->products()->sync($this->selectedProducts);
+
+            /*
+            if ($this->folder->id) {
+                MotoSaleItem::query()->where('sale_id', $this->sale->id)
+                    ->whereNotIn('id', $this->motos->pluck('id'))->delete();
+            }
+            MotoSaleItem::query()->upsert($saleItems->toArray(), ['id']);
             $this->folder->containers()->createMany($this->containers);
+            */
 
             foreach ($this->documents as $index => $documentInputs) {
                 $documentInputs['folder_id'] = $this->folder->id;

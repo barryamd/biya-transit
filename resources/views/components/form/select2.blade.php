@@ -28,16 +28,18 @@
 @if($modalId)
     <script>
         $(document).ready(function() {
-            $('#{{$id}}').on('change', (e) => @this.set('{{$name}}', $('#{{$id}}').val()));
-            $('#{{$id}}').select2({placeholder: "-- {{$placeholder}} --", dropdownParent: $('#{{$modalId}}')})
+            const _select = $("#{{$id}}");
+            _select.on('change', (e) => @this.set('{{$name}}', _select.val()));
+            _select.select2({placeholder: "-- {{$placeholder}} --", dropdownParent: $('#{{$modalId}}')})
                 .val(@this.get({{$name}})).trigger('change.select2');
         });
     </script>
 @else
     <script>
         $(document).ready(function() {
-            $('#{{$id}}').on('change', (e) => @this.set('{{$name}}', $('#{{$id}}').val()));
-            $('#{{$id}}').select2({placeholder: "-- {{$placeholder}} --"}).val(@this.get({{$name}})).trigger('change.select2');
+            const _select = $("#{{$id}}");
+            _select.on('change', (e) => @this.set('{{$name}}', _select.val()));
+            _select.select2({placeholder: "-- {{$placeholder}} --"}).val(@this.get({{$name}})).trigger('change.select2');
         });
     </script>
 @endif

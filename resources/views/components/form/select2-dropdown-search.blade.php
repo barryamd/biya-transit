@@ -32,9 +32,10 @@
     // CSRF Token
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $(document).ready(function(){
-        $( "#{{$id}}" ).select2({
+        const _select = $("#{{$id}}");
+        _select.select2({
             placeholder: "-- {{$placeholder}} --",
-            minimumInputLength: 2,
+            minimumInputLength: 1,
             ajax: {
                 url: "{{route($routeName)}}",
                 type: "post",
@@ -55,7 +56,20 @@
             },
             dropdownParent: $('#{{$parentId}}')
         });
-        $('#{{$id}}').on('select2:select', (e) => @this.set('{{$name}}', e.target.value));
+        _select.on('select2:select', (e) => @this.set('{{$name}}', e.target.value));
+        for (let selectedOption of @json($selectedOptions)) {
+            // create the option and append to Select2
+            var option = new Option(selectedOption.text, selectedOption.id, true, true);
+            _select.append(option);
+        }
+
+        // manually trigger the `select2:select` event
+        _select.trigger({
+            type: 'select2:select',
+            params: {
+                data: data
+            }
+        });
     });
 </script>
 @endpush
