@@ -23,6 +23,14 @@
                         <td>{{ $folder->harbor }}</td>
                     </tr>
                     <tr>
+                        <th>Pays</th>
+                        <td>{{ $folder->country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Désignations</th>
+                        <td>{{ implode(', ', $folder->products->pluck('designation')->toArray()) }}</td>
+                    </tr>
+                    <tr>
                         <th>Observation</th>
                         <td>{{ $folder->observation }}</td>
                     </tr>
@@ -185,7 +193,7 @@
                         </tr>
                         <tr>
                             <th>Produits exonérés</th>
-                            <td>{{ implode('; ', $exoneration->products->pluck('designation')->toArray()) }}</td>
+                            <td>{{ implode(', ', $exoneration->products->pluck('designation')->toArray()) }}</td>
                         </tr>
                         <tr>
                             <th>Fichier Exonération</th>

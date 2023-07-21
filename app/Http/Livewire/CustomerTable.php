@@ -27,7 +27,6 @@ class CustomerTable extends DataTableComponent
     ];
     public User $user;
     public Customer $customer;
-    public string|null $nif, $name;
     public string $password = '', $password_confirmation = '';
 
     public function mount()
@@ -72,26 +71,33 @@ class CustomerTable extends DataTableComponent
     protected function rules(): array
     {
         return [
-            'nif' => [
-                'required', 'string',
-                Rule::unique('customers', 'nif')->ignore($this->customer->id)
-            ],
-            'user.first_name' => ['required', 'string', 'max:255'],
-            'user.last_name'  => ['required', 'string', 'max:255'],
-            'name' => [
-                'nullable', 'string',
-                Rule::unique('customers', 'name')->ignore($this->customer->id)
-            ],
-            'user.phone_number' => [
-                'required', 'string',
-                Rule::unique('users', 'phone_number')->ignore($this->user->id)
-            ],
             'user.email' => [
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
+            'user.first_name' => ['required', 'string', 'max:255'],
+            'user.last_name'  => ['required', 'string', 'max:255'],
+            'user.phone_number' => [
+                'required', 'string',
+                Rule::unique('users', 'phone_number')->ignore($this->user->id)
+            ],
             'user.address' => ['nullable', 'string', 'max:255'],
-            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules()
+            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules(),
+
+            'customer.name' => [
+                'nullable', 'string',
+                Rule::unique('customers', 'name')->ignore($this->customer->id)
+            ],
+            'customer.nif' => [
+                'required', 'string',
+                Rule::unique('customers', 'nif')->ignore($this->customer->id)
+            ],
+            'customer.phone_number1' => ['nullable', 'string'],
+            'customer.phone_number2' => ['nullable', 'string'],
+            'customer.phone_number3' => ['nullable', 'string'],
+            'customer.email1' => ['nullable', 'string', 'email', 'max:255',],
+            'customer.email2' => ['nullable', 'string', 'email', 'max:255',],
+            'customer.email3' => ['nullable', 'string', 'email', 'max:255',],
         ];
     }
 
@@ -100,8 +106,6 @@ class CustomerTable extends DataTableComponent
         try {
             $this->user = $this->model::findOrFail($id);
             $this->customer = $this->user->customer;
-            $this->nif = $this->customer->nif;
-            $this->name = $this->customer->name;
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-customerFormModal');
         } catch (\Exception $exception) {
@@ -118,12 +122,11 @@ class CustomerTable extends DataTableComponent
                 $this->user->password = Hash::make($this->password);
             DB::transaction(function () {
                 $this->user->saveOrFail();
-                if ($this->isEditMode) {
-                    Customer::query()->update(['user_id' => $this->user->id, 'nif' => $this->nif, 'name' => $this->name]);
-                } else {
+                if (!$this->isEditMode) {
                     $this->user->givePermissionTo(['view-folder', 'create-folder', 'edit-folder']);
-                    Customer::query()->create(['user_id' => $this->user->id, 'nif' => $this->nif, 'name' => $this->name]);
+                    $this->customer->user_id = $this->user->id;
                 }
+                $this->customer->save();
             });
 
             if (!$this->isEditMode) {
@@ -143,6 +146,7 @@ class CustomerTable extends DataTableComponent
         $this->dispatchBrowserEvent('close-customerFormModal');
         $this->isEditMode = false;
         $this->user = new User();
+        $this->customer = new Customer();
         $this->password = '';
         $this->password_confirmation = '';
     }

@@ -47,6 +47,7 @@ class FolderForm extends Component
             ],
             'folder.weight'      => ['required', 'string'],
             'folder.harbor'      => ['required', 'string'],
+            'folder.country'     => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
             'selectedProducts'   => ['required'],
 

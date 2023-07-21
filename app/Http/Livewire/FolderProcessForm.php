@@ -89,19 +89,27 @@ class FolderProcessForm extends Component
 
         $this->products = $this->folder->products->pluck('designation', 'id')->toArray();
 
-        $this->ddiOpening = $this->folder->ddiOpening;
-        if ($this->ddiOpening) {
-            $this->currentStep = 2;
-        } else {
-            $this->ddiOpening = new DdiOpening();
-        }
-
         $this->exoneration = $this->folder->exoneration;
         if ($this->exoneration) {
-            $this->currentStep = 3;
+            $this->currentStep = 2;
             $this->exonerationExist = true;
         } else {
             $this->exoneration = new Exoneration();
+        }
+
+        $this->ddiOpening = $this->folder->ddiOpening;
+        if ($this->ddiOpening) {
+            $this->currentStep = 3;
+        } else {
+            $this->ddiOpening = new DdiOpening();
+            if ($this->user->can('add-exoneration')) {
+                $this->confirm("Utilisez-vous des exonerations ?", [
+                    'confirmButtonText' => 'Oui',
+                    'cancelButtonText' => 'Non',
+                    'onConfirmed' => 'confirmed',
+                    'onDismissed' => 'cancelled'
+                ]);
+            }
         }
 
         $this->declaration = $this->folder->declaration;
@@ -155,16 +163,8 @@ class FolderProcessForm extends Component
             }
             $this->folder->update(['status' => 'En cours']);
 
-            if ($this->user->can('add-exoneration')) {
-                $this->confirm("Utilisez-vous des exonerations ?", [
-                    'confirmButtonText' => 'Oui',
-                    'cancelButtonText' => 'Non',
-                    'onConfirmed' => 'confirmed',
-                    'onDismissed' => 'cancelled'
-                ]);
-            } else {
-                $this->alert('success', "Ouverture DDI éfféctué avec succès.");
-            }
+            $this->alert('success', "Ouverture ddi éfféctué avec succès.");
+
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -326,22 +326,21 @@ class FolderProcessForm extends Component
 
     public function back($step)
     {
-        if ($step == 2 && !$this->exoneration->id && $this->user->can('add-ddi-opening')) {
-            $this->currentStep = 1;
-        } else {
+        //if ($step == 2 && !$this->exoneration->id && $this->user->can('add-ddi-opening')) {
+        //    $this->currentStep = 1;
+        //} else {
             $this->currentStep = $step;
-        }
+        //}
     }
 
     public function confirmed()
     {
-        $this->currentStep = 2;
-        $this->alert('success', "Ouverture ddi éfféctué avec succès.");
+        $this->currentStep = 1;
     }
 
     public function cancelled()
     {
-        $this->currentStep = 3;
+        $this->currentStep = 2;
     }
 
     public function render()

@@ -4,81 +4,39 @@
         <div class="stepwizard">
             <div class="stepwizard-row setup-panel">
                 <div class="multi-wizard-step">
-                    <a href="#step-1" type="button"
+                    <a href="#step-2" type="button"
                        class="btn {{ $currentStep != 1 ? 'btn-default' : 'btn-primary' }}"
-                       @if(!auth()->user()->can('add-ddi-opening')) disabled="disabled" @endif>1</a>
-                    <p>Ouverture DDI</p>
+                       @if(!($ddiOpening->id || auth()->user()->can('add-exoneration'))) disabled="disabled" @endif>1</a>
+                    <p>Exonération</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-2" type="button"
+                    <a href="#step-1" type="button"
                        class="btn {{ $currentStep != 2 ? 'btn-default' : 'btn-primary' }}"
-                       @if(!($ddiOpening->id || auth()->user()->can('add-exoneration'))) disabled="disabled" @endif>2</a>
-                    <p>Exonération</p>
+                       @if(!auth()->user()->can('add-ddi-opening')) disabled="disabled" @endif>2</a>
+                    <p>Ouverture DDI</p>
                 </div>
                 <div class="multi-wizard-step">
                     <a href="#step-3" type="button"
                        class="btn {{ $currentStep != 3 ? 'btn-default' : 'btn-primary' }}"
                        @if(!($exoneration->id || auth()->user()->can('add-declaration'))) disabled="disabled" @endif>3</a>
-                    <p>Déclaration</p>
+                    <p>Déclarations</p>
                 </div>
                 <div class="multi-wizard-step">
                     <a href="#step-4" type="button"
                        class="btn {{ $currentStep != 4 ? 'btn-default' : 'btn-primary' }}"
                        @if(!($declaration->id || auth()->user()->can('add-delivery-note'))) disabled="disabled" @endif>4</a>
-                    <p>Bon de livraison</p>
+                    <p>Bons de livraisons</p>
                 </div>
                 <div class="multi-wizard-step">
                     <a href="#step-5" type="button"
                        class="btn {{ $currentStep != 5 ? 'btn-default' : 'btn-primary' }}"
                        @if(!($declaration->id || auth()->user()->can('add-delivery-details'))) disabled="disabled" @endif>5</a>
-                    <p>Détails de livraison</p>
+                    <p>Détails de la livraison</p>
                 </div>
             </div>
         </div>
 
-        <div class="row setup-content {{ $currentStep != 1 ? 'd-none' : '' }}" id="step-1">
-            <div class="col-md-12">
-                <h4>Ouverture DDI</h4>
-                @can('add-ddi-opening')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <x-form.input label="Numéro DVT" wire:model.defer="ddiOpening.dvt_number" required></x-form.input>
-                        </div>
-                        <div class="col-md-6">
-                            <x-form.date label="Date d'obtention DVT" wire:model.defer="ddiOpening.dvt_obtained_date" required></x-form.date>
-                        </div>
-                        <div class="col-md-6">
-                            <x-form.input label="Numéro DDI" wire:model.defer="ddiOpening.ddi_number"></x-form.input>
-                        </div>
-                        <div class="col-md-6">
-                            <x-form.date label="Date d'obtention DDI" wire:model.defer="ddiOpening.ddi_obtained_date"></x-form.date>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                @if($ddiOpening->attach_file_path)
-                                    <label>Fichier DDI</label>
-                                    <div class="">
-                                        <button wire:click="downloadFile('ddi_openings')" class="btn btn-sm btn-success">
-                                            <i class="fas fa-download"></i> Telecharger
-                                        </button>
-                                        <button wire:click="deleteFile('ddi_openings')" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i> Supprimer
-                                        </button>
-                                    </div>
-                                @else
-                                    <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile"></x-form.file-upload>
-                                    @error('ddiFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary nextBtn float-right" wire:click="submitDdiOpeningStep"
-                            type="button">Sauvegarder et Passer</button>
-                @endcan
-            </div>
-        </div>
-
-        <div class="row setup-content {{ $currentStep != 2 ? 'd-none' : '' }}" id="step-2">
+        <div class="row setup-content {{ $currentStep != 1 ? 'd-none' : '' }}" id="step-2">
             <div class="col-md-12">
                 <h4>Exonération</h4>
                 @can('add-exoneration')
@@ -114,14 +72,56 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        @can('add-ddi-opening')
-                            <button class="btn btn-secondary" wire:click="back(1)" type="button">Retourner</button>
-                        @endcan
-                        <button class="btn btn-primary nextBtn float-right" wire:click="submitExonerationStep" type="button">Sauvegarder et Passer</button>
-                    </div>
+                    <button class="btn btn-primary nextBtn float-right" wire:click="submitExonerationStep" type="button">Sauvegarder et Passer</button>
                 @else
                     <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
+                @endcan
+            </div>
+        </div>
+
+        <div class="row setup-content {{ $currentStep != 2 ? 'd-none' : '' }}" id="step-1">
+            <div class="col-md-12">
+                <h4>Ouverture DDI</h4>
+                @can('add-ddi-opening')
+                    <div class="row">
+                        <div class="col-md-6">
+                            <x-form.input label="Numéro DVT" wire:model.defer="ddiOpening.dvt_number" required></x-form.input>
+                        </div>
+                        <div class="col-md-6">
+                            <x-form.date label="Date d'obtention DVT" wire:model.defer="ddiOpening.dvt_obtained_date" required></x-form.date>
+                        </div>
+                        <div class="col-md-6">
+                            <x-form.input label="Numéro DDI" wire:model.defer="ddiOpening.ddi_number"></x-form.input>
+                        </div>
+                        <div class="col-md-6">
+                            <x-form.date label="Date d'obtention DDI" wire:model.defer="ddiOpening.ddi_obtained_date"></x-form.date>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @if($ddiOpening->attach_file_path)
+                                    <label>Fichier DDI</label>
+                                    <div class="">
+                                        <button wire:click="downloadFile('ddi_openings')" class="btn btn-sm btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('ddi_openings')" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </div>
+                                @else
+                                    <x-form.file-upload label="Fichier DDI" wire:model.lazy="ddiFile"></x-form.file-upload>
+                                    @error('ddiFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @can('add-exoneration')
+                            <button class="btn btn-secondary" wire:click="back(1)" type="button">Retourner</button>
+                        @endcan
+                        <button class="btn btn-primary nextBtn float-right" wire:click="submitDdiOpeningStep"
+                                type="button">Sauvegarder et Passer</button>
+                    </div>
                 @endcan
             </div>
         </div>

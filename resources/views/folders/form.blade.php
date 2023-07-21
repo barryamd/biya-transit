@@ -20,6 +20,10 @@
                 <div class="col-md-6">
                     <x-form.input label="Port" wire:model.defer="folder.harbor" required></x-form.input>
                 </div>
+                <div class="col-md-6">
+                    <x-form.select2 label="Pays" wire:model="folder.country" :options="countries()"
+                                   required placeholder="Selectionner le pays"></x-form.select2>
+                </div>
                 <div class="col-md-9">
                     <x-form.select2-ajax label="Designation" wire:model="selectedProducts" :selectedOptions="$products" multiple routeName="getProducts"
                                          id="products" required placeholder="Rechercher les produits"></x-form.select2-ajax>
