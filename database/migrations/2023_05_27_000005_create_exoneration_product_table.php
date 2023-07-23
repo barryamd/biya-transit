@@ -13,6 +13,12 @@ return new class extends Migration {
         Schema::create('exoneration_product', function (Blueprint $table) {
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('exoneration_id');
+
+            $table->foreign('product_id')->references('id')->on('products')
+                ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('exoneration_id')->references('id')->on('exonerations')
+                ->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 

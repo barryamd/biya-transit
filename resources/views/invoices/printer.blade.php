@@ -9,9 +9,10 @@
             <div><b>N° Facture :</b> {{ $invoice->number }}</div>
             <div><b>N° Dossier :</b> {{ $folder->number }}</div>
             <div><b>N° CNT :</b> {{ $folder->number }}</div>
+            <div><b>Nombre de conteneurs :</b> {{ $folder->containers_count }}</div>
+{{--            <div><b>Numéro des conteneurs :</b> {{ $folder->containers_count }}</div>--}}
         </div>
     </div>
-
     <hr class="pt-0 mt-0 text-gray">
 
     <div class="row">
@@ -21,9 +22,9 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
-                        <th class="bg-secondary text-center" style="width: 50%;">DESIGNATION</th>
-                        <th class="bg-secondary text-center" style="width: 30%;">QUANTITE</th>
-                        <th class="bg-secondary text-center" style="width: 20%;">POIDS (KGS)</th>
+                        <th class="bg-secondary-" style="width: 50%;">DESIGNATION</th>
+                        <th class="bg-secondary-" style="width: 30%;">QUANTITE</th>
+                        <th class="bg-secondary-" style="width: 20%;">POIDS (KGS)</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,7 +37,7 @@
                                 {{ $container->package_number }}
                             </td>
                             <td>
-                                {{ $container->weight }}
+                                {{ number_format($container->weight, 2, ',', ' ') }}
                             </td>
                         </tr>
                     @endforeach
@@ -45,7 +46,6 @@
             </div>
         </div>
     </div>
-
     <hr class="pt-0 mt-0 text-gray">
 
     <div class="row">
@@ -55,9 +55,9 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
-                        <th class="bg-secondary text-center" style="width: 40%;">DSIGNATIONS</th>
-                        <th class="bg-secondary text-center" style="width: 20%;">MONTANT EN GNF</th>
-                        <th class="bg-secondary text-center" style="width: 40%;">OBSERVATION</th>
+                        <th class="bg-secondary-" style="width: 40%;">DESIGNATIONS</th>
+                        <th class="bg-secondary- text-center" style="width: 20%;">MONTANT EN GNF</th>
+                        <th class="bg-secondary-" style="width: 40%;">OBSERVATION</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -76,9 +76,9 @@
                     @endforeach
                     <tr>
                         <th>TOTAL</th>
-                        <td class="bg-secondary">
+                        <th class="bg-secondary-">
                             {{ moneyFormat($amount->amounts_sum_amount) }}
-                        </td>
+                        </th>
                         <td></td>
                     </tr>
                     </tbody>
@@ -86,13 +86,11 @@
             </div>
         </div>
     </div>
-
     <hr class="pt-0 mt-0 text-gray">
 
     <div>
-        <b>Arrêté la présente facture à la somme de :</b> {{ $totalInText }}
+        <b>Arrêté la présente facture à la somme de :</b> {{ $totalInText }} frangs guinéens
     </div>
-
     <hr class="pt-0 mt-0 text-gray">
 
     <div class="row pt-3">

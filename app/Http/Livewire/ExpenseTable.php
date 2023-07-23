@@ -20,7 +20,7 @@ class ExpenseTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-expense');
+        $this->authorize('read-expense');
 
         $this->expense = new Expense();
     }

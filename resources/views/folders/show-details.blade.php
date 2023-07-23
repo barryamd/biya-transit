@@ -16,7 +16,7 @@
                     </tr>
                     <tr>
                         <th>Poids total de la marchandise</th>
-                        <td>{{ $folder->weight }}</td>
+                        <td>{{ number_format($folder->containers_sum_weight, 2, ',', ' ') }} Kgs</td>
                     </tr>
                     <tr>
                         <th>Port</th>
@@ -53,27 +53,31 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 15%;">Numéro du conteneur</th>
-                        <th style="width: 10%;">Poids</th>
+                        <th style="width: 25%;">Type du conteneur</th>
+                        <th style="width: 25%;">Numéro du conteneur</th>
+                        <th style="width: 15%;">Poids</th>
                         <th style="width: 15%;">Nombre de colis</th>
-                        <th style="width: 10%">Date d'arrivé</th>
+                        <th style="width: 15%">Date d'arrivé</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($folder->containers as $i => $container)
+                    @foreach ($containers as $i => $container)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
+                            <td class="align-middle">
+                                {{ $container->type->label }}
+                            </td>
+                            <td class="align-middle">
                                 {{ $container->number }}
                             </td>
                             <td class="align-middle">
-                                {{ $container->weight }}
+                                {{ number_format($container->weight, 2, ',', ' ') }} Kgs
                             </td>
                             <td class="align-middle">
                                 {{ $container->package_number }}
                             </td>
                             <td class="align-middle">
-                                {{ $container->arrival_date->format('d/m/Y') }}
+                                {{ dateFormat($container->arrival_date) }}
                             </td>
                         </tr>
                     @endforeach
@@ -101,10 +105,10 @@
                     @foreach ($documents as $i => $document)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
+                            <td class="align-middle">
                                 {{ $document->type->label }}
                             </td>
-                            <td>
+                            <td class="align-middle">
                                 {{ $document->number }}
                             </td>
                             <td class="align-middle">
@@ -404,25 +408,33 @@
                         </tr>
                         </tbody>
                     </table>
-                    <h5>Informations du transporteur</h5>
+                    <h5>Transporteurs</h5>
                     <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                            <thead>
+                            <tr>
+                                <th>Conteneur</th>
+                                <th>Immatriculation du vehicule</th>
+                                <th>Marque du vehicule</th>
+                                <th>Chauffeur</th>
+                                <th>Numéro du chauffeur</th>
+                            </tr>
+                            </thead>
                             <tbody>
-                            <tr>
-                                <th style="width: 40%">Numéro d'immatriculation</th>
-                                <td>{{ $transporter->numberplate }}</td>
-                            </tr>
-                            <tr>
-                                <th>Marque</th>
-                                <td>{{ $transporter->marque }}</td>
-                            </tr>
-                            <tr>
-                                <th>Nom du chauffeur</th>
-                                <td>{{ $transporter->driver_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Téléphone du chauffeur</th>
-                                <td>{{ $transporter->driver_phone }}</td>
-                            </tr>
+                            @forelse($containers as $container)
+                                <tr>
+                                    <td>{{ $container->number }}</td>
+                                    <td>{{ $container->transporter->numberplate }}</td>
+                                    <td>{{ $container->transporter->marque }}</td>
+                                    <td>{{ $container->transporter->driver_name }}</td>
+                                    <td>{{ $container->transporter->driver_phone }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="text-center text-danger" colspan="5">
+                                        <p>Aucun transporteur n'a été ajouté au dossier</p>
+                                    </td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                 @else
@@ -436,7 +448,7 @@
     <x-slot name="footer">
         <x-cancel-button><i class="fas fa-arrow-left"></i> {{__('Back')}}</x-cancel-button>
         @if($folder->status == 'En attente')
-            @can('edit-folder')
+            @can('update-folder')
                 <a href="{{route('folders.edit', $folder)}}" class="btn btn-warning"><i class="fas fa-edit"></i> Modifier le dossier</a>
             @endcan
         @endif

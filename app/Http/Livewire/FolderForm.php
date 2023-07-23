@@ -2,11 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Container;
+use App\Models\ContainerType;
 use App\Models\DocumentType;
 use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Document;
-use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -30,11 +31,11 @@ class FolderForm extends Component
     public Collection|array $selectedProducts = [], $products = [];
     public array|string $documentsFiles = [];
     public string $productDesignation = '';
-    public Collection|array $documentTypes = [];
+    public Collection|array $containerTypes = [], $documentTypes = [];
 
     protected $messages = [
-        'containers' => 'Il faut au moins un conteneur',
-        'documents' => 'Il faut au moins un document',
+        'containers' => 'Il faut au minimum un conteneur',
+        'documents' => 'Il faut au minimum un document',
     ];
 
     protected function rules() {
@@ -43,9 +44,16 @@ class FolderForm extends Component
             'folder.type'        => 'required',
             'folder.num_cnt'     => [
                 'required', 'string',
-                Rule::unique('folders', 'num_cnt')
+                Rule::unique('folders', 'num_cnt')->ignore($this->folder->id)
             ],
-            'folder.weight'      => ['required', 'string'],
+            'folder.weight'      => [
+                'required', 'string',
+                function ($attribute, $value, $fail) {
+                    if ($this->containers->sum(fn($item) => $item['weight']) > $value) {
+                        $fail('Ce numéro est dupliqué.');
+                    }
+                }
+            ],
             'folder.harbor'      => ['required', 'string'],
             'folder.country'     => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
@@ -53,7 +61,15 @@ class FolderForm extends Component
 
             'containers'                  => 'required',
             'containers.*.folder_id'      => 'nullable',
-            'containers.*.number'         => ['required', 'string'],
+            'containers.*.type_id'        => 'required',
+            'containers.*.number'         => [
+                'required', 'string',
+                function ($attribute, $value, $fail) {
+                    if ($this->containers->where('number', $value)->count() > 1) {
+                        $fail('Ce numéro est dupliqué.');
+                    }
+                }
+            ],
             'containers.*.weight'         => ['required', 'string'],
             'containers.*.package_number' => ['required', 'string'],
             'containers.*.arrival_date'   => ['required', 'date'],
@@ -61,11 +77,14 @@ class FolderForm extends Component
             'documents'             => 'required',
             'documents.*.folder_id' => 'nullable',
             'documents.*.type_id'   => 'required',
-            'documents.*.number'    => ['required','string'],
-//                Rule::unique('documents', 'number')->where(function ($query) {
-//                    return $query->where('folder_id', $this->folder->id);
-//                }),
-//                Rule::unique('documents', 'number')->ignore($this->folder->id)],
+            'documents.*.number'    => [
+                'required','string',
+                function ($attribute, $value, $fail) {
+                    if ($this->documents->where('number', $value)->count() > 1) {
+                        $fail('Ce numéro est dupliqué.');
+                    }
+                }
+            ],
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
@@ -99,6 +118,7 @@ class FolderForm extends Component
             }
         }
 
+        $this->containerTypes = ContainerType::all()->pluck('label', 'id');
         $this->documentTypes = DocumentType::all()->pluck('label', 'id');
     }
 
@@ -126,8 +146,8 @@ class FolderForm extends Component
     {
         $this->containers->add([
             'folder_id' => null,
+            'type_id' => null,
             'number' => null,
-            'designation' => null,
             'weight' => null,
             'package_number' => null,
             'arrival_date' => null,
@@ -158,7 +178,7 @@ class FolderForm extends Component
     {
         $this->validate();
 
-//        try {
+        try {
             $this->folder->generateUniqueNumber();
 
             DB::beginTransaction();
@@ -166,14 +186,15 @@ class FolderForm extends Component
             $this->folder->save();
             $this->folder->products()->sync($this->selectedProducts);
 
-            /*
             if ($this->folder->id) {
-                MotoSaleItem::query()->where('sale_id', $this->sale->id)
-                    ->whereNotIn('id', $this->motos->pluck('id'))->delete();
+                Container::query()->where('folder_id', $this->folder->id)
+                    ->whereNotIn('id', $this->containers->pluck('id'))->delete();
             }
-            MotoSaleItem::query()->upsert($saleItems->toArray(), ['id']);
-            $this->folder->containers()->createMany($this->containers);
-            */
+            $containers = $this->containers->map(function ($item) {
+                $item['folder_id'] = $this->folder->id;
+                return $item;
+            });
+            Container::query()->upsert($containers->toArray(), ['id']);
 
             foreach ($this->documents as $index => $documentInputs) {
                 $documentInputs['folder_id'] = $this->folder->id;
@@ -192,9 +213,9 @@ class FolderForm extends Component
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);
-//        } catch (\Exception $e) {
-//            throw new UnprocessableEntityHttpException($e->getMessage());
-//        }
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
     }
 
     public function closeModal()

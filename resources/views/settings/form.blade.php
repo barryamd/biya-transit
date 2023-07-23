@@ -1,6 +1,6 @@
 @section('title', 'Paramètres générales')
 
-@can('edit-settings')
+@can('update-settings')
 <x-form-section submit="save" title="Paramètres générales">
     <x-slot name="form">
         <div class="row">
@@ -77,7 +77,7 @@
     </x-slot>
     <x-slot name="footer">
         <a href="{{ url()->previous() }}" type="button" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> {{ __('Back') }}</a>
-        @can('edit-settings')
+        @can('update-settings')
         <button type="submit" class="btn btn-primary float-right"><i class="fa fa-save"></i> {{ __('Save') }}</button>
         @endcan
     </x-slot>

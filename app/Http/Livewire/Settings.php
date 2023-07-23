@@ -40,7 +40,7 @@ class Settings extends Component
 
     public function mount()
     {
-        $this->authorize('edit-settings');
+        $this->authorize('update-settings');
 
         $this->setting = Setting::query()->get()->first();
     }

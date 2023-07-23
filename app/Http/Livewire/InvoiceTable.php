@@ -23,7 +23,7 @@ class InvoiceTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-invoice');
+        $this->authorize('read-invoice');
     }
 
     public function columns(): array

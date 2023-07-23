@@ -2,8 +2,7 @@
     'label' => null,
     'name' => null,
     'id' => Str::random(5),
-    'value' => null,
-    'valueLabel' => '',
+    'selectedOptions' => [],
     'placeholder' => __('Search ...'),
     'routeName' => null,
     'parentId' => null,
@@ -15,9 +14,6 @@
     @endif
     <!-- For defining select2 -->
     <select name='{{ $name }}' id='{{ $id }}' {{ $attributes->merge(['class' => 'form-control']) }} style="width: 100%;">
-        @if($value)
-            <option value="{{$value}}" selected="selected">{{$valueLabel}}</option>
-        @endif
     </select>
     @error($name)
     <div class="invalid-feedback">

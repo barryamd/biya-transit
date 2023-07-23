@@ -23,7 +23,7 @@ class FolderTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-folder');
+        $this->authorize('read-folder');
 
         $user = Auth::user();
         if ($user->customer) {

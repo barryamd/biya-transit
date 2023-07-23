@@ -3,10 +3,12 @@
     <x-form-section submit="save">
         <x-slot name="form">
             <div class="row">
-                <div class="col-md-6">
-                    <x-form.select2-ajax label="Client" wire:model="folder.customer_id" routeName="getCustomers" id="customer"
-                                         :selectedOptions="$selectedCustomer" required placeholder="Rechercher le client"></x-form.select2-ajax>
-                </div>
+                @if(!auth()->user()->customer)
+                    <div class="col-md-6">
+                        <x-form.select2-ajax label="Client" wire:model="folder.customer_id" routeName="getCustomers" id="customer"
+                                             :selectedOptions="$selectedCustomer" required placeholder="Rechercher le client"></x-form.select2-ajax>
+                    </div>
+                @endif
                 <div class="col-md-6">
                     <x-form.select label="Type de dossier" wire:model="folder.type" :options="['IMPORT' => 'IMPORT', 'EXPORT'=> 'EXPORT']"
                                          required placeholder="Selectionner le type"></x-form.select>
@@ -43,10 +45,11 @@
                             <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">#</th>
-                                <th style="width: 15%;">Numero du conteneur</th>
+                                <th style="width: 25%;">Type de conteneur</th>
+                                <th style="width: 20%;">Numero du conteneur</th>
                                 <th style="width: 10%;">Poids</th>
-                                <th style="width: 15%;">Nombre de colis</th>
-                                <th style="width: 10%">Date d'arrivé</th>
+                                <th style="width: 20%;">Nombre de colis</th>
+                                <th style="width: 15%">Date d'arrivé</th>
                                 <th class="text-center" style="width: 5%">
                                     <button wire:click.prevent="addContainer" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                         <i class="fas fa-plus"></i>
@@ -59,16 +62,29 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
+                                        <select wire:model.defer="containers.{{$i}}.type_id" class="form-control px-1" required>
+                                            <option value="">-- Selectionner un type --</option>
+                                            @foreach($containerTypes as $value => $type)
+                                                <option value="{{$value}}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error("containers.$i.type_id") <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                    </td>
+                                    <td>
                                         <input type="text" wire:model.defer="containers.{{$i}}.number" class="form-control px-1" required>
+                                        @error("containers.$i.number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
                                         <input type="number" wire:model.defer="containers.{{$i}}.weight" step="000.00" class="form-control px-1" required>
+                                        @error("containers.$i.weight") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
                                         <input type="text" wire:model.defer="containers.{{$i}}.package_number" class="form-control px-1" required>
+                                        @error("containers.$i.package_number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
                                         <input type="date" wire:model.defer="containers.{{$i}}.arrival_date" class="form-control px-1" required>
+                                        @error("containers.$i.arrival_date") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                                         <button wire:click.prevent="removeContainer('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
@@ -113,13 +129,24 @@
                                                 <option value="{{$value}}">{{ $type }}</option>
                                             @endforeach
                                         </select>
+                                        @error("documents.$i.type_id") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td>
                                         <input type="text" wire:model.defer="documents.{{$i}}.number" class="form-control px-1" required>
+                                        @error("documents.$i.number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
-                                        <input type="file" wire:model.lazy="documentsFiles.{{$i}}" class="form-control px-1" required>
-                                        @error('documentsFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                        @if($document['attach_file_path'])
+                                            <button wire:click="downloadDocumentFile" class="btn btn-sm btn-success">
+                                                <i class="fas fa-download"></i> Telecharger
+                                            </button>
+                                            <button wire:click="deleteDocumentFile({{$i}})" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        @else
+                                            <input type="file" wire:model.lazy="documentsFiles.{{$i}}" class="form-control px-1" required>
+                                            @error('documentsFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                        @endif
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                                         <button wire:click.prevent="removeDocument('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">

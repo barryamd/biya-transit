@@ -15,13 +15,13 @@ class ServiceTable extends DataTableComponent
     protected array $createButtonParams = [
         'title' => 'Ajouter un service',
         'modal' => 'serviceFormModal',
-        'permission' => 'edit-settings',
+        'permission' => 'update-settings',
     ];
     public string $name = '', $description = '';
 
     public function mount()
     {
-        $this->authorize('edit-settings');
+        $this->authorize('update-settings');
     }
 
     public function columns(): array

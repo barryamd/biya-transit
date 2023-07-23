@@ -24,8 +24,8 @@
                         <tr>
                             <th>{{ $groupPermissions[$table] }}</th>
                             <td>
-                                @if(array_key_exists('view-'.$table, $permissions))
-                                    <x-form.checkbox label="Voir" wire:model.defer="rolePermissions" :value="$permissions['view-'.$table]" disabled></x-form.checkbox>
+                                @if(array_key_exists('read-'.$table, $permissions))
+                                    <x-form.checkbox label="Voir" wire:model.defer="rolePermissions" :value="$permissions['read-'.$table]" disabled></x-form.checkbox>
                                 @endif
                             </td>
                             <td>
@@ -37,8 +37,8 @@
                                 @if(array_key_exists('update-'.$table, $permissions))
                                     <x-form.checkbox label="Modifier" wire:model.defer="rolePermissions" :value="$permissions['update-'.$table]" disabled></x-form.checkbox>
                                 @endif
-                                @if(array_key_exists('edit-'.$table, $permissions))
-                                    <x-form.checkbox label="Modifier" wire:model.defer="rolePermissions" :value="$permissions['edit-'.$table]" disabled></x-form.checkbox>
+                                @if(array_key_exists('update-'.$table, $permissions))
+                                    <x-form.checkbox label="Modifier" wire:model.defer="rolePermissions" :value="$permissions['update-'.$table]" disabled></x-form.checkbox>
                                 @endif
                             </td>
                             <td>

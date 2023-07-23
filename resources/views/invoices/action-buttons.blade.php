@@ -1,8 +1,8 @@
 <div class="btn-group btn-group-sm">
-    @can('view-invoice')
+    @can('read-invoice')
     <a href="{{ route('invoices.show', $row->id) }}" class='btn text-info text-lg' title="Voir la facture"><i class='fas fa-eye'></i></a>
     @endcan
-    @can('edit-invoice')
+    @can('update-invoice')
     <a href="{{ route('invoices.edit', $row->id) }}" class='btn text-warning text-lg' title="Modifier la facture"><i class='fas fa-edit'></i></a>
     @endcan
     @can('delete-invoice')

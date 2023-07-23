@@ -21,7 +21,7 @@ class RoleTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-role');
+        $this->authorize('read-role');
     }
 
     public function columns(): array

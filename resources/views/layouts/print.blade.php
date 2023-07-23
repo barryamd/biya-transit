@@ -26,12 +26,13 @@
             <div class="col-3 p-4" style="height: 165px">
                 <img src="{{ asset('uploads/'.$setting->logo) }}" height="100%">
             </div>
-            <div class="col-7 pt-2" style="height: 140px">
-                <h2 class="text-center text-bold">{{ $setting->name }}</h2>
+            <div class="col-7 pt-2" style="height: 180px">
+                <h2 class="text-uppercase text-2xl text-center text-bold">{{ $setting->name }}</h2>
+                <h4 class="text-center text-bold">{{ $setting->acronym }}</h4>
                 <address class="text-center text-lg">
-                    {{ $setting->address }}<br>
-                    <b>Email:</b> {{ $setting->email }}<br/>
-                    <b>Contacts:</b> {{ $setting->phone1 }}, {{ $setting->phone1 }}<br/>
+                    <b>Téléphone :</b> {{ $setting->phone1 }}/{{ $setting->phone2 }}<br/>
+                    <b>Email :</b> {{ $setting->email }}<br/>
+                    <b>BP : {{ $setting->postcode }}</b> Conakry Guinee<br/>
                 </address>
             </div>
             <div class="col-2 pt-4" style="height: 140px">
@@ -47,7 +48,7 @@
 
         <!-- Footer -->
         <footer class="main-footer text-center">
-            Siège Boulevard du Commerce en face du Siège ORANGE GUINEE, Quartier Almamya Commune de Ratoma
+            {{ $setting->address }}
         </footer>
     </div>
 

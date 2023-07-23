@@ -21,6 +21,9 @@ return new class extends Migration {
             $table->index('invoice_number');
 
             $table->timestamps();
+
+            $table->foreign('folder_id')->references('id')->on('folders')
+                ->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 

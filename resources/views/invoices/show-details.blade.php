@@ -9,6 +9,8 @@
             <div><b>N° Facture :</b> {{ $invoice->number }}</div>
             <div><b>N° Dossier :</b> {{ $folder->number }}</div>
             <div><b>N° CNT :</b> {{ $folder->number }}</div>
+            <div><b>Nombre de conteneurs :</b> {{ $folder->containers_count }}</div>
+            {{--            <div><b>Numéro des conteneurs :</b> {{ $folder->containers_count }}</div>--}}
         </div>
     </div>
 
@@ -21,9 +23,9 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
-                        <th class="bg-secondary text-center" style="width: 50%;">DESIGNATION</th>
-                        <th class="bg-secondary text-center" style="width: 30%;">QUANTITE</th>
-                        <th class="bg-secondary text-center" style="width: 20%;">POIDS (KGS)</th>
+                        <th class="bg-secondary" style="width: 50%;">DESIGNATION</th>
+                        <th class="bg-secondary" style="width: 30%;">QUANTITE</th>
+                        <th class="bg-secondary" style="width: 20%;">POIDS (KGS)</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,7 +38,7 @@
                                 {{ $container->package_number }}
                             </td>
                             <td>
-                                {{ $container->weight }}
+                                {{ number_format($container->weight, 2, ',', ' ') }}
                             </td>
                         </tr>
                     @endforeach
@@ -55,9 +57,9 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
-                        <th class="bg-secondary text-center" style="width: 40%;">DSIGNATIONS</th>
+                        <th class="bg-secondary" style="width: 40%;">DESIGNATIONS</th>
                         <th class="bg-secondary text-center" style="width: 20%;">MONTANT EN GNF</th>
-                        <th class="bg-secondary text-center" style="width: 40%;">OBSERVATION</th>
+                        <th class="bg-secondary" style="width: 40%;">OBSERVATION</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -97,7 +99,7 @@
 
     <div class="row">
         <div class="col-12">
-            <a href="{{ route('invoice.print', $invoice->folder) }}" class="btn btn-default">
+            <a href="{{ route('invoice.print', $invoice->folder) }}" target="_blank" class="btn btn-default">
                 <i class="fas fa-print"></i> Imprimer
             </a>
         </div>

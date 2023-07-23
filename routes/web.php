@@ -59,6 +59,7 @@ Route::middleware([
     Route::view('progress-folders','folders.index')->name('progress-folders.index');
     Route::view('closed-folders','folders.index')->name('closed-folders.index');
 
+    Route::view('container-types','container-types.index')->name('container-types.index');
     Route::view('document-types','document-types.index')->name('document-types.index');
     Route::view('tvas','tvas.index')->name('tvas.index');
     Route::view('services','services.index')->name('services.index');

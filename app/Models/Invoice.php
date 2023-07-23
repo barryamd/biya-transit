@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\Rules\In;
 
 class Invoice extends Model
 {
@@ -15,12 +16,13 @@ class Invoice extends Model
 
     public function generateUniqueNumber()
     {
-        $lastFolder = Invoice::query()->latest()->get()->first();
-        if ($lastFolder) {
-            $id = $lastFolder->id + 1;
-        } else {
-            $id = 1;
-        }
+//        $lastFolder = Invoice::query()->latest()->get()->first();
+//        if ($lastFolder) {
+//            $id = $lastFolder->id + 1;
+//        } else {
+//            $id = 1;
+//        }
+        $id = Invoice::query()->count() + 1;
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
     }
 

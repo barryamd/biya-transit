@@ -44,16 +44,8 @@
             <div class="col-md-3">
                 <x-form.input label="Contact 4" wire:model.defer="customer.phone_number2"></x-form.input>
             </div>
-            @if(!$isEditMode)
-                <div class="col-md-6">
-                    <x-form.password label="Password" wire:model.defer="password" autocomplete="new-password" required></x-form.password>
-                </div>
-                <div class="col-md-6">
-                    <x-form.password label="Password confirmation" wire:model.defer="password_confirmation" autocomplete="new-password" required></x-form.password>
-                </div>
-            @endif
             <div class="col-md-6">
-                <x-form.input label="Adresse" wire:model.defer="user.address"></x-form.input>
+                <x-form.textarea label="Adresse" wire:model.defer="user.address"></x-form.textarea>
             </div>
         </div>
     </x-slot>

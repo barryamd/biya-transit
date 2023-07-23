@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Container;
 use App\Models\DdiOpening;
 use App\Models\Declaration;
 use App\Models\Delivery;
@@ -18,7 +19,7 @@ class FolderDetails extends Component
     use LivewireAlert;
 
     public Folder $folder;
-    public Collection $documents;
+    public Collection $containers, $documents;
 
     public DdiOpening|null $ddiOpening = null;
     public Exoneration|null $exoneration = null;
@@ -29,7 +30,11 @@ class FolderDetails extends Component
 
     public function mount()
     {
-        $this->documents = Document::with('type')->where('folder_id', $this->folder->id)->get();
+        $this->folder->loadSum('containers', 'weight');
+        $this->containers = Container::with('type', 'transporter')
+            ->where('folder_id', $this->folder->id)->get();
+        $this->documents = Document::with('type')
+            ->where('folder_id', $this->folder->id)->get();
 
         $this->ddiOpening = $this->folder->ddiOpening;
         $this->exoneration = $this->folder->exoneration;

@@ -1,5 +1,5 @@
 <div class="btn-group btn-group-sm">
-    @can('edit-expense')
+    @can('update-expense')
     <button wire:click="openEditModal({{ $row->id }}, 'expenseFormModal')" class='btn text-warning text-lg' title="{{__('Edit') }}"><i class='fas fa-edit'></i></button>
     @endcan
     @can('delete-expense')

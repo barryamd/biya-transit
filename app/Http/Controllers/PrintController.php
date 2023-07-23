@@ -14,7 +14,8 @@ class PrintController extends Controller
 {
     public function generateInvoice(Folder $folder)
     {
-        $folder->load('customer.user', 'containers', 'invoice.amounts.service');
+        $folder->load('customer.user', 'containers', 'invoice.amounts.service')
+            ->loadCount('containers');
         $containers = $folder->containers;
         $invoice = $folder->invoice;
         $amounts = $invoice->amounts;
@@ -25,7 +26,7 @@ class PrintController extends Controller
         $numberFormatter = new \NumberFormatter('fr_FR', \NumberFormatter::SPELLOUT);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
         $totalInText = $moneyFormatter->format($total);
-        $setting = new Setting();
+        $setting = Setting::query()->find(1);
 
         return view('invoices.printer', compact('setting', 'folder', 'containers', 'invoice', 'amounts', 'totalInText'));
     }

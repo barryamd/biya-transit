@@ -126,7 +126,7 @@ class UserTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-user');
+        $this->authorize('read-user');
         $this->user = new User();
         $this->roles = Role::query()->where('name', '<>', 'Super Admin')
             ->pluck('name', 'id')->toArray();

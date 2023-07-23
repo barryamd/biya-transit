@@ -15,13 +15,13 @@ class DocumentTypeTable extends DataTableComponent
     protected array $createButtonParams = [
         'title'  => 'Nouveau type de document',
         'modal' => 'documentTypeFormModal',
-        'permission' => 'edit-settings',
+        'permission' => 'update-settings',
     ];
     public string $label = '';
 
     public function mount()
     {
-        $this->authorize('edit-settings');
+        $this->authorize('update-settings');
     }
 
     public function columns(): array

@@ -27,7 +27,7 @@ class RoleShow extends Component
 
     public function mount(Role $role)
     {
-        $this->authorize('view-role');
+        $this->authorize('read-role');
 
         $this->role = $role->name;
         $this->rolePermissions = $role->permissions()->pluck('id')->toArray();

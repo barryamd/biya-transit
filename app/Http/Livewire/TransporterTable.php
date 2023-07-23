@@ -22,7 +22,7 @@ class TransporterTable extends DataTableComponent
 
     public function mount()
     {
-        $this->authorize('view-transporter');
+        $this->authorize('read-transporter');
 
         $this->transporter = new Transporter();
     }

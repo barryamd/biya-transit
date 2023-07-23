@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use App\Actions\Fortify\PasswordValidationRules;
 use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Views\Column\DateColumn;
 use App\LivewireTables\Views\Column\SwitchColumn;
@@ -10,15 +9,13 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Customer;
-use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class CustomerTable extends DataTableComponent
 {
-    use PasswordValidationRules;
-
     protected $model = User::class;
     protected array $createButtonParams = [
         'title' => 'Nouveau client',
@@ -27,11 +24,10 @@ class CustomerTable extends DataTableComponent
     ];
     public User $user;
     public Customer $customer;
-    public string $password = '', $password_confirmation = '';
 
     public function mount()
     {
-        $this->authorize('view-customer');
+        $this->authorize('read-customer');
         $this->user = new User();
         $this->customer = new  Customer();
     }
@@ -82,8 +78,6 @@ class CustomerTable extends DataTableComponent
                 Rule::unique('users', 'phone_number')->ignore($this->user->id)
             ],
             'user.address' => ['nullable', 'string', 'max:255'],
-            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules(),
-
             'customer.name' => [
                 'nullable', 'string',
                 Rule::unique('customers', 'name')->ignore($this->customer->id)
@@ -119,19 +113,18 @@ class CustomerTable extends DataTableComponent
 
         try {
             if (!$this->isEditMode)
-                $this->user->password = Hash::make($this->password);
+                $this->user->password = Hash::make(Str::random(8));
             DB::transaction(function () {
                 $this->user->saveOrFail();
                 if (!$this->isEditMode) {
-                    $this->user->givePermissionTo(['view-folder', 'create-folder', 'edit-folder']);
+                    $this->user->givePermissionTo(['create-folder', 'read-folder', 'update-folder']);
                     $this->customer->user_id = $this->user->id;
                 }
                 $this->customer->save();
             });
 
             if (!$this->isEditMode) {
-                $this->user->password = $this->password;
-                //event(new Registered($user));
+                //$this->user->sendPasswordResetNotification(csrf_token());
             }
 
             $this->closeModal();

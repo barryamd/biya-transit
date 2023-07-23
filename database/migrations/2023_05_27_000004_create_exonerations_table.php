@@ -13,12 +13,17 @@ return new class extends Migration {
         Schema::create('exonerations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->string('number', 30)->unique();
+            $table->unsignedBigInteger('container_id')->nullable();
+            $table->string('number', 30);
             $table->date('date');
             $table->string('responsible');
             $table->string('attach_file_path')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('folder_id')->references('id')->on('folders')
+                ->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign('container_id')->references('id')->on('containers');
         });
     }
 

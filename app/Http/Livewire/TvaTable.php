@@ -16,13 +16,13 @@ class TvaTable extends DataTableComponent
     protected array $createButtonParams = [
         'title' => 'Nouveau tva',
         'modal' => 'tvaFormModal',
-        'permission' => 'edit-settings',
+        'permission' => 'update-settings',
     ];
     public string $rate = '';
 
     public function mount()
     {
-        $this->authorize('edit-settings');
+        $this->authorize('update-settings');
     }
 
     public function columns(): array

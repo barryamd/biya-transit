@@ -1,5 +1,5 @@
 <div class="btn-group btn-group-sm">
-    @can('edit-user')
+    @can('update-user')
     <button wire:click="openEditModal({{ $row->id }}, 'userFormModal')" class='btn text-warning text-lg' title="Modifier les infos de l'utilisateur"><i class='fas fa-edit'></i></button>
     @endcan
     @can('delete-user')

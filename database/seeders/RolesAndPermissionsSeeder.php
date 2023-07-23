@@ -35,8 +35,8 @@ class RolesAndPermissionsSeeder extends Seeder
         foreach ($tables as $table) {
             $permissions = [];
             $permissions[0] = Permission::create(['name' => 'create-'.$table]); // créer | créer un ...
-            $permissions[1] = Permission::create(['name' => 'view-'.$table]);   // voir | voir un ...
-            $permissions[2] = Permission::create(['name' => 'edit-'.$table]); // mettre à jour | édition de ...
+            $permissions[1] = Permission::create(['name' => 'read-'.$table]);   // voir | voir un ...
+            $permissions[2] = Permission::create(['name' => 'update-'.$table]); // mettre à jour | édition de ...
             $permissions[3] = Permission::create(['name' => 'delete-'.$table]); // supprimer | suppression de ...
             //$permissions[4] = Permission::create(['name' => 'export-'.$table]); // exporter | exportation
         }
@@ -46,8 +46,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'add-delivery-note']);
         Permission::create(['name' => 'add-delivery-details']);
         Permission::create(['name' => 'close-folder']);
-        Permission::create(['name' => 'edit-settings']);
-        Permission::create(['name' => 'view-dashboard']);
+        Permission::create(['name' => 'update-settings']);
+        Permission::create(['name' => 'read-dashboard']);
 /*
         Permission::create(['name' => 'edit articles']);
         Permission::create(['name' => 'delete articles']);

@@ -41,9 +41,13 @@
                     @endforeach
                     <hr style="width: 100%;text-align:left;margin: 5px;background-color: #ffffff;">
                 @elseif($item['type'] == 'collapse')
+                    @can($item['permission'])
                     <x-nav-collapse :menu="$item"></x-nav-collapse>
+                    @endcan
                 @elseif($item['type'] == 'item')
+                    @can($item['permission'])
                     <x-nav-item :item="$item"></x-nav-item>
+                    @endcan
                 @endif
             @endforeach
         </ul>

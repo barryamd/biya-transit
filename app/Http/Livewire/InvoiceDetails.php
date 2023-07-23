@@ -28,6 +28,7 @@ class InvoiceDetails extends Component
         $this->folder = $this->invoice->folder;
         $this->containers = $this->folder->containers;
         $this->amounts = $this->invoice->amounts;
+        $this->folder->loadCount('containers');
 
         $total = new Money($this->invoice->amounts_sum_amount, new Currency('GNF'));
         $currencies = new ISOCurrencies();
