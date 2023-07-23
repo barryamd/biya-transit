@@ -124,7 +124,7 @@ class CustomerTable extends DataTableComponent
             });
 
             if (!$this->isEditMode) {
-                //$this->user->sendPasswordResetNotification(csrf_token());
+                $this->user->sendPasswordResetNotification(csrf_token());
             }
 
             $this->closeModal();

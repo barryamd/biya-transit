@@ -14,11 +14,9 @@
             <x-small-box type="success" icon="fas fa-folder-closed" text="Dossiers fermés"
                          :number="$total['closed_folders'] ?? 0" route="closed-folders"></x-small-box>
         </div>
-
         <div class="col-lg-3 col-6">
             <x-small-box type="info" icon="fas fa-users" text="Total clients"
                          :number="$total['customers'] ?? 0" route="customers"></x-small-box>
         </div>
     </div>
-
 </div>
