@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\User;
@@ -20,7 +21,7 @@ use Spatie\Permission\Models\Role;
 
 class UserTable extends DataTableComponent
 {
-    use PasswordValidationRules;
+    //use PasswordValidationRules;
 
     public string $tableName = 'users';
     public array $users = [];
@@ -38,7 +39,7 @@ class UserTable extends DataTableComponent
     ];
 
     public User $user;
-    public string $password = '', $password_confirmation = '';
+    //public string $password = '', $password_confirmation = '';
     public array $roles = [];
     public int|null $role;
 
@@ -139,7 +140,7 @@ class UserTable extends DataTableComponent
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->user->id)
             ],
-            'password' => $this->isEditMode ? 'nullable' : $this->passwordRules(),
+            //'password' => $this->isEditMode ? 'nullable' : $this->passwordRules(),
             'role' => 'required',
             'user.first_name' => ['required', 'string', 'max:255'],
             'user.last_name'  => ['required', 'string', 'max:255'],
@@ -175,15 +176,15 @@ class UserTable extends DataTableComponent
 
         try {
             if (!$this->isEditMode)
-                $this->user->password = Hash::make($this->password);
+                $this->user->password = Hash::make(Str::random());
+
             DB::transaction(function () {
                 $this->user->saveOrFail();
                 $this->user->syncRoles([$this->role]);
             });
 
             if (!$this->isEditMode) {
-                $this->user->password = $this->password;
-                //event(new Registered($user));
+                $this->user->sendPasswordResetNotification(csrf_token());
             }
 
             $this->closeModal('userFormModal');
