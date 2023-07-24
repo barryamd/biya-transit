@@ -114,6 +114,7 @@ class CustomerTable extends DataTableComponent
         try {
             if (!$this->isEditMode)
                 $this->user->password = Hash::make(Str::random(8));
+
             DB::transaction(function () {
                 $this->user->saveOrFail();
                 if (!$this->isEditMode) {
@@ -123,12 +124,12 @@ class CustomerTable extends DataTableComponent
                 $this->customer->save();
             });
 
+            $this->closeModal();
+            $this->alert('success', "Le client a été enregistré avec succès.");
+
             if (!$this->isEditMode) {
                 $this->user->sendPasswordResetNotification(csrf_token());
             }
-
-            $this->closeModal();
-            $this->alert('success', "Le client a été enregistré avec succès.");
         } catch (\Exception $exception) {
             $this->alert('error', "Erreur! .".$exception->getMessage());
         }

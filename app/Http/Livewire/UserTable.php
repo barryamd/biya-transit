@@ -183,12 +183,12 @@ class UserTable extends DataTableComponent
                 $this->user->syncRoles([$this->role]);
             });
 
+            $this->closeModal('userFormModal');
+            $this->alert('success', __('The user has been created successfully.'));
+
             if (!$this->isEditMode) {
                 $this->user->sendPasswordResetNotification(csrf_token());
             }
-
-            $this->closeModal('userFormModal');
-            $this->alert('success', __('The user has been created successfully.'));
         } catch (\Exception $exception) {
             $this->alert('error', "Erreur! .".$exception->getMessage());
         }
@@ -200,8 +200,7 @@ class UserTable extends DataTableComponent
         $this->isEditMode = false;
         $this->user = new User();
         $this->role = null;
-        $this->password = '';
-        $this->password_confirmation = '';
+        //$this->password = $this->password_confirmation = '';
     }
 
     public function customView(): string
