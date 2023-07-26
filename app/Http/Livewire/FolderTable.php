@@ -43,8 +43,6 @@ class FolderTable extends DataTableComponent
                 ->sortable(),
             Column::make("Numero CNT", "num_cnt")
                 ->sortable(),
-            Column::make("Poids total", "weight")
-                ->sortable(),
             Column::make("Port", "harbor")
                 ->sortable(),
             Column::make("Status", "status")
