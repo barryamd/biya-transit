@@ -256,11 +256,23 @@
                         </tr>
                         <tr>
                             <th>Numéro du bulletin de liquidation</th>
-                            <td>{{ $declaration->liquidation_bulletin }}</td>
+                            <td>
+                                @if($declaration->liquidation_bulletin)
+                                    {{ $declaration->liquidation_bulletin }}
+                                @else
+                                    <span class="text-danger">Il manque le numéro du bulletin de liquidation</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Date de liquidation</th>
-                            <td>{{ dateFormat($declaration->liquidation_date) }}</td>
+                            <td>
+                                @if($declaration->liquidation_date)
+                                    {{ dateFormat($declaration->liquidation_date) }}
+                                @else
+                                    <span class="text-danger">Il manque la date de liquidation</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Copie du bulletin de liquidation</th>
@@ -276,11 +288,23 @@
                         </tr>
                         <tr>
                             <th>Numéro de la quittance</th>
-                            <td>{{ $declaration->receipt_number }}</td>
+                            <td>
+                                @if($declaration->receipt_number)
+                                    {{ $declaration->receipt_number }}
+                                @else
+                                    <span class="text-danger">Il manque Numéro de la quittance</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Date de la quittance</th>
-                            <td>{{ dateFormat($declaration->receipt_date) }}</td>
+                            <td>
+                                @if($declaration->receipt_date)
+                                    {{ dateFormat($declaration->receipt_date) }}
+                                @else
+                                    <span class="text-danger">Il manque la date de la quittance</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Copie de la quittance</th>
@@ -296,11 +320,23 @@
                         </tr>
                         <tr>
                             <th>Numéro du bon</th>
-                            <td>{{ $declaration->bon_number }}</td>
+                            <td>
+                                @if($declaration->bon_number)
+                                    {{ $declaration->bon_number }}
+                                @else
+                                    <span class="text-danger">Il manque le numéro du bon</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Date du bon</th>
-                            <td>{{ dateFormat($declaration->bon_date) }}</td>
+                            <td>
+                                @if($declaration->bon_date)
+                                    {{ dateFormat($declaration->bon_date) }}
+                                @else
+                                    <span class="text-danger">Il manque la date du bon</span>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Copie du bon</th>
@@ -326,15 +362,17 @@
 
     <div class="row">
         <div class="col-12">
-            <h4>Bons de livraison</h4>
+            <h4>Bons de livraisons</h4>
             <div class="table-responsive table-bordered-">
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 32%;">Bon de compagnie maritime</th>
-                        <th style="width: 32%;">Bon conakry terminal</th>
-                        <th style="width: 31%;">Fichier jointe</th>
+                        <th style="width: 15%;">Conteneur</th>
+                        <th style="width: 20%;">Bon de CM</th>
+                        <th style="width: 20%;">Copie du Bon de CM</th>
+                        <th style="width: 20%;">Bon de CT</th>
+                        <th style="width: 20%;">Copie du Bon de CT</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -342,14 +380,26 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>
+                                {{ $deliveryNote->container->number }}
+                            </td>
+                            <td>
                                 {{ $deliveryNote->bcm }}
+                            </td>
+                            <td class="align-middle">
+                                @if($deliveryNote['bcm_file_path'])
+                                    <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-sm btn-success">
+                                        <i class="fas fa-download"></i> Telecharger
+                                    </button>
+                                @else
+                                    <span class="text-danger">Il manque le fichier jointe</span>
+                                @endif
                             </td>
                             <td>
                                 {{ $deliveryNote->bct }}
                             </td>
                             <td class="align-middle">
-                                @if($deliveryNote['attach_file_path'])
-                                    <button wire:click="downloadFile('delivery_notes', 'attach_file_path', {{$deliveryNote['id']}})" class="btn btn-sm btn-success">
+                                @if($deliveryNote['bct_file_path'])
+                                    <button wire:click="downloadFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else
@@ -386,7 +436,7 @@
                             <th>Bon de sorti du conteneur</th>
                             <td>
                                 @if($delivery->exit_file_path)
-                                    <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-success">
+                                    <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else
@@ -398,7 +448,7 @@
                             <th>Bon de retour</th>
                             <td>
                                 @if($delivery->return_file_path)
-                                    <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-success">
+                                    <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else

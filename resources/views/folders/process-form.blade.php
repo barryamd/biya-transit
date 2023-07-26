@@ -165,10 +165,10 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numéro du bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin" required></x-form.input>
+                            <x-form.input label="Numéro du bulletin de liquidation" wire:model.defer="declaration.liquidation_bulletin"></x-form.input>
                         </div>
                         <div class="col-md-4">
-                            <x-form.date label="Date de liquidation" wire:model.defer="declaration.liquidation_date" required></x-form.date>
+                            <x-form.date label="Date de liquidation" wire:model.defer="declaration.liquidation_date"></x-form.date>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -190,10 +190,10 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numéro de la quittance" wire:model.defer="declaration.receipt_number" required></x-form.input>
+                            <x-form.input label="Numéro de la quittance" wire:model.defer="declaration.receipt_number"></x-form.input>
                         </div>
                         <div class="col-md-4">
-                            <x-form.date label="Date de la quittance" wire:model.defer="declaration.receipt_date" required></x-form.date>
+                            <x-form.date label="Date de la quittance" wire:model.defer="declaration.receipt_date"></x-form.date>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -215,10 +215,10 @@
                         </div>
 
                         <div class="col-md-4">
-                            <x-form.input label="Numéro du bon" wire:model.defer="declaration.bon_number" required></x-form.input>
+                            <x-form.input label="Numéro du bon" wire:model.defer="declaration.bon_number"></x-form.input>
                         </div>
                         <div class="col-md-4">
-                            <x-form.date label="Date du bon" wire:model.defer="declaration.bon_date" required></x-form.date>
+                            <x-form.date label="Date du bon" wire:model.defer="declaration.bon_date"></x-form.date>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -260,9 +260,11 @@
                             <thead>
                             <tr>
                                 <th class="text-center" style="width: 5%">#</th>
-                                <th style="width: 30%;">Bon de compagnie maritime <span class="text-danger">*</span></th>
-                                <th style="width: 30%;">Bon conakry terminal <span class="text-danger">*</span></th>
-                                <th style="width: 30%;">Fichier jointe</th>
+                                <th style="width: 20%;">Conteneur<span class="text-danger">*</span></th>
+                                <th style="width: 15%;">Bon de CM<span class="text-danger">*</span></th>
+                                <th style="width: 20%;">Copie du Bon de CM</th>
+                                <th style="width: 15%;">Bon de CT<span class="text-danger">*</span></th>
+                                <th style="width: 20%;">Copie du Bon de CT</th>
                                 <th class="text-center" style="width: 5%">
                                     <button wire:click.prevent="addDeliveryNote" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                         <i class="fas fa-plus"></i>
@@ -275,22 +277,46 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>
+                                        <select wire:model.defer="deliveryNotes.{{$i}}.container_id" class="form-control px-1" required>
+                                            <option value="">-- Selectionner un conteneur --</option>
+                                            @foreach($containers as $value => $container)
+                                                <option value="{{$value}}">{{ $container }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error("deliveryNotes.$i.container_id") <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                    </td>
+                                    <td>
                                         <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bcm" class="form-control" required>
+                                        @error("deliveryNotes.$i.bcm") <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                    </td>
+                                    <td class="align-middle">
+                                        @if($deliveryNote['bcm_file_path'])
+                                            <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button wire:click="deleteFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @else
+                                            <input type="file" wire:model.lazy="bcmFiles.{{$i}}" class="form-control px-1" required>
+                                            @error('bcmFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                        @endif
                                     </td>
                                     <td>
                                         <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bct" class="form-control" required>
+                                        @error("deliveryNotes.$i.bct") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
-                                        @if($deliveryNote['attach_file_path'])
-                                            <button wire:click="downloadFile('delivery_notes', 'attach_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
-                                                <i class="fas fa-download"></i> Telecharger
+                                        @if($deliveryNote['bct_file_path'])
+                                            <button wire:click="downloadFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
+                                                <i class="fas fa-download"></i>
                                             </button>
-                                            <button wire:click="deleteFile('delivery_notes', 'attach_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
-                                                <i class="fas fa-trash"></i> Supprimer
+                                            <button wire:click="deleteFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         @else
-                                            <input type="file" wire:model.lazy="deliveryNoteFiles.{{$i}}" class="form-control px-1" required>
-                                            @error('deliveryNoteFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                            <input type="file" wire:model.lazy="bctFiles.{{$i}}" class="form-control px-1" required>
+                                            @error('bctFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         @endif
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
@@ -302,6 +328,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                        @error('deliveryNotes')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                     <div>
                         @can('add-declaration')
@@ -340,7 +367,7 @@
                                     </div>
                                 @else
                                     <x-form.file-upload label="Bon de sorti" wire:model.lazy="deliveryExitFile"></x-form.file-upload>
-                                    @error('deliveryExitFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                    @error('deliveryExitFile')<div class="text-danger">{{ $message }}</div> @enderror
                                 @endif
                             </div>
                         </div>
@@ -358,14 +385,10 @@
                                     </div>
                                 @else
                                     <x-form.file-upload label="Bon de retour" wire:model.lazy="deliveryReturnFile"></x-form.file-upload>
-                                    @error('deliveryReturnFile') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                    @error('deliveryReturnFile')<div class="text-danger">{{ $message }}</div>@enderror
                                 @endif
                             </div>
                         </div>
-{{--                        <div class="col-md-6">--}}
-{{--                            <x-form.select2-ajax label="Transporteur" wire:model.lazy="delivery.transporter_id" routeName="getTransporters"--}}
-{{--                                                 required placeholder="Rechercher par la plaque"></x-form.select2-ajax>--}}
-{{--                        </div>--}}
                         <div class="col-12">
                             <h5>Transporteurs</h5>
                             <div class="table-responsive table-bordered-">

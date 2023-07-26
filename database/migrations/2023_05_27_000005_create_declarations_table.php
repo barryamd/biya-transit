@@ -21,14 +21,14 @@ return new class extends Migration
             $table->string('destination_office');
             $table->string('verifier', 30);
             $table->string('declaration_file_path')->nullable();
-            $table->string('liquidation_bulletin', 20);
-            $table->date('liquidation_date');
+            $table->string('liquidation_bulletin', 20)->nullable();
+            $table->date('liquidation_date')->nullable();
             $table->string('liquidation_file_path')->nullable();
-            $table->string('receipt_number', 30)->unique();
-            $table->date('receipt_date');
+            $table->string('receipt_number', 30)->nullable();
+            $table->date('receipt_date')->nullable();
             $table->string('receipt_file_path')->nullable();
-            $table->string('bon_number', 30)->unique();
-            $table->date('bon_date');
+            $table->string('bon_number', 30)->nullable();
+            $table->date('bon_date')->nullable();
             $table->string('bon_file_path')->nullable();
 
             $table->index('number');

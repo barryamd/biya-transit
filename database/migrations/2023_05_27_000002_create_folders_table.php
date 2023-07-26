@@ -16,8 +16,6 @@ return new class extends Migration {
             $table->enum('type', ['IMPORT', 'EXPORT']);
             $table->string('number', 30)->unique();
             $table->string('num_cnt', 30);
-            $table->string('weight', 30)->nullable();
-            $table->string('package', 30)->nullable();
             $table->string('harbor', 30);
             $table->string('country', 30);
             $table->text('observation')->nullable();

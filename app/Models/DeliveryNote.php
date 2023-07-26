@@ -14,10 +14,15 @@ class DeliveryNote extends Model
 
     public const PATH = 'delivery_notes';
 
-    protected $fillable = ['id', 'folder_id', 'bcm', 'bct', 'attach_file_path'];
+    protected $fillable = ['id', 'folder_id', 'container_id', 'bcm', 'bct', 'bcm_file_path', 'bct_file_path'];
 
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function container(): BelongsTo
+    {
+        return $this->belongsTo(Container::class);
     }
 }

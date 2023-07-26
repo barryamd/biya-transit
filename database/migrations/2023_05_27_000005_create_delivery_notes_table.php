@@ -16,13 +16,16 @@ return new class extends Migration
         Schema::create('delivery_notes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
+            $table->unsignedBigInteger('container_id')->nullable();
             $table->string('bcm');
             $table->string('bct');
-            $table->string('attach_file_path')->nullable();
+            $table->string('bcm_file_path')->nullable();
+            $table->string('bct_file_path')->nullable();
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign('container_id')->references('id')->on('containers');
         });
     }
 

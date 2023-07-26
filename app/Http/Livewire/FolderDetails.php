@@ -41,6 +41,7 @@ class FolderDetails extends Component
         if ($this->exoneration)
             $this->exoneration->load('products');
         $this->declaration = $this->folder->declaration;
+        $this->folder->load('deliveryNotes.container');
         $this->deliveryNotes = $this->folder->deliveryNotes;
         $this->delivery = $this->folder->deliveryDetails;
         if ($this->delivery)
@@ -79,12 +80,19 @@ class FolderDetails extends Component
 
             'exoneration.attach_file_path' => 'required',
 
+            'declaration.liquidation_bulletin'  => 'required',
+            'declaration.liquidation_date'      => 'required',
+            'declaration.receipt_number'        => 'required',
+            'declaration.receipt_date'          => 'required',
+            'declaration.bon_number'            => 'required',
+            'declaration.bon_date'              => 'required',
             'declaration.declaration_file_path' => 'required',
             'declaration.liquidation_file_path' => 'required',
             'declaration.receipt_file_path'     => 'required',
             'declaration.bon_file_path'         => 'required',
 
-            'deliveryNotes.*.attach_file_path' => 'required',
+            'deliveryNotes.*.bcm_file_path' => 'required',
+            'deliveryNotes.*.bct_file_path' => 'required',
 
             'delivery.exit_file_path'   => 'required',
             'delivery.return_file_path' => 'required',

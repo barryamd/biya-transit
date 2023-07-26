@@ -95,7 +95,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                        @error('containers') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                        @error('containers')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                                             </button>
                                         @else
                                             <input type="file" wire:model.lazy="documentsFiles.{{$i}}" class="form-control px-1" required>
-                                            @error('documentsFiles.*') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                                            @error('documentsFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         @endif
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
@@ -157,7 +157,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                        @error('documents') <div class="row text-danger"><div class="col-12">{{ $message }}</div></div> @enderror
+                        @error('documents')<div class="text-danger">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>

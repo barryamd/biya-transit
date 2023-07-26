@@ -47,7 +47,7 @@ class FolderProcessForm extends Component
     public bool $isEditMode = false;
 
     public $ddiFile, $exonerationFile, $declarationFile, $liquidationFile,
-        $receiptFile, $bonFile, $deliveryNoteFiles = [], $deliveryExitFile, $deliveryReturnFile;
+        $receiptFile, $bonFile, $bcmFiles = [], $bctFiles = [], $deliveryExitFile, $deliveryReturnFile;
 
     protected $messages = [
         'deliveryNotes' => 'Il faut au minimum un bon',
@@ -80,9 +80,9 @@ class FolderProcessForm extends Component
             'deliveryNotes.*.folder_id' => 'nullable',
             'deliveryNotes.*.bcm' => ['required', 'string'],
             'deliveryNotes.*.bct' => ['required', 'string'],
-            'deliveryNotes.*.attach_file_path' => 'nullable',
+            'deliveryNotes.*.bcm_file_path' => 'nullable',
+            'deliveryNotes.*.bct_file_path' => 'nullable',
 
-            'delivery.transporter_id' => ['required'],
             'delivery.date'  => ['required', 'date'],
             'delivery.place' => ['required'],
         ];
@@ -132,13 +132,6 @@ class FolderProcessForm extends Component
         }
         $this->containers = Container::query()->where('folder_id', $this->folder->id)
             ->whereDoesntHave('transporter')->get()->pluck('number', 'id');
-    }
-
-    public function updated($property, $value)
-    {
-        if ($property == 'delivery.transporter_id') {
-            $this->transporter = Transporter::findOrFail($value);
-        }
     }
 
     public function submitExonerationStep()
@@ -207,12 +200,15 @@ class FolderProcessForm extends Component
             'declaration.date'                 => ['required', 'date'],
             'declaration.destination_office'   => ['required', 'string'],
             'declaration.verifier'             => ['required', 'string'],
-            'declaration.liquidation_bulletin' => ['required', 'string', Rule::unique('declarations', 'liquidation_bulletin')->ignore($this->declaration->id)],
-            'declaration.liquidation_date'     => ['required', 'date'],
-            'declaration.receipt_number'       => ['required', 'string', Rule::unique('declarations', 'receipt_number')->ignore($this->declaration->id)],
-            'declaration.receipt_date'         => ['required', 'date'],
-            'declaration.bon_number'           => ['required'],
-            'declaration.bon_date'             => ['required', 'date'],
+
+            'declaration.liquidation_bulletin' => ['nullable', 'string', Rule::unique('declarations', 'liquidation_bulletin')->ignore($this->declaration->id)],
+            'declaration.liquidation_date'     => ['nullable', 'date'],
+            'declaration.receipt_number'       => ['nullable', 'string', Rule::unique('declarations', 'receipt_number')->ignore($this->declaration->id)],
+
+            'declaration.receipt_date'         => ['nullable', 'date'],
+            'declaration.bon_number'           => ['nullable', 'string'],
+            'declaration.bon_date'             => ['nullable', 'date'],
+
             'declarationFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'liquidationFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'receiptFile'     => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
@@ -249,9 +245,11 @@ class FolderProcessForm extends Component
     {
         $this->deliveryNotes->add([
             'folder_id' => null,
+            'container_id' => null,
             'bcm' => null,
             'bct' => null,
-            'attach_file_path' => null
+            'bcm_file_path' => null,
+            'bct_file_path' => null,
         ]);
     }
 
@@ -263,9 +261,10 @@ class FolderProcessForm extends Component
     public function submitDeliveryNoteStep()
     {
         $this->validate([
-            'deliveryNotes'      => 'required',
+            'deliveryNotes' => 'required',
             'deliveryNotes.*.id' => 'nullable',
             'deliveryNotes.*.folder_id' => 'nullable',
+            'deliveryNotes.*.container_id' => 'required',
             'deliveryNotes.*.bcm' => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
@@ -282,8 +281,10 @@ class FolderProcessForm extends Component
                     }
                 }
             ],
-            'deliveryNotes.*.attach_file_path' => 'nullable',
-            'deliveryNoteFiles.*' => ['mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'deliveryNotes.*.bcm_file_path' => 'nullable',
+            'deliveryNotes.*.bct_file_path' => 'nullable',
+            'bcmFiles.*' => ['mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'bctFiles.*' => ['mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ]);
 
         try {
@@ -295,8 +296,11 @@ class FolderProcessForm extends Component
                 } else {
                     $deliveryNote = DeliveryNote::query()->create($deliveryNoteInputs);
                 }
-                if (array_key_exists($index, $this->deliveryNoteFiles)) {
-                    $deliveryNote->addFile($this->deliveryNoteFiles[$index]);
+                if (array_key_exists($index, $this->bcmFiles)) {
+                    $deliveryNote->addFile($this->bcmFiles[$index], 'bcm_file_path');
+                }
+                if (array_key_exists($index, $this->bctFiles)) {
+                    $deliveryNote->addFile($this->bctFiles[$index], 'bct_file_path');
                 }
             }
 
