@@ -401,7 +401,7 @@
                                             <th>Chauffeur</th>
                                             <th>Numéro du chauffeur</th>
                                             <th>
-                                                <button @if($containers->count() == 0) disabled @endif class="btn btn-sm btn-primary" data-toggle="modal" data-target="#transporterModal" title="Ajouter un transporteur">
+                                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#transporterModal" title="Ajouter un transporteur">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                             </th>
