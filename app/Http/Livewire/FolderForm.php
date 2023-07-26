@@ -32,6 +32,7 @@ class FolderForm extends Component
     public array|string $documentsFiles = [];
     public string $productDesignation = '';
     public Collection|array $containerTypes = [], $documentTypes = [];
+    public float $totalWeight = 0.0;
 
     protected $messages = [
         'containers' => 'Il faut au minimum un conteneur',
@@ -154,6 +155,11 @@ class FolderForm extends Component
         ]);
     }
 
+    public function setTotalWeight()
+    {
+        $this->totalWeight = $this->containers->sum('weight');
+    }
+
     public function removeContainer($index)
     {
         $this->containers = $this->containers->except([$index])->values();
@@ -165,7 +171,7 @@ class FolderForm extends Component
             'folder_id' => null,
             'type_id' => null,
             'number' => null,
-            'attach_file' => null,
+            'attach_file_path' => null,
         ]);
     }
 

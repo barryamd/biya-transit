@@ -17,7 +17,7 @@
                     <x-form.input label="Numero BL" wire:model.defer="folder.num_cnt" required></x-form.input>
                 </div>
                 <div class="col-md-6">
-                    <x-form.input label="Poids Total de la marchandise"  type="number" step="000.00" wire:model.defer="folder.weight" required></x-form.input>
+                    <x-form.input label="Poids Total de la marchandise" wire:model.defer="totalWeight" disabled></x-form.input>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Port" wire:model.defer="folder.harbor" required></x-form.input>
@@ -75,7 +75,7 @@
                                         @error("containers.$i.number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
-                                        <input type="number" wire:model.defer="containers.{{$i}}.weight" step="000.00" class="form-control px-1" required>
+                                        <input type="number" wire:model.defer="containers.{{$i}}.weight" wire:change="setTotalWeight" step="000.00" class="form-control px-1" required>
                                         @error("containers.$i.weight") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                     </td>
                                     <td class="align-middle">
