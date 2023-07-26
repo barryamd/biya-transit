@@ -47,14 +47,6 @@ class FolderForm extends Component
                 'required', 'string',
                 Rule::unique('folders', 'num_cnt')->ignore($this->folder->id)
             ],
-            'folder.weight'      => [
-                'required', 'string',
-                function ($attribute, $value, $fail) {
-                    if ($this->containers->sum(fn($item) => $item['weight']) > $value) {
-                        $fail('Ce numéro est dupliqué.');
-                    }
-                }
-            ],
             'folder.harbor'      => ['required', 'string'],
             'folder.country'     => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
