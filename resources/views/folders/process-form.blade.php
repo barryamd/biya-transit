@@ -449,8 +449,8 @@
 
     <x-form-modal id="transporterModal" submit="setContainerTransporter" title="Ajouter un nouveau transporteur">
         <x-slot name="content">
-            <x-form.select2-dropdown-search label="Transporteur" wire:model="transporter" routeName="getTransporters" id="transporter"
-                                            parentId="transporterModal" placeholder="Rechercher le transporteur" required></x-form.select2-dropdown-search>
+            <x-form.select2-dropdown label="Transporteur" wire:model="transporter" routeName="getTransporters" id="transporter"
+                                            parentId="transporterModal" placeholder="Rechercher le transporteur" required></x-form.select2-dropdown>
             @if(!$isEditMode)
                 <x-form.select label="Conteneur" wire:model.lazy="container" :options="$containers" required></x-form.select>
             @endif

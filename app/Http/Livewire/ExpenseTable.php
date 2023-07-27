@@ -43,7 +43,7 @@ class ExpenseTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Expense::with('folder')->with('user');
+        return Expense::with('folder');
     }
 
     protected function rules(): array
