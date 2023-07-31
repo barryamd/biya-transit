@@ -72,6 +72,13 @@ return [
         'permission' => 'view-invoice',
     ],
     [
+        'title'      => 'Paiements des Factures',
+        'type'       => 'item',
+        'route'      => 'invoice-payments.index',
+        'icon'       => 'hand-holding-usd',
+        'permission' => 'view-payment',
+    ],
+    [
         'title'      => 'Utilisateurs',
         'type'       => 'collapse',
         'icon'       => 'users',

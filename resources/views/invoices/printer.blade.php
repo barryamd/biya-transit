@@ -10,43 +10,43 @@
             <div><b>N° Dossier :</b> {{ $folder->number }}</div>
             <div><b>N° CNT :</b> {{ $folder->number }}</div>
             <div><b>Nombre de conteneurs :</b> {{ $folder->containers_count }}</div>
-{{--            <div><b>Numéro des conteneurs :</b> {{ $folder->containers_count }}</div>--}}
+            <div><b>Numéro des conteneurs :</b> {{ $folder->containers->pluck('number')->implode(', ') }}</div>
         </div>
     </div>
     <hr class="pt-0 mt-0 text-gray">
 
-    <div class="row">
-        <div class="col-12">
-            <h5 class="text-center">DETAIL DU CONTENU</h5>
-            <div class="table-responsive table-bordered-">
-                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
-                    <thead>
-                    <tr>
-                        <th class="bg-secondary-" style="width: 50%;">DESIGNATION</th>
-                        <th class="bg-secondary-" style="width: 30%;">QUANTITE</th>
-                        <th class="bg-secondary-" style="width: 20%;">POIDS (KGS)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($containers as $i => $container)
-                        <tr>
-                            <td>
-                                {{ $container->number }}
-                            </td>
-                            <td>
-                                {{ $container->package_number }}
-                            </td>
-                            <td>
-                                {{ number_format($container->weight, 2, ',', ' ') }}
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <hr class="pt-0 mt-0 text-gray">
+{{--    <div class="row">--}}
+{{--        <div class="col-12">--}}
+{{--            <h5 class="text-center">DETAIL DU CONTENU</h5>--}}
+{{--            <div class="table-responsive table-bordered-">--}}
+{{--                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">--}}
+{{--                    <thead>--}}
+{{--                    <tr>--}}
+{{--                        <th class="bg-secondary-" style="width: 50%;">DESIGNATION</th>--}}
+{{--                        <th class="bg-secondary-" style="width: 30%;">QUANTITE</th>--}}
+{{--                        <th class="bg-secondary-" style="width: 20%;">POIDS (KGS)</th>--}}
+{{--                    </tr>--}}
+{{--                    </thead>--}}
+{{--                    <tbody>--}}
+{{--                    @foreach ($containers as $i => $container)--}}
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                {{ $container->number }}--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                {{ $container->package_number }}--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                {{ number_format($container->weight, 2, ',', ' ') }}--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+{{--                    @endforeach--}}
+{{--                    </tbody>--}}
+{{--                </table>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--    <hr class="pt-0 mt-0 text-gray">--}}
 
     <div class="row">
         <div class="col-12">
@@ -77,7 +77,7 @@
                     <tr>
                         <th>TOTAL</th>
                         <th class="bg-secondary-">
-                            {{ moneyFormat($amount->amounts_sum_amount) }}
+                            {{ moneyFormat($invoice->amounts_sum_amount) }}
                         </th>
                         <td></td>
                     </tr>

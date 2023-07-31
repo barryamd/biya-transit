@@ -18,8 +18,8 @@ class PrintController extends Controller
             ->loadCount('containers');
         $containers = $folder->containers;
         $invoice = $folder->invoice;
-        $amounts = $invoice->amounts;
         $invoice->loadSum('amounts', 'amount');
+        $amounts = $invoice->amounts;
 
         $total = new Money($invoice->amounts_sum_amount, new Currency('GNF'));
         $currencies = new ISOCurrencies();

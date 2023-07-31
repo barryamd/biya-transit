@@ -13,19 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_notes', function (Blueprint $table) {
+        Schema::create('invoice_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->unsignedBigInteger('container_id')->nullable();
-            $table->string('bcm');
-            $table->string('bct');
-            $table->string('bcm_file_path')->nullable();
-            $table->string('bct_file_path')->nullable();
+            $table->unsignedBigInteger('invoice_id');
+            $table->string('type');
+            $table->string('bank')->nullable();
+            $table->date('date')->nullable();
+            $table->string('check_number')->nullable();
+            $table->decimal('amount', 15)->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreign('container_id')->references('id')->on('containers')
+            $table->foreign('invoice_id')->references('id')->on('invoices')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
@@ -37,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delivery_notes');
+        Schema::dropIfExists('invoice_payments');
     }
 };

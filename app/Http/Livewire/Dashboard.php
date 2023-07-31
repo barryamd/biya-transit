@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Customer;
 use App\Models\Folder;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Livewire\Component;
@@ -70,6 +71,11 @@ class Dashboard extends Component
             $this->total['pending_folders'] = $this->folders->where('status', 'En attente')->count();
             $this->total['process_folders'] = $this->folders->where('status', 'En cours')->count();
             $this->total['closed_folders'] = $this->folders->where('status', 'Fermé')->count();
+            $this->total['late_folders'] = Folder::query()->where('status', '<>','Fermé')
+                ->whereHas('containers', function (Builder $query) {
+                    $query->whereDate('arrival_date', '<=', now()->format('Y-m-d'));
+                })
+                ->count();
             $this->total['customers'] = Customer::query()->count();
         //}
     }

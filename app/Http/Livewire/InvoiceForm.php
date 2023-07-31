@@ -23,6 +23,7 @@ class InvoiceForm extends Component
     public Collection|array $amounts;
     public Collection|array $services = [];
     public Collection|array $tvas = [];
+    public $selectedFolder = [];
     public $tva;
 
     protected function rules() {
@@ -37,7 +38,7 @@ class InvoiceForm extends Component
         ];
     }
 
-    public function mount(invoice $invoice)
+    public function mount(Invoice $invoice)
     {
         $action = $invoice->id ? 'edit' : 'create';
         $this->authorize($action.'-invoice');
@@ -45,6 +46,8 @@ class InvoiceForm extends Component
         $this->invoice = $invoice;
         if ($invoice->id) {
             $this->amounts = $invoice->amounts;
+            $folder = $this->invoice->folder;
+            $this->selectedFolder = ['id' => $folder->id, 'text' => $folder->number];
         } else {
             $this->invoice->tax = 0;
             $this->amounts = collect();
@@ -100,7 +103,8 @@ class InvoiceForm extends Component
             DB::beginTransaction();
 
             $this->invoice->save();
-            $this->invoice->amounts()->createMany($this->amounts);
+            $this->invoice->amounts()->delete();
+            $this->invoice->amounts()->createMany($this->amounts->toArray());
 
             DB::commit();
 

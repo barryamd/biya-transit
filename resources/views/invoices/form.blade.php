@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-md-6">
                 <x-form.select2-ajax label="Dossier" wire:model="invoice.folder_id" routeName="getFolders" id="folder"
-                                     required placeholder="Rechercher le dossier"></x-form.select2-ajax>
+                                     :selectedOptions="[$selectedFolder]" required placeholder="Rechercher le dossier"></x-form.select2-ajax>
             </div>
             <div class="col-md-6">
                 <x-form.select label="TVA" wire:model.lazy="invoice.tva_id" :options="$tvas"></x-form.select>

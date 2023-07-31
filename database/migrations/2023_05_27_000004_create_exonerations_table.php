@@ -23,7 +23,8 @@ return new class extends Migration {
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreign('container_id')->references('id')->on('containers');
+            $table->foreign('container_id')->references('id')->on('containers')
+                ->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('nif', 50)->unique();
-            $table->string('name', 50)->nullable();
+            $table->string('name', 64)->nullable();
             $table->string('email1')->nullable();
             $table->string('email2')->nullable();
             $table->string('email3')->nullable();
