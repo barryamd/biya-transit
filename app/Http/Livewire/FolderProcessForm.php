@@ -123,7 +123,7 @@ class FolderProcessForm extends Component
         if ($this->declarations->count()) {
             $this->currentStep = 4;
         } else {
-            $this->declaration = collect();
+            $this->declarations = collect();
         }
         $this->declaration = new Declaration();
 
@@ -141,8 +141,6 @@ class FolderProcessForm extends Component
             $this->delivery = new Delivery();
             $this->transporterContainers = collect();
         }
-
-        $this->currentStep = 1;
     }
 
 
@@ -328,18 +326,28 @@ class FolderProcessForm extends Component
             'deliveryNotes.*.bcm' => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
+                    if ($value == $this->folder->num_cnt) {
+                        $fail('Ce numéro doit être différent du numéro CNT.');
+                    }
+
                     if ($this->deliveryNotes->where('bcm', $value)->count() > 1) {
                         $fail('Ce numéro est dupliqué.');
                     }
-                }
+                },
+                Rule::unique('deliveryNotes', 'bcm')->ignore($this->folder->id, 'folder_id')
             ],
             'deliveryNotes.*.bct' => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
+                    if ($value == $this->folder->num_cnt) {
+                        $fail('Ce numéro doit être différent du numéro CNT.');
+                    }
+
                     if ($this->deliveryNotes->where('bct', $value)->count() > 1) {
                         $fail('Ce numéro est dupliqué.');
                     }
-                }
+                },
+                Rule::unique('deliveryNotes', 'bct')->ignore($this->folder->id, 'folder_id')
             ],
             'deliveryNotes.*.bcm_file_path' => 'nullable',
             'deliveryNotes.*.bct_file_path' => 'nullable',

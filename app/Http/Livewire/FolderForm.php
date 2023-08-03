@@ -58,10 +58,15 @@ class FolderForm extends Component
             'containers.*.number'         => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
+                    if ($value == $this->folder->num_cnt) {
+                        $fail('Ce numéro doit être différent du numéro CNT.');
+                    }
+
                     if ($this->containers->where('number', $value)->count() > 1) {
                         $fail('Ce numéro est dupliqué.');
                     }
-                }
+                },
+                Rule::unique('containers', 'number')->ignore($this->folder->id, 'folder_id')
             ],
             'containers.*.weight'         => ['required', 'string'],
             'containers.*.package_number' => ['required', 'string'],
@@ -73,10 +78,15 @@ class FolderForm extends Component
             'documents.*.number'    => [
                 'required','string',
                 function ($attribute, $value, $fail) {
+                    if ($value == $this->folder->num_cnt) {
+                        $fail('Ce numéro doit être différent du numéro CNT.');
+                    }
+
                     if ($this->documents->where('number', $value)->count() > 1) {
                         $fail('Ce numéro est dupliqué.');
                     }
-                }
+                },
+                Rule::unique('documents', 'number')->ignore($this->folder->id, 'folder_id')
             ],
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
@@ -176,7 +186,7 @@ class FolderForm extends Component
     {
         $this->validate();
 
-        try {
+        //try {
             $this->folder->generateUniqueNumber();
 
             DB::beginTransaction();
@@ -189,6 +199,7 @@ class FolderForm extends Component
                     ->whereNotIn('id', $this->containers->pluck('id'))->delete();
             }
             $containers = $this->containers->map(function ($item) {
+                unset($item['created_at'], $item['updated_at']);
                 $item['folder_id'] = $this->folder->id;
                 return $item;
             });
@@ -211,9 +222,9 @@ class FolderForm extends Component
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);
-        } catch (\Exception $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+//        } catch (\Exception $e) {
+//            throw new UnprocessableEntityHttpException($e->getMessage());
+//        }
     }
 
     public function closeModal()

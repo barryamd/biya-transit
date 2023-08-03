@@ -30,10 +30,13 @@ class FolderDetails extends Component
 
     public function mount()
     {
-        $this->folder->loadSum('containers', 'weight');
+        $this->folder->loadSum('containers', 'weight')
+            ->loadSum('containers', 'package_number')
+            ->load('customer.user');
 
         $this->containers = Container::with('type', 'transporter')
             ->where('folder_id', $this->folder->id)->get();
+
         $this->documents = Document::with('type')
             ->where('folder_id', $this->folder->id)->get();
 

@@ -11,12 +11,24 @@
                         <td>{{ $folder->number }}</td>
                     </tr>
                     <tr>
+                        <th>Nom du client</th>
+                        <td>{{ $folder->customer->user->full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom de l'entreprise</th>
+                        <td>{{ $folder->customer->name }}</td>
+                    </tr>
+                    <tr>
                         <th>Numéro CNT</th>
                         <td>{{ $folder->num_cnt }}</td>
                     </tr>
                     <tr>
                         <th>Poids total de la marchandise</th>
                         <td>{{ number_format($folder->containers_sum_weight, 2, ',', ' ') }} Kgs</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre total de colis</th>
+                        <td>{{ number_format($folder->containers_sum_package_number, 0, ',', ' ') }} Colis</td>
                     </tr>
                     <tr>
                         <th>Port</th>
