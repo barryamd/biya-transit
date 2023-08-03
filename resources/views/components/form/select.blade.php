@@ -1,7 +1,6 @@
 @props([
     'label' => null,
     'options' => null,
-    'multiple' => false,
     'id' => Str::random(5),
     'placeholder' => ''
 ])

@@ -9,7 +9,6 @@ use App\Models\Delivery;
 use App\Models\DeliveryNote;
 use App\Models\Exoneration;
 use App\Models\Folder;
-use App\Models\Transporter;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
@@ -28,26 +27,30 @@ class FolderProcessForm extends Component
     use WithFileUploads;
 
     public int $currentStep = 1;
+    public bool $isEditMode = false;
 
     public Folder $folder;
     public User $user;
 
-    public Exoneration|null $exoneration = null;
+    public $exonerations;
+    public Exoneration $exoneration;
     public array $products = [], $exonerationProducts = [];
+    public $exonerationFile;
 
     public DdiOpening|null $ddiOpening = null;
+    public $ddiFile;
 
-    public Declaration|null $declaration = null;
+    public $declarations;
+    public Declaration $declaration;
+    public $declarationFile = null, $liquidationFile, $receiptFile, $bonFile;
 
     public Collection $deliveryNotes;
+    public $bcmFiles = [], $bctFiles = [];
 
     public Delivery|null $delivery = null;
     public Collection $transporterContainers, $containers;
     public string|null $container, $transporter;
-    public bool $isEditMode = false;
-
-    public $ddiFile, $exonerationFile, $declarationFile, $liquidationFile,
-        $receiptFile, $bonFile, $bcmFiles = [], $bctFiles = [], $deliveryExitFile, $deliveryReturnFile;
+    public $deliveryExitFile, $deliveryReturnFile;
 
     protected $messages = [
         'deliveryNotes' => 'Il faut au minimum un bon',
@@ -61,10 +64,12 @@ class FolderProcessForm extends Component
             'ddiOpening.ddi_number'        => ['nullable'],
             'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
 
+            'exoneration.container_id'=> ['nullable'],
             'exoneration.number'      => ['nullable'],
             'exoneration.date'        => ['nullable'],
             'exoneration.responsible' => ['nullable'],
 
+            'declaration.container_id'         => ['nullable'],
             'declaration.number'               => ['required'],
             'declaration.date'                 => ['required', 'date'],
             'declaration.destination_office'   => ['required'],
@@ -94,13 +99,17 @@ class FolderProcessForm extends Component
 
         $this->user = Auth::user();
 
-        $this->exoneration = $this->folder->exoneration;
-        if ($this->exoneration) {
+        $this->folder->load('exonerations.container', 'exonerations.products');
+        $this->exonerations = $this->folder->exonerations;
+        if ($this->exonerations->count() > 0) {
             $this->currentStep = 2;
         } else {
-            $this->exoneration = new Exoneration();
+            $this->exonerations = collect();
         }
+        $this->exoneration = new Exoneration();
         $this->products = $this->folder->products->pluck('designation', 'id')->toArray();
+        $this->containers = Container::query()->where('folder_id', $this->folder->id)
+            ->get()->pluck('number', 'id');
 
         $this->ddiOpening = $this->folder->ddiOpening;
         if ($this->ddiOpening) {
@@ -109,12 +118,14 @@ class FolderProcessForm extends Component
             $this->ddiOpening = new DdiOpening();
         }
 
-        $this->declaration = $this->folder->declaration;
-        if ($this->declaration) {
+        $this->folder->load('declarations.container');
+        $this->declarations = $this->folder->declarations;
+        if ($this->declarations->count()) {
             $this->currentStep = 4;
         } else {
-            $this->declaration = new Declaration();
+            $this->declaration = collect();
         }
+        $this->declaration = new Declaration();
 
         $this->folder->load('deliveryNotes');
         $this->deliveryNotes = $this->folder->deliveryNotes->collect();
@@ -130,13 +141,15 @@ class FolderProcessForm extends Component
             $this->delivery = new Delivery();
             $this->transporterContainers = collect();
         }
-        $this->containers = Container::query()->where('folder_id', $this->folder->id)
-            ->whereDoesntHave('transporter')->get()->pluck('number', 'id');
+
+        $this->currentStep = 1;
     }
 
-    public function submitExonerationStep()
+
+    public function saveExoneration()
     {
         $this->validate([
+            'exoneration.container_id'=> ['required', Rule::unique('exonerations', 'container_id')->ignore($this->exoneration->id)],
             'exoneration.number'      => ['required', 'string', Rule::unique('exonerations', 'number')->ignore($this->exoneration->id)],
             'exoneration.date'        => ['required', 'date'],
             'exoneration.responsible' => ['required', 'string'],
@@ -145,7 +158,8 @@ class FolderProcessForm extends Component
         ]);
 
         try {
-            $this->exoneration->folder_id = $this->folder->id;
+            if (!$this->isEditMode)
+                $this->exoneration->folder_id = $this->folder->id;
 
             DB::beginTransaction();
             $this->exoneration->save();
@@ -155,9 +169,10 @@ class FolderProcessForm extends Component
             if ($this->exonerationFile)
                 $this->exoneration->addFile($this->exonerationFile);
 
-            if ($this->user->can('add-ddi-opening')) {
-                $this->currentStep = 2;
-            }
+            $this->closeModal('exonerationFormModal');
+
+            $this->exonerations = Exoneration::with('container', 'products')
+                ->where('folder_id', $this->folder->id)->get();
 
             $this->alert('success', "L'exoneration a été enregistré avec succès.");
         } catch (\Exception $e) {
@@ -165,12 +180,34 @@ class FolderProcessForm extends Component
         }
     }
 
+    public function editExoneration($id)
+    {
+        try {
+            $this->exoneration = Exoneration::find($id);
+            $this->exonerationProducts = $this->exoneration->products->pluck('id')->toArray();
+            $this->isEditMode = true;
+            $this->dispatchBrowserEvent('open-exonerationFormModal');
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+    }
+
+    public function deleteExoneration($id)
+    {
+        $exoneration = Exoneration::query()->find($id);
+        $exoneration->delete();
+        $this->exonerations = Exoneration::with('container', 'products')
+            ->where('folder_id', $this->folder->id)->get();
+        $this->alert('success', "L'exoneration a été supprimée avec succès.");
+    }
+
+
     public function submitDdiOpeningStep()
     {
         $this->validate([
-            'ddiOpening.dvt_number'        => ['required', 'string', Rule::unique('ddi_openings', 'dvt_number')->ignore($this->exoneration->id)],
+            'ddiOpening.dvt_number'        => ['required', 'string', Rule::unique('ddi_openings', 'dvt_number')->ignore($this->ddiOpening->id)],
             'ddiOpening.dvt_obtained_date' => ['required', 'date'],
-            'ddiOpening.ddi_number'        => ['nullable', 'string', Rule::unique('ddi_openings', 'ddi_number')->ignore($this->exoneration->id)],
+            'ddiOpening.ddi_number'        => ['nullable', 'string', Rule::unique('ddi_openings', 'ddi_number')->ignore($this->ddiOpening->id)],
             'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
             'ddiFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ]);
@@ -193,22 +230,21 @@ class FolderProcessForm extends Component
         }
     }
 
-    public function submitDeclarationStep()
+
+    public function saveDeclaration()
     {
         $this->validate([
+            'declaration.container_id'         => ['required', Rule::unique('declarations', 'container_id')->ignore($this->declaration->id)],
             'declaration.number'               => ['required', 'string', Rule::unique('declarations', 'number')->ignore($this->declaration->id)],
             'declaration.date'                 => ['required', 'date'],
             'declaration.destination_office'   => ['required', 'string'],
             'declaration.verifier'             => ['required', 'string'],
-
             'declaration.liquidation_bulletin' => ['nullable', 'string', Rule::unique('declarations', 'liquidation_bulletin')->ignore($this->declaration->id)],
             'declaration.liquidation_date'     => ['nullable', 'date'],
             'declaration.receipt_number'       => ['nullable', 'string', Rule::unique('declarations', 'receipt_number')->ignore($this->declaration->id)],
-
             'declaration.receipt_date'         => ['nullable', 'date'],
-            'declaration.bon_number'           => ['nullable', 'string'],
+            'declaration.bon_number'           => ['nullable', 'string', Rule::unique('declarations', 'bon_number')->ignore($this->declaration->id)],
             'declaration.bon_date'             => ['nullable', 'date'],
-
             'declarationFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'liquidationFile' => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
             'receiptFile'     => ['nullable', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
@@ -231,15 +267,32 @@ class FolderProcessForm extends Component
                 $this->declaration->addFile($this->bonFile, 'bon_file_path');
             }
 
-            if ($this->user->can('add-delivery-note')) {
-                $this->currentStep = 4;
-            }
-
+            $this->closeModal('declarationFormModal');
             $this->alert('success', "La declaration a été enregistrée avec succès.");
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
+
+    public function editDeclaration($id)
+    {
+        try {
+            $this->declaration = Declaration::find($id);
+            $this->isEditMode = true;
+            $this->dispatchBrowserEvent('open-declarationFormModal');
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+    }
+
+    public function deleteDeclaration($id)
+    {
+        $declaration = Declaration::query()->find($id);
+        $declaration->delete();
+        $this->declarations = Declaration::with('container')->where('folder_id', $this->folder->id)->get();
+        $this->alert('success', "La declaration a été supprimée avec succès.");
+    }
+
 
     public function addDeliveryNote()
     {
@@ -264,7 +317,14 @@ class FolderProcessForm extends Component
             'deliveryNotes' => 'required',
             'deliveryNotes.*.id' => 'nullable',
             'deliveryNotes.*.folder_id' => 'nullable',
-            'deliveryNotes.*.container_id' => 'required',
+            'deliveryNotes.*.container_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($this->deliveryNotes->where('container_id', $value)->count() > 1) {
+                        $fail('Ce conteneur est déjà pris.');
+                    }
+                }
+            ],
             'deliveryNotes.*.bcm' => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
@@ -314,7 +374,8 @@ class FolderProcessForm extends Component
         }
     }
 
-    public function setContainerTransporter()
+
+    public function addTransporter()
     {
         $this->validate([
             'container' => ['required', 'string'],
@@ -328,26 +389,17 @@ class FolderProcessForm extends Component
             $this->transporterContainers = Container::with('transporter')
                 ->where('folder_id', $this->folder->id)->whereHas('transporter')->get();
 
-            $this->containers = Container::query()->where('folder_id', $this->folder->id)
-                ->whereDoesntHave('transporter')->get()->pluck('number', 'id');
-
-            $this->closeModal('transporterModal');
+            $this->closeModal('transporterFormModal');
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
 
-    public function openEditTransporterModal($containerId)
+    public function editTransporter($containerId)
     {
         $this->container = $containerId;
         $this->isEditMode = true;
-        $this->dispatchBrowserEvent('open-transporterModal');
-    }
-
-    public function closeModal($modalId)
-    {
-        $this->dispatchBrowserEvent('close-'.$modalId);
-        $this->container = $this->transporter = $this->isEditMode = false;
+        $this->dispatchBrowserEvent('open-transporterFormModal');
     }
 
     public function submitDeliveryDetailsStep()
@@ -379,13 +431,28 @@ class FolderProcessForm extends Component
         }
     }
 
-    public function back($step)
+
+    public function closeModal($modalId)
     {
-        //if ($step == 2 && !$this->exoneration->id && $this->user->can('add-ddi-opening')) {
-        //    $this->currentStep = 1;
-        //} else {
-            $this->currentStep = $step;
-        //}
+        $this->dispatchBrowserEvent('close-'.$modalId);
+        if ($modalId == 'transporterFormModal') {
+            $this->container = $this->transporter = null;
+
+        } elseif ($modalId == 'exonerationFormModal') {
+            $this->exoneration = new Exoneration();
+            $this->exonerationProducts = [];
+            $this->exonerationFile = null;
+
+        } elseif ($modalId == 'declarationFormModal') {
+            $this->declaration =  new Declaration();
+            $this->declarationFile = $this->liquidationFile = $this->receiptFile = $this->bonFile = null;
+        }
+        $this->isEditMode = false;
+    }
+
+    public function setStep($step)
+    {
+        $this->currentStep = $step;
     }
 
     public function render()
@@ -393,37 +460,22 @@ class FolderProcessForm extends Component
         return view('folders.process-form');
     }
 
-    public function deleteFile($collection, $attribute = 'attach_file_path', $modelId = null)
-    {
-        if ($collection == 'ddi_openings') {
-            $this->ddiOpening->deleteFile($attribute);
-        } elseif ($collection == 'exonerations') {
-            $this->exoneration->deleteFile($attribute);
-        } elseif ($collection == 'declarations') {
-            $this->declaration->deleteFile($attribute);
-        } elseif ($collection == 'delivery_notes') {
-            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
-            if ($deliveryNote)
-                $deliveryNote->deleteFile($attribute);
-        } elseif ($collection == 'deliveries') {
-            $this->delivery->deleteFile($attribute);
-        }
-    }
-
-    public function downloadFile($collection, $attribute, $modelId = null)
+    public function downloadFile($collection, $attribute = 'attach_file_path', $modelId = null)
     {
         $filePath = '';
-        if ($collection == 'ddi_openings') {
-            $filePath = $this->ddiOpening->attach_file_path;
-        } elseif ($collection == 'exonerations') {
-            $filePath = $this->exoneration->attach_file_path;
+        if ($collection == 'exonerations') {
+            $exoneration = $this->exonerations->where('id', $modelId)->first();
+            $filePath = $exoneration?->$attribute;
+        } elseif ($collection == 'ddi_openings') {
+                $filePath = $this->ddiOpening?->$attribute;
         } elseif ($collection == 'declarations') {
-            $filePath = $this->declaration->$attribute;
+            $declaration = $this->declarations->where('id', $modelId)->first();
+            $filePath = $declaration?->$attribute;
         } elseif ($collection == 'delivery_notes') {
             $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
-            $filePath = $deliveryNote->attach_file_path;
+            $filePath = $deliveryNote?->$attribute;
         } elseif ($collection == 'deliveries') {
-            $filePath = $this->delivery->$attribute;
+            $filePath = $this->delivery?->$attribute;
         }
         $filePath = public_path('uploads/'.$filePath);
 
@@ -433,5 +485,23 @@ class FolderProcessForm extends Component
             abort(404, 'File not found');
         }
         return null;
+    }
+
+    public function deleteFile($collection, $attribute = 'attach_file_path', $modelId = null)
+    {
+        if ($collection == 'exonerations') {
+            $exoneration = $this->exonerations->where('id', $modelId)->first();
+            $exoneration?->deleteFile($attribute);
+        } elseif ($collection == 'ddi_openings') {
+            $this->ddiOpening?->deleteFile($attribute);
+        } elseif ($collection == 'declarations') {
+            $declaration = $this->declarations->where('id', $modelId)->first();
+            $declaration?->deleteFile($attribute);
+        } elseif ($collection == 'delivery_notes') {
+            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
+            $deliveryNote?->deleteFile($attribute);
+        } elseif ($collection == 'deliveries') {
+            $this->delivery?->deleteFile($attribute);
+        }
     }
 }

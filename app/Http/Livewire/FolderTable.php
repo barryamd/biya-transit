@@ -51,6 +51,7 @@ class FolderTable extends DataTableComponent
                 ->sortable(),
             Column::make("Client", "customer.nif")
                 ->format(fn($value, $row) => $row->customer->user->full_name),
+            Column::make("Entreprise", "customer.name"),
             Column::make('Actions', 'id')
                 ->format(fn($value, $row) => view('folders.action-buttons',
                     ['row' => $row, 'status' => $this->status])),

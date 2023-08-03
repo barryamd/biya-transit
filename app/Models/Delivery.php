@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Helpers\HasFile;
-use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Delivery extends Model
 {
@@ -37,8 +37,8 @@ class Delivery extends Model
         return $this->belongsTo(Folder::class);
     }
 
-    public function transporter(): BelongsTo
+    public function transporters(): BelongsToMany
     {
-        return $this->belongsTo(Transporter::class);
+        return $this->belongsToMany(Transporter::class);
     }
 }

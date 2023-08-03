@@ -6,7 +6,7 @@
                 <div class="multi-wizard-step">
                     <a href="#step-2" type="button"
                        class="btn {{ $currentStep != 1 ? 'btn-default' : 'btn-primary' }}"
-                       @if(!($ddiOpening->id || auth()->user()->can('add-exoneration'))) disabled="disabled" @endif>1</a>
+                       @if(!auth()->user()->can('add-exoneration')) disabled="disabled" @endif>1</a>
                     <p>Exonérations</p>
                 </div>
                 <div class="multi-wizard-step">
@@ -18,13 +18,13 @@
                 <div class="multi-wizard-step">
                     <a href="#step-3" type="button"
                        class="btn {{ $currentStep != 3 ? 'btn-default' : 'btn-primary' }}"
-                       @if(!($exoneration->id || auth()->user()->can('add-declaration'))) disabled="disabled" @endif>3</a>
+                       @if(!auth()->user()->can('add-declaration')) disabled="disabled" @endif>3</a>
                     <p>Déclarations</p>
                 </div>
                 <div class="multi-wizard-step">
                     <a href="#step-4" type="button"
                        class="btn {{ $currentStep != 4 ? 'btn-default' : 'btn-primary' }}"
-                       @if(!($declaration->id || auth()->user()->can('add-delivery-note'))) disabled="disabled" @endif>4</a>
+                       @if(!auth()->user()->can('add-delivery-note')) disabled="disabled" @endif>4</a>
                     <p>Bons de livraisons</p>
                 </div>
                 <div class="multi-wizard-step">

@@ -35,7 +35,7 @@
         </div>
         <div>
             @can('add-exoneration')
-                <button class="btn btn-secondary" wire:click="back(1)" type="button">Retourner</button>
+                <button class="btn btn-secondary" wire:click="setStep(1)" type="button">Retourner</button>
             @endcan
             <button class="btn btn-primary nextBtn float-right" wire:click="submitDdiOpeningStep"
                     type="button">Sauvegarder et Passer</button>

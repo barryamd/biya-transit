@@ -65,14 +65,14 @@ class Folder extends Model
         return $this->hasOne(DdiOpening::class);
     }
 
-    public function exoneration(): HasOne
+    public function exonerations(): HasMany
     {
-        return $this->hasOne(Exoneration::class);
+        return $this->hasMany(Exoneration::class);
     }
 
-    public function declaration(): HasOne
+    public function declarations(): HasMany
     {
-        return $this->hasOne(Declaration::class);
+        return $this->hasMany(Declaration::class);
     }
 
     public function deliveryNotes(): HasMany
@@ -88,5 +88,10 @@ class Folder extends Model
     public function invoice(): HasOne
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

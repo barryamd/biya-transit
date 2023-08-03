@@ -36,4 +36,9 @@ class Declaration extends Model
     {
         return $this->belongsTo(Folder::class);
     }
+
+    public function container(): BelongsTo
+    {
+        return $this->belongsTo(Container::class);
+    }
 }

@@ -125,6 +125,63 @@
 
     <div class="row">
         <div class="col-12">
+            <h4>Exonérations</h4>
+            <div class="table-responsive table-bordered-">
+                <table class="mb-1 table table-sm table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">#</th>
+                        <th style="width: 20%;">Conteneur</th>
+                        <th style="width: 15%;">Numéro</th>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 20%;">Produits</th>
+                        <th style="width: 15%;">Fichier</th>
+                        <th class="text-center" style="width: 10%">
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exonerationFormModal" title="Ajouter une exoneration">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($exonerations as $i => $item)
+                        <tr>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td>{{ $item->container->number }}</td>
+                            <td>{{ $item->number }}</td>
+                            <td>{{ dateFormat($item->date) }}</td>
+                            <td>{{ $item->products->pluck('designation')->implode(', ') }}</td>
+                            <td>
+                                @if($item->attach_file_path)
+                                    <button wire:click="downloadFile('exonerations', 'attach_file_path', {{$item->id}})" class="btn btn-sm btn-success">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button wire:click="deleteFile('exonerations', 'attach_file_path', {{$item->id}})" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                @else
+                                    <span class="text-danger">Il manque le fichier d'exoneration</span>
+                                @endif
+                            </td>
+                            <td>
+                                <button wire:click="editExoneration('{{ $item->id }}')" class="btn btn-sm btn-warning" title="Modifier l'exoneration">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button wire:click="deleteExoneration('{{ $item->id }}')" class="btn btn-sm btn-danger" title="Supprimer l'exoneration">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-12">
             <h4>Ouverture DDI</h4>
             <div class="table-responsive table-bordered-">
                 @if($ddiOpening)
@@ -182,180 +239,136 @@
 
     <div class="row">
         <div class="col-12">
-            <h4>Exonérations</h4>
-            <div class="table-responsive table-bordered-">
-                @if($exoneration)
-                    <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
-                        <tbody>
-                        <tr>
-                            <th style="width: 40%">Numéro d'exonération</th>
-                            <td>{{ $exoneration->number }}</td>
-                        </tr>
-                        <tr>
-                            <th>Date d'exonération</th>
-                            <td>{{ dateFormat($exoneration->date) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Produits exonérés</th>
-                            <td>{{ implode(', ', $exoneration->products->pluck('designation')->toArray()) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Fichier Exonération</th>
-                            <td>
-                                @if($exoneration->attach_file_path)
-                                    <button wire:click="downloadFile('exonerations')" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i> Telecharger
-                                    </button>
-                                @else
-                                    <span class="text-danger" >Il manque le Fichier d'Exonération</span>
-                                @endif
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                @endif
-            </div>
-        </div>
-    </div>
-    <hr>
-
-    <div class="row">
-        <div class="col-12">
             <h4>Déclaration</h4>
-            <div class="table-responsive table-bordered-">
-                @if($declaration)
-                    <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
-                        <tbody>
-                        <tr>
-                            <th style="width: 40%">Numéro de declaration</th>
-                            <td>{{ $declaration->number }}</td>
-                        </tr>
-                        <tr>
-                            <th>Date de declaration</th>
-                            <td>{{ dateFormat($declaration->date) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Bureau de destination</th>
-                            <td>{{ $declaration->destination_office }}</td>
-                        </tr>
-                        <tr>
-                            <th>Verificateur</th>
-                            <td>{{ $declaration->verifier }}</td>
-                        </tr>
-                        <tr>
-                            <th>Copie de la declaration</th>
-                            <td>
-                                @if($declaration->declaration_file_path)
-                                    <button wire:click="downloadFile('declarations', 'declaration_file_path')" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i> Telecharger
-                                    </button>
-                                @else
-                                    <span class="text-danger" >Il manque la copie de la declaration</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Numéro du bulletin de liquidation</th>
-                            <td>
-                                @if($declaration->liquidation_bulletin)
-                                    {{ $declaration->liquidation_bulletin }}
-                                @else
-                                    <span class="text-danger">Il manque le numéro du bulletin de liquidation</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Date de liquidation</th>
-                            <td>
-                                @if($declaration->liquidation_date)
-                                    {{ dateFormat($declaration->liquidation_date) }}
-                                @else
-                                    <span class="text-danger">Il manque la date de liquidation</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Copie du bulletin de liquidation</th>
-                            <td>
-                                @if($declaration->liquidation_file_path)
-                                    <button wire:click="downloadFile('declarations', 'liquidation_file_path')" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i> Telecharger
-                                    </button>
-                                @else
-                                    <span class="text-danger" >Il manque la copie du bulletin de liquidation</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Numéro de la quittance</th>
-                            <td>
-                                @if($declaration->receipt_number)
-                                    {{ $declaration->receipt_number }}
-                                @else
-                                    <span class="text-danger">Il manque Numéro de la quittance</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Date de la quittance</th>
-                            <td>
-                                @if($declaration->receipt_date)
-                                    {{ dateFormat($declaration->receipt_date) }}
-                                @else
-                                    <span class="text-danger">Il manque la date de la quittance</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Copie de la quittance</th>
-                            <td>
-                                @if($declaration->receipt_file_path)
-                                    <button wire:click="downloadFile('declarations', 'receipt_file_path')" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i> Telecharger
-                                    </button>
-                                @else
-                                    <span class="text-danger" >Il manque la copie du bulletin de liquidation</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Numéro du bon</th>
-                            <td>
-                                @if($declaration->bon_number)
-                                    {{ $declaration->bon_number }}
-                                @else
-                                    <span class="text-danger">Il manque le numéro du bon</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Date du bon</th>
-                            <td>
-                                @if($declaration->bon_date)
-                                    {{ dateFormat($declaration->bon_date) }}
-                                @else
-                                    <span class="text-danger">Il manque la date du bon</span>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Copie du bon</th>
-                            <td>
-                                @if($declaration->bon_file_path)
-                                    <button wire:click="downloadFile('declarations', 'bon_file_path')" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i> Telecharger
-                                    </button>
-                                @else
-                                    <span class="text-danger" >Il manque la copie du bulletin de liquidation</span>
-                                @endif
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                @else
-                    <span class="text-danger">Les infos de la déclaration sont obligatoires</span>
-                @endif
-            </div>
+            @forelse($declarations as $i => $item)
+                <h5>
+                    Déclaration du conteneur n°: {{ $item->container->number }}
+                    <div class="float-right">
+                        <button wire:click="editDeclaration('{{ $item->id }}')" class="btn btn-sm btn-warning" title="Modifier la déclaration">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button wire:click="deleteDeclaration('{{ $item->id }}')" class="btn btn-sm btn-danger" title="Supprimer la déclaration">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="mb-1 table table-sm table-striped">
+                            <tr>
+                                <th>Numéro de declaration</th>
+                                <td>{{ $item->number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de declaration</th>
+                                <td>{{ dateFormat($item->date) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bureau de destination</th>
+                                <td>{{ $item->destination_office }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Verificateur</th>
+                                <td>{{ $item->verifier }}</td>
+                            </tr>
+                            <tr>
+                                <th>Copie de la declaration</th>
+                                <td>
+                                    @if($item->declaration_file_path)
+                                        <button wire:click="downloadFile('declarations', 'declaration_file_path')" class="btn btn-xs btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'declaration_file_path')" class="btn btn-xs btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    @else
+                                        <div class="text-danger">Il manque la copie de la declaration</div>
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Numéro du bulletin de liquidation</th>
+                                <td>{{ $item->liquidation_bulletin }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de liquidation</th>
+                                <td>{{ $item->liquidation_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Copie du bulletin de liquidation</th>
+                                <td>
+                                    @if($item->liquidation_file_path)
+                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path')" class="btn btn-xs btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'liquidation_file_path')" class="btn btn-xs btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    @else
+                                        <div class="text-danger">Il manque la copie du bulletin de liquidation</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="mb-1 table table-sm table-striped">
+                            <tr>
+                                <th>Numéro de la quittance</th>
+                                <td>{{ $item->receipt_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de la quittance</th>
+                                <td>{{ $item->receipt_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Copie de la quittance</th>
+                                <td>
+                                    @if($item->receipt_file_path)
+                                        <button wire:click="downloadFile('declarations', 'receipt_file_path')" class="btn btn-xs btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'receipt_file_path')" class="btn btn-xs btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    @else
+                                        <div class="text-danger">Il manque la copie du bulletin de la quittance</div>
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Numéro du bon</th>
+                                <td>{{ $item->bon_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date du bon</th>
+                                <td>{{ $item->bon_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Copie du bon</th>
+                                <td>
+                                    @if($item->bon_file_path)
+                                        <button wire:click="downloadFile('declarations', 'bon_file_path')" class="btn btn-xs btn-success">
+                                            <i class="fas fa-download"></i> Telecharger
+                                        </button>
+                                        <button wire:click="deleteFile('declarations', 'bon_file_path')" class="btn btn-xs btn-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    @else
+                                        <div class="text-danger">Il manque la copie du bon</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <hr/>
+            @empty
+                <p class="text-danger">Les infos de la déclaration sont obligatoires</p>
+            @endforelse
         </div>
     </div>
     <hr>

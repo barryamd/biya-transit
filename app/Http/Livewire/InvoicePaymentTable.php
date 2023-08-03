@@ -154,7 +154,7 @@ class InvoicePaymentTable extends DataTableComponent
                 //$this->payment->user_id = auth()->user()->id;
                 $this->payment->saveOrFail();
                 if ($this->invoice->total <= ($this->invoice->payments_sum_amount + $this->payment->amount)) {
-                    $this->invoice->status = 'paid';
+                    //$this->invoice->status = 'paid';
                     $this->invoice->saveOrFail();
                 }
             });

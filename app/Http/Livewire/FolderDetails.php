@@ -6,6 +6,7 @@ use App\Models\Container;
 use App\Models\DdiOpening;
 use App\Models\Declaration;
 use App\Models\Delivery;
+use App\Models\DeliveryNote;
 use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
@@ -21,31 +22,33 @@ class FolderDetails extends Component
     public Folder $folder;
     public Collection $containers, $documents;
 
+    public $exonerations;
     public DdiOpening|null $ddiOpening = null;
-    public Exoneration|null $exoneration = null;
-    public Declaration|null $declaration = null;
+    public $declarations;
     public $deliveryNotes;
     public Delivery|null $delivery = null;
-    public Transporter|null $transporter = null;
 
     public function mount()
     {
         $this->folder->loadSum('containers', 'weight');
+
         $this->containers = Container::with('type', 'transporter')
             ->where('folder_id', $this->folder->id)->get();
         $this->documents = Document::with('type')
             ->where('folder_id', $this->folder->id)->get();
 
+        $this->exonerations = Exoneration::with('container', 'products')
+            ->where('folder_id', $this->folder->id)->get();
+
         $this->ddiOpening = $this->folder->ddiOpening;
-        $this->exoneration = $this->folder->exoneration;
-        if ($this->exoneration)
-            $this->exoneration->load('products');
-        $this->declaration = $this->folder->declaration;
-        $this->folder->load('deliveryNotes.container');
-        $this->deliveryNotes = $this->folder->deliveryNotes;
+
+        $this->declarations = Declaration::with('container')
+            ->where('folder_id', $this->folder->id)->get();
+
+        $this->deliveryNotes = DeliveryNote::with('container')
+            ->where('folder_id', $this->folder->id)->get();
+
         $this->delivery = $this->folder->deliveryDetails;
-        if ($this->delivery)
-            $this->transporter = $this->delivery->transporter;
     }
 
     public function render()
@@ -53,20 +56,29 @@ class FolderDetails extends Component
         return view('folders.show-details');
     }
 
-    public function download($collection, $modelId)
+    public function downloadFile($collection, $attribute = 'attach_file_path', $modelId = null)
     {
-        if ($collection == 'folders') {
-            $model = $this->documents->where('id', $modelId)->first();
+        $filePath = '';
+        if ($collection == 'exonerations') {
+            $exoneration = $this->exonerations->where('id', $modelId)->first();
+            $filePath = $exoneration->$attribute;
+        } elseif ($collection == 'ddi_openings') {
+            $filePath = $this->ddiOpening->$attribute;
+        } elseif ($collection == 'declarations') {
+            $declaration = $this->declarations->where('id', $modelId)->first();
+            $filePath = $declaration->$attribute;
+        } elseif ($collection == 'delivery_notes') {
+            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
+            $filePath = $deliveryNote->$attribute;
+        } elseif ($collection == 'deliveries') {
+            $filePath = $this->delivery->$attribute;
         }
+        $filePath = public_path('uploads/'.$filePath);
 
-        if (isset($model)) {
-            $filePath = public_path('uploads/'.$model->attach_file_path);
-
-            if (file_exists($filePath)) {
-                return response()->download($filePath);
-            } else {
-                abort(404, 'File not found');
-            }
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            abort(404, 'File not found');
         }
         return null;
     }
