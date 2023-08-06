@@ -98,7 +98,8 @@ class InvoiceForm extends Component
         $this->validate();
 
         try {
-            $this->invoice->generateUniqueNumber();
+            if (!$this->invoice->id)
+                $this->invoice->generateUniqueNumber();
 
             DB::beginTransaction();
 

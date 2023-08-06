@@ -45,8 +45,7 @@ class FolderDetails extends Component
 
         $this->ddiOpening = $this->folder->ddiOpening;
 
-        $this->declarations = Declaration::with('container')
-            ->where('folder_id', $this->folder->id)->get();
+        $this->declarations = $this->folder->declarations;
 
         $this->deliveryNotes = DeliveryNote::with('container')
             ->where('folder_id', $this->folder->id)->get();

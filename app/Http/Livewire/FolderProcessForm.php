@@ -69,7 +69,7 @@ class FolderProcessForm extends Component
             'exoneration.date'        => ['nullable'],
             'exoneration.responsible' => ['nullable'],
 
-            'declaration.container_id'         => ['nullable'],
+            //'declaration.container_id'         => ['nullable'],
             'declaration.number'               => ['required'],
             'declaration.date'                 => ['required', 'date'],
             'declaration.destination_office'   => ['required'],
@@ -118,7 +118,6 @@ class FolderProcessForm extends Component
             $this->ddiOpening = new DdiOpening();
         }
 
-        $this->folder->load('declarations.container');
         $this->declarations = $this->folder->declarations;
         if ($this->declarations->count()) {
             $this->currentStep = 4;
@@ -232,7 +231,7 @@ class FolderProcessForm extends Component
     public function saveDeclaration()
     {
         $this->validate([
-            'declaration.container_id'         => ['required', Rule::unique('declarations', 'container_id')->ignore($this->declaration->id)],
+            //'declaration.container_id'         => ['required', Rule::unique('declarations', 'container_id')->ignore($this->declaration->id)],
             'declaration.number'               => ['required', 'string', Rule::unique('declarations', 'number')->ignore($this->declaration->id)],
             'declaration.date'                 => ['required', 'date'],
             'declaration.destination_office'   => ['required', 'string'],
@@ -334,7 +333,7 @@ class FolderProcessForm extends Component
                         $fail('Ce numéro est dupliqué.');
                     }
                 },
-                Rule::unique('deliveryNotes', 'bcm')->ignore($this->folder->id, 'folder_id')
+                Rule::unique('delivery_notes', 'bcm')->ignore($this->folder->id, 'folder_id')
             ],
             'deliveryNotes.*.bct' => [
                 'required', 'string',
@@ -347,7 +346,7 @@ class FolderProcessForm extends Component
                         $fail('Ce numéro est dupliqué.');
                     }
                 },
-                Rule::unique('deliveryNotes', 'bct')->ignore($this->folder->id, 'folder_id')
+                Rule::unique('delivery_notes', 'bct')->ignore($this->folder->id, 'folder_id')
             ],
             'deliveryNotes.*.bcm_file_path' => 'nullable',
             'deliveryNotes.*.bct_file_path' => 'nullable',

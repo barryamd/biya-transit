@@ -58,9 +58,9 @@ class FolderForm extends Component
             'containers.*.number'         => [
                 'required', 'string',
                 function ($attribute, $value, $fail) {
-                    if ($value == $this->folder->num_cnt) {
-                        $fail('Ce numéro doit être différent du numéro CNT.');
-                    }
+//                    if ($value == $this->folder->num_cnt) {
+//                        $fail('Ce numéro doit être etre identique CNT.');
+//                    }
 
                     if ($this->containers->where('number', $value)->count() > 1) {
                         $fail('Ce numéro est dupliqué.');
@@ -186,8 +186,9 @@ class FolderForm extends Component
     {
         $this->validate();
 
-        //try {
-            $this->folder->generateUniqueNumber();
+        try {
+            if (!$this->folder->id)
+                $this->folder->generateUniqueNumber();
 
             DB::beginTransaction();
 
@@ -222,9 +223,9 @@ class FolderForm extends Component
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);
-//        } catch (\Exception $e) {
-//            throw new UnprocessableEntityHttpException($e->getMessage());
-//        }
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
     }
 
     public function closeModal()

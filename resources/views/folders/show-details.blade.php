@@ -254,7 +254,7 @@
             <h4>Déclaration</h4>
             @forelse($declarations as $i => $item)
                 <h5>
-                    Déclaration du conteneur n°: {{ $item->container->number }}
+                    Déclaration n°: {{ $item->number }}
                     <div class="float-right">
                         <button wire:click="editDeclaration('{{ $item->id }}')" class="btn btn-sm btn-warning" title="Modifier la déclaration">
                             <i class="fa fa-edit"></i>
@@ -267,10 +267,6 @@
                 <div class="row">
                     <div class="col-md-6">
                         <table class="mb-1 table table-sm table-striped">
-                            <tr>
-                                <th>Numéro de declaration</th>
-                                <td>{{ $item->number }}</td>
-                            </tr>
                             <tr>
                                 <th>Date de declaration</th>
                                 <td>{{ dateFormat($item->date) }}</td>
