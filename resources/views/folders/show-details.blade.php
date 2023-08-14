@@ -384,47 +384,55 @@
     <div class="row">
         <div class="col-12">
             <h4>Bons de livraisons</h4>
+            <table class="mb-1 table table-sm table-striped table-hover">
+                <tbody>
+                <tr>
+                    <th style="width: 40%">Numéro Bon de CM</th>
+                    <td>
+                        @if($folder->bcm)
+                            {{ $folder->bcm }}
+                        @else
+                            <span class="text-danger">Il manque le Bon de CM</span>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <th>Numéro Bon de CT</th>
+                    <td>
+                        @if($folder->bcm)
+                            {{ $folder->bct }}
+                        @else
+                            <span class="text-danger">Il manque le Bon de CT</span>
+                        @endif
+                    </td>
+                </tr>
+                </tbody>
+            </table>
             <div class="table-responsive table-bordered-">
-                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                <table class="mb-1 table table-sm table-striped table-hover">
                     <thead>
                     <tr>
-                        <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 15%;">Conteneur</th>
-                        <th style="width: 20%;">Bon de CM</th>
-                        <th style="width: 20%;">Copie du Bon de CM</th>
-                        <th style="width: 20%;">Bon de CT</th>
-                        <th style="width: 20%;">Copie du Bon de CT</th>
+                        <th class="text-center" style="width: 10%">#</th>
+                        <th style="width: 45%;">Fichier Bon de CM</th>
+                        <th style="width: 45%;">Fichier Bon de CT</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($deliveryNotes as $i => $deliveryNote)
+                    @forelse($deliveryFiles as $i => $file)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>
-                                {{ $deliveryNote->container->number }}
-                            </td>
-                            <td>
-                                {{ $deliveryNote->bcm }}
-                            </td>
                             <td class="align-middle">
-                                @if($deliveryNote['bcm_file_path'])
-                                    <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-sm btn-success">
+                                @if($file['bcm_file_path'])
+                                    <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
-                                @else
-                                    <span class="text-danger">Il manque le fichier jointe</span>
                                 @endif
                             </td>
-                            <td>
-                                {{ $deliveryNote->bct }}
-                            </td>
                             <td class="align-middle">
-                                @if($deliveryNote['bct_file_path'])
-                                    <button wire:click="downloadFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-sm btn-success">
+                                @if($file['bct_file_path'])
+                                    <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
-                                @else
-                                    <span class="text-danger">Il manque le fichier jointe</span>
                                 @endif
                             </td>
                         </tr>

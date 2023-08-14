@@ -6,7 +6,7 @@ use App\Models\Container;
 use App\Models\DdiOpening;
 use App\Models\Declaration;
 use App\Models\Delivery;
-use App\Models\DeliveryNote;
+use App\Models\DeliveryFile;
 use App\Models\Exoneration;
 use App\Models\Folder;
 use App\Models\User;
@@ -44,7 +44,7 @@ class FolderProcessForm extends Component
     public Declaration $declaration;
     public $declarationFile = null, $liquidationFile, $receiptFile, $bonFile;
 
-    public Collection $deliveryNotes;
+    public Collection $deliveryFiles;
     public $bcmFiles = [], $bctFiles = [];
 
     public Delivery|null $delivery = null;
@@ -53,7 +53,7 @@ class FolderProcessForm extends Component
     public $deliveryExitFile, $deliveryReturnFile;
 
     protected $messages = [
-        'deliveryNotes' => 'Il faut au minimum un bon',
+        'deliveryFiles' => 'Il faut au minimum un bon',
     ];
 
     public function getRules()
@@ -81,12 +81,12 @@ class FolderProcessForm extends Component
             'declaration.bon_number'           => ['required'],
             'declaration.bon_date'             => ['required', 'date'],
 
-            'deliveryNotes.*.id' => 'nullable',
-            'deliveryNotes.*.folder_id' => 'nullable',
-            'deliveryNotes.*.bcm' => ['required', 'string'],
-            'deliveryNotes.*.bct' => ['required', 'string'],
-            'deliveryNotes.*.bcm_file_path' => 'nullable',
-            'deliveryNotes.*.bct_file_path' => 'nullable',
+            'folder.bcm' => ['required', 'string'],
+            'folder.bct' => ['required', 'string'],
+            'deliveryFiles.*.id' => 'nullable',
+            'deliveryFiles.*.folder_id' => 'nullable',
+            'deliveryFiles.*.bcm_file_path' => 'nullable',
+            'deliveryFiles.*.bct_file_path' => 'nullable',
 
             'delivery.date'  => ['required', 'date'],
             'delivery.place' => ['required'],
@@ -126,9 +126,8 @@ class FolderProcessForm extends Component
         }
         $this->declaration = new Declaration();
 
-        $this->folder->load('deliveryNotes');
-        $this->deliveryNotes = $this->folder->deliveryNotes->collect();
-        if ($this->deliveryNotes->count() > 0) {
+        $this->deliveryFiles = $this->folder->deliveryFiles->collect();
+        if ($this->folder->bcm) {
             $this->currentStep = 5;
         }
 
@@ -147,7 +146,7 @@ class FolderProcessForm extends Component
     {
         $this->validate([
             'exoneration.container_id'=> ['required', Rule::unique('exonerations', 'container_id')->ignore($this->exoneration->id)],
-            'exoneration.number'      => ['required', 'string', Rule::unique('exonerations', 'number')->ignore($this->exoneration->id)],
+            'exoneration.number'      => ['required', Rule::unique('exonerations', 'number')->ignore($this->exoneration->id)],
             'exoneration.date'        => ['required', 'date'],
             'exoneration.responsible' => ['required', 'string'],
             'exonerationProducts'     => ['required'],
@@ -291,83 +290,49 @@ class FolderProcessForm extends Component
     }
 
 
-    public function addDeliveryNote()
+    public function addDeliveryFile()
     {
-        $this->deliveryNotes->add([
+        $this->deliveryFiles->add([
             'folder_id' => null,
-            'container_id' => null,
-            'bcm' => null,
-            'bct' => null,
             'bcm_file_path' => null,
             'bct_file_path' => null,
         ]);
     }
 
-    public function removeDeliveryNote($index)
+    public function removeDeliveryFile($index)
     {
-        $this->deliveryNotes = $this->deliveryNotes->except([$index])->values();
+        $this->deliveryFiles = $this->deliveryFiles->except([$index])->values();
     }
 
     public function submitDeliveryNoteStep()
     {
         $this->validate([
-            'deliveryNotes' => 'required',
-            'deliveryNotes.*.id' => 'nullable',
-            'deliveryNotes.*.folder_id' => 'nullable',
-            'deliveryNotes.*.container_id' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    if ($this->deliveryNotes->where('container_id', $value)->count() > 1) {
-                        $fail('Ce conteneur est déjà pris.');
-                    }
-                }
-            ],
-            'deliveryNotes.*.bcm' => [
-                'required', 'string',
-                function ($attribute, $value, $fail) {
-                    if ($value == $this->folder->num_cnt) {
-                        $fail('Ce numéro doit être différent du numéro CNT.');
-                    }
-
-                    if ($this->deliveryNotes->where('bcm', $value)->count() > 1) {
-                        $fail('Ce numéro est dupliqué.');
-                    }
-                },
-                Rule::unique('delivery_notes', 'bcm')->ignore($this->folder->id, 'folder_id')
-            ],
-            'deliveryNotes.*.bct' => [
-                'required', 'string',
-                function ($attribute, $value, $fail) {
-                    if ($value == $this->folder->num_cnt) {
-                        $fail('Ce numéro doit être différent du numéro CNT.');
-                    }
-
-                    if ($this->deliveryNotes->where('bct', $value)->count() > 1) {
-                        $fail('Ce numéro est dupliqué.');
-                    }
-                },
-                Rule::unique('delivery_notes', 'bct')->ignore($this->folder->id, 'folder_id')
-            ],
-            'deliveryNotes.*.bcm_file_path' => 'nullable',
-            'deliveryNotes.*.bct_file_path' => 'nullable',
-            'bcmFiles.*' => ['mimes:pdf,jpg,jpeg,png', 'max:4096'],
-            'bctFiles.*' => ['mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'folder.bcm' => ['nullable', 'string', Rule::unique('folders', 'bcm')->ignore($this->folder->id)],
+            'folder.bct' => ['nullable', 'string', Rule::unique('folders', 'bct')->ignore($this->folder->id)],
+            'deliveryFiles.*.id' => 'nullable',
+            'deliveryFiles.*.folder_id' => 'nullable',
+            'deliveryFiles.*.bcm_file_path' => 'nullable',
+            'deliveryFiles.*.bct_file_path' => 'nullable',
+            'deliveryFiles' => 'required',
+            'bcmFiles.*' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
+            'bctFiles.*' => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ]);
 
         try {
-            foreach ($this->deliveryNotes as $index => $deliveryNoteInputs) {
-                $deliveryNoteInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $deliveryNoteInputs)) {
-                    $deliveryNote = $this->folder->deliveryNotes->where('id', $deliveryNoteInputs['id'])->first();
-                    $deliveryNote->update($deliveryNoteInputs);
+            $this->folder->save();
+            foreach ($this->deliveryFiles as $index => $deliveryFileInputs) {
+                $deliveryFileInputs['folder_id'] = $this->folder->id;
+                if (array_key_exists('id', $deliveryFileInputs)) {
+                    $deliveryFile = $this->folder->deliveryFiles->where('id', $deliveryFileInputs['id'])->first();
+                    $deliveryFile->update($deliveryFileInputs);
                 } else {
-                    $deliveryNote = DeliveryNote::query()->create($deliveryNoteInputs);
+                    $deliveryFile = DeliveryFile::query()->create($deliveryFileInputs);
                 }
                 if (array_key_exists($index, $this->bcmFiles)) {
-                    $deliveryNote->addFile($this->bcmFiles[$index], 'bcm_file_path');
+                    $deliveryFile->addFile($this->bcmFiles[$index], 'bcm_file_path');
                 }
                 if (array_key_exists($index, $this->bctFiles)) {
-                    $deliveryNote->addFile($this->bctFiles[$index], 'bct_file_path');
+                    $deliveryFile->addFile($this->bctFiles[$index], 'bct_file_path');
                 }
             }
 
@@ -438,7 +403,6 @@ class FolderProcessForm extends Component
         }
     }
 
-
     public function closeModal($modalId)
     {
         $this->dispatchBrowserEvent('close-'.$modalId);
@@ -478,9 +442,9 @@ class FolderProcessForm extends Component
         } elseif ($collection == 'declarations') {
             $declaration = $this->declarations->where('id', $modelId)->first();
             $filePath = $declaration?->$attribute;
-        } elseif ($collection == 'delivery_notes') {
-            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
-            $filePath = $deliveryNote?->$attribute;
+        } elseif ($collection == 'delivery_files') {
+            $deliveryFile = $this->deliveryFiles->where('id', $modelId)->first();
+            $filePath = $deliveryFile?->$attribute;
         } elseif ($collection == 'deliveries') {
             $filePath = $this->delivery?->$attribute;
         }
@@ -504,9 +468,9 @@ class FolderProcessForm extends Component
         } elseif ($collection == 'declarations') {
             $declaration = $this->declarations->where('id', $modelId)->first();
             $declaration?->deleteFile($attribute);
-        } elseif ($collection == 'delivery_notes') {
-            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
-            $deliveryNote?->deleteFile($attribute);
+        } elseif ($collection == 'delivery_files') {
+            $deliveryFile = $this->deliveryFiles->where('id', $modelId)->first();
+            $deliveryFile?->deleteFile($attribute);
         } elseif ($collection == 'deliveries') {
             $this->delivery?->deleteFile($attribute);
         }

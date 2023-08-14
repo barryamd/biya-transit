@@ -1,72 +1,60 @@
 <div class="col-md-12">
     <h4>Bons de livraison</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <x-form.input label="Numero Bon de CM" wire:model.defer="folder.bcm" class="form-control" required></x-form.input>
+        </div>
+        <div class="col-md-6">
+            <x-form.input label="Numero Bon de CT" wire:model.defer="folder.bct" class="form-control" required></x-form.input>
+        </div>
+    </div>
     @can('add-delivery-note')
         <div class="table-responsive table-bordered-">
             <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                 <thead>
                 <tr>
                     <th class="text-center" style="width: 5%">#</th>
-                    <th style="width: 20%;">Conteneur<span class="text-danger">*</span></th>
-                    <th style="width: 15%;">Bon de CM<span class="text-danger">*</span></th>
-                    <th style="width: 20%;">Copie du Bon de CM</th>
-                    <th style="width: 15%;">Bon de CT<span class="text-danger">*</span></th>
-                    <th style="width: 20%;">Copie du Bon de CT</th>
+                    <th style="width: 45%;">Fichier Bon de CM</th>
+                    <th style="width: 45%;">Fichier Bon de CT</th>
                     <th class="text-center" style="width: 5%">
-                        <button wire:click.prevent="addDeliveryNote" title="Ajouter" class="btn btn-sm btn-primary w-100-">
+                        <button wire:click.prevent="addDeliveryFile" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                             <i class="fas fa-plus"></i>
                         </button>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($deliveryNotes as $i => $deliveryNote)
+                @foreach ($deliveryFiles as $i => $file)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>
-                            <select wire:model.defer="deliveryNotes.{{$i}}.container_id" class="form-control px-1" required>
-                                <option value="">-- Selectionner un conteneur --</option>
-                                @foreach($containers as $value => $container)
-                                    <option value="{{$value}}">{{ $container }}</option>
-                                @endforeach
-                            </select>
-                            @error("deliveryNotes.$i.container_id") <span class="text-xs text-danger">{{ $message }}</span> @enderror
-                        </td>
-                        <td>
-                            <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bcm" class="form-control" required>
-                            @error("deliveryNotes.$i.bcm") <span class="text-xs text-danger">{{ $message }}</span> @enderror
-                        </td>
                         <td class="align-middle">
-                            @if($deliveryNote['bcm_file_path'])
-                                <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i>
+                            @if($file['bcm_file_path'])
+                                <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i> Telecharger
                                 </button>
-                                <button wire:click="deleteFile('delivery_notes', 'bcm_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i>
+                                <button wire:click="deleteFile('delivery_notes', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             @else
                                 <input type="file" wire:model.lazy="bcmFiles.{{$i}}" class="form-control px-1" required>
-                                @error('bcmFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                @error('bctFiles.'.$i) <span class="text-xs text-danger">Aucun fichier n'a été chargé</span> @enderror
                             @endif
                         </td>
-                        <td>
-                            <input type="text" wire:model.defer="deliveryNotes.{{$i}}.bct" class="form-control" required>
-                            @error("deliveryNotes.$i.bct") <span class="text-xs text-danger">{{ $message }}</span> @enderror
-                        </td>
                         <td class="align-middle">
-                            @if($deliveryNote['bct_file_path'])
-                                <button wire:click="downloadFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i>
+                            @if($file['bct_file_path'])
+                                <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i> Telecharger
                                 </button>
-                                <button wire:click="deleteFile('delivery_notes', 'bct_file_path', {{$deliveryNote['id']}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i>
+                                <button wire:click="deleteFile('delivery_files', 'bct_file_path', {{$file['id']}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             @else
                                 <input type="file" wire:model.lazy="bctFiles.{{$i}}" class="form-control px-1" required>
-                                @error('bctFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                @error('bctFiles.'.$i) <span class="text-xs text-danger">Aucun fichier n'a été chargé</span> @enderror
                             @endif
                         </td>
                         <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                            <button wire:click.prevent="removeDeliveryNote({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                            <button wire:click.prevent="removeDeliveryFile({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                 <i class="fas fa-times"></i>
                             </button>
                         </td>
@@ -74,11 +62,11 @@
                 @endforeach
                 </tbody>
             </table>
-            @error('deliveryNotes')<div class="text-danger">{{ $message }}</div>@enderror
+            @error('deliveryFiles')<div class="text-danger">{{ $message }}</div>@enderror
         </div>
         <div>
             @can('add-declaration')
-                <button class="btn btn-secondary" wire:click="back(3)" type="button">Retourner</button>
+                <button class="btn btn-secondary" wire:click="setStep(3)" type="button">Retourner</button>
             @endcan
             <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryNoteStep" type="button">Sauvegarder et Passer</button>
         </div>

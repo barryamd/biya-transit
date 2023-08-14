@@ -24,6 +24,8 @@ class Folder extends Model
         'harbor',
         'observation',
         'status',
+        'bcm',
+        'bct'
     ];
 
     protected array $searchableFields = ['*'];
@@ -75,9 +77,9 @@ class Folder extends Model
         return $this->hasMany(Declaration::class);
     }
 
-    public function deliveryNotes(): HasMany
+    public function deliveryFiles(): HasMany
     {
-        return $this->hasMany(DeliveryNote::class);
+        return $this->hasMany(DeliveryFile::class);
     }
 
     public function deliveryDetails(): HasOne

@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->text('observation')->nullable();
             $table->enum('status', ['En attente', 'En cours', 'Fermé'])
                 ->default('En attente');
+            $table->string('bcm')->nullable();
+            $table->string('bct')->nullable();
 
             $table->index('number');
 

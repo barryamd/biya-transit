@@ -92,7 +92,7 @@
             <br>
             <div>
                 @can('add-delivery-note')
-                    <button class="btn btn-secondary" wire:click="back(4)" type="button">Retourner</button>
+                    <button class="btn btn-secondary" wire:click="setStep(4)" type="button">Retourner</button>
                 @endcan
                 <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryDetailsStep" type="button">Sauvegarder</button>
             </div>
@@ -100,7 +100,7 @@
             <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
         @endcan
     </div>
-    <x-form-modal id="transporterFormModal" submit="setContainerTransporter" title="Ajouter un nouveau transporteur">
+    <x-form-modal id="transporterFormModal" submit="addTransporter" title="Ajouter un nouveau transporteur">
         <x-slot name="content">
             <x-form.select2-dropdown label="Transporteur" wire:model="transporter" routeName="getTransporters" id="transporter"
                                      parentId="transporterFormModal" placeholder="Rechercher le transporteur" required></x-form.select2-dropdown>
@@ -112,7 +112,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 {{ __('Close') }}
             </button>
-            <button wire:click="setContainerTransporter" class="btn btn-primary me-2">
+            <button wire:click="addTransporter" class="btn btn-primary me-2">
                 <i class="fa fa-check-circle"></i> {{ __('Save') }}
             </button>
         </x-slot>

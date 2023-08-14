@@ -6,7 +6,7 @@ use App\Models\Container;
 use App\Models\DdiOpening;
 use App\Models\Declaration;
 use App\Models\Delivery;
-use App\Models\DeliveryNote;
+use App\Models\DeliveryFile;
 use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
@@ -25,7 +25,7 @@ class FolderDetails extends Component
     public $exonerations;
     public DdiOpening|null $ddiOpening = null;
     public $declarations;
-    public $deliveryNotes;
+    public $deliveryFiles;
     public Delivery|null $delivery = null;
 
     public function mount()
@@ -47,8 +47,7 @@ class FolderDetails extends Component
 
         $this->declarations = $this->folder->declarations;
 
-        $this->deliveryNotes = DeliveryNote::with('container')
-            ->where('folder_id', $this->folder->id)->get();
+        $this->deliveryFiles = $this->folder->deliveryFiles;
 
         $this->delivery = $this->folder->deliveryDetails;
     }
@@ -70,7 +69,7 @@ class FolderDetails extends Component
             $declaration = $this->declarations->where('id', $modelId)->first();
             $filePath = $declaration->$attribute;
         } elseif ($collection == 'delivery_notes') {
-            $deliveryNote = $this->deliveryNotes->where('id', $modelId)->first();
+            $deliveryNote = $this->deliveryFiles->where('id', $modelId)->first();
             $filePath = $deliveryNote->$attribute;
         } elseif ($collection == 'deliveries') {
             $filePath = $this->delivery->$attribute;
@@ -105,8 +104,8 @@ class FolderDetails extends Component
             'declaration.receipt_file_path'     => 'required',
             'declaration.bon_file_path'         => 'required',
 
-            'deliveryNotes.*.bcm_file_path' => 'required',
-            'deliveryNotes.*.bct_file_path' => 'required',
+            'deliveryFiles.*.bcm_file_path' => 'required',
+            'deliveryFiles.*.bct_file_path' => 'required',
 
             'delivery.exit_file_path'   => 'required',
             'delivery.return_file_path' => 'required',

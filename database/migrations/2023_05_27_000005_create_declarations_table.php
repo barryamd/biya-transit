@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('declarations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->unsignedBigInteger('container_id')->nullable();
             $table->string('number', 30)->unique();
             $table->date('date');
             $table->string('destination_office');
@@ -39,8 +38,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
-                ->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreign('container_id')->references('id')->on('containers')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }

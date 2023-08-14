@@ -145,7 +145,7 @@
                                             </button>
                                         @else
                                             <input type="file" wire:model.lazy="documentsFiles.{{$i}}" class="form-control px-1" required>
-                                            @error('documentsFiles.*') <span class="text-xs text-danger">{{ $message }}</span> @enderror
+                                            @error("documentsFiles.$i") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         @endif
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
