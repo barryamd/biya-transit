@@ -59,7 +59,7 @@ class FolderForm extends Component
                 'required', 'string',
                 function ($attribute, $value, $fail) {
 //                    if ($value == $this->folder->num_cnt) {
-//                        $fail('Ce numéro doit être etre identique CNT.');
+//                        $fail('Ce numéro doit être identique au CNT.');
 //                    }
 
                     if ($this->containers->where('number', $value)->count() > 1) {

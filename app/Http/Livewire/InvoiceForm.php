@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Folder;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Tva;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -98,8 +100,11 @@ class InvoiceForm extends Component
         $this->validate();
 
         try {
-            if (!$this->invoice->id)
-                $this->invoice->generateUniqueNumber();
+            if (!$this->invoice->id) {
+                //$this->invoice->generateUniqueNumber();
+                $folder = Folder::query()->find($this->invoice->folder_id);
+                $this->invoice->number = Str::substr($folder->number, 2, 3);
+            }
 
             DB::beginTransaction();
 

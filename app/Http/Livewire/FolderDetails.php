@@ -91,7 +91,7 @@ class FolderDetails extends Component
             'ddiOpening.ddi_obtained_date' => 'required',
             'ddiOpening.attach_file_path'  => 'required',
 
-            'exoneration.attach_file_path' => 'required',
+            'exonerations.*.attach_file_path' => 'required',
 
             'declaration.liquidation_bulletin'  => 'required',
             'declaration.liquidation_date'      => 'required',

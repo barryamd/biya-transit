@@ -52,7 +52,7 @@ class ExpenseTable extends DataTableComponent
             'expense.folder_id'   => 'required',
             'expense.type'        => ['required', 'string'],
             'expense.amount'      => ['required', 'numeric'],
-            'expense.description' => ['required', 'string'],
+            'expense.description' => ['nullable', 'string'],
         ];
     }
 
