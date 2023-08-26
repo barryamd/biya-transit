@@ -26,7 +26,8 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
     public function configure(): void
     {
         $this->setPrimaryKey('id')
-            ->setReorderEnabled()
+            ->setReorderDisabled()
+            //->setDefaultReorderSort('created_at', 'desc')
             ->setSingleSortingDisabled()
             ->setHideReorderColumnUnlessReorderingEnabled()
             ->setFilterLayoutSlideDown()
