@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('folder_id');
+            $table->unsignedBigInteger('folder_id')->nullable();
             $table->string('type', 30);
             $table->integer('amount');
             $table->text('description')->nullable();

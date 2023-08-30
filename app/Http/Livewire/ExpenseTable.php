@@ -28,8 +28,8 @@ class ExpenseTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("Numero du dossier", 'folder.number')
-                ->sortable(),
+            //Column::make("Numero du dossier", 'folder.number')
+            //    ->sortable(),
             Column::make("Type de depense", "type")
                 ->sortable()->searchable(),
             Column::make("Montant", "amount")
@@ -41,15 +41,10 @@ class ExpenseTable extends DataTableComponent
         ];
     }
 
-    public function builder(): Builder
-    {
-        return Expense::with('folder');
-    }
-
     protected function rules(): array
     {
         return [
-            'expense.folder_id'   => 'required',
+            //'expense.folder_id'   => 'required',
             'expense.type'        => ['required', 'string'],
             'expense.amount'      => ['required', 'numeric'],
             'expense.description' => ['nullable', 'string'],
