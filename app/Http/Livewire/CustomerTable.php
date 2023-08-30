@@ -112,7 +112,7 @@ class CustomerTable extends DataTableComponent
     {
         $this->validate();
 
-        try {
+//        try {
             $password = Str::random(8);
 
             DB::beginTransaction();
@@ -135,9 +135,9 @@ class CustomerTable extends DataTableComponent
                 $user->password = $password;
                 $user->sendEmailVerificationNotification();
             }
-        } catch (\Exception $exception) {
-            $this->alert('error', "Erreur! .".$exception->getMessage());
-        }
+//        } catch (\Exception $exception) {
+//            $this->alert('error', "Erreur! .".$exception->getMessage());
+//        }
     }
 
     public function closeModal($modalId = null)
