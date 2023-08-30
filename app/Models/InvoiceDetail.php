@@ -10,7 +10,7 @@ class InvoiceDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['service_id', 'amount'];
+    protected $fillable = ['service_id', 'amount', 'benefit'];
 
     public $timestamps = false;
 

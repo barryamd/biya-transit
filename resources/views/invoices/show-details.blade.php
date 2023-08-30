@@ -15,38 +15,40 @@
     </div>
     <hr class="pt-0 mt-0 text-gray">
 
-{{--    <div class="row">--}}
-{{--        <div class="col-12">--}}
-{{--            <h5 class="text-center">DETAIL DU CONTENU</h5>--}}
-{{--            <div class="table-responsive table-bordered-">--}}
-{{--                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">--}}
-{{--                    <thead>--}}
-{{--                    <tr>--}}
-{{--                        <th class="bg-secondary" style="width: 50%;">DESIGNATION</th>--}}
-{{--                        <th class="bg-secondary" style="width: 30%;">QUANTITE</th>--}}
-{{--                        <th class="bg-secondary" style="width: 20%;">POIDS (KGS)</th>--}}
-{{--                    </tr>--}}
-{{--                    </thead>--}}
-{{--                    <tbody>--}}
-{{--                    @foreach ($containers as $i => $container)--}}
-{{--                        <tr>--}}
-{{--                            <td>--}}
-{{--                                {{ $container->number }}--}}
-{{--                            </td>--}}
-{{--                            <td>--}}
-{{--                                {{ $container->package_number }}--}}
-{{--                            </td>--}}
-{{--                            <td>--}}
-{{--                                {{ number_format($container->weight, 2, ',', ' ') }}--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
-{{--                    @endforeach--}}
-{{--                    </tbody>--}}
-{{--                </table>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <hr class="pt-0 mt-0 text-gray">--}}
+    {{--
+    <div class="row">
+        <div class="col-12">
+            <h5 class="text-center">DETAIL DU CONTENU</h5>
+            <div class="table-responsive table-bordered-">
+                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                    <thead>
+                    <tr>
+                        <th class="bg-secondary" style="width: 50%;">DESIGNATION</th>
+                        <th class="bg-secondary" style="width: 30%;">QUANTITE</th>
+                        <th class="bg-secondary" style="width: 20%;">POIDS (KGS)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($containers as $i => $container)
+                        <tr>
+                            <td>
+                                {{ $container->number }}
+                            </td>
+                            <td>
+                                {{ $container->package_number }}
+                            </td>
+                            <td>
+                                {{ number_format($container->weight, 2, ',', ' ') }}
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr class="pt-0 mt-0 text-gray">
+    --}}
 
     <div class="row">
         <div class="col-12">
@@ -55,9 +57,11 @@
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
                     <tr>
-                        <th class="bg-secondary" style="width: 40%;">DESIGNATIONS</th>
-                        <th class="bg-secondary text-center" style="width: 20%;">MONTANT EN GNF</th>
-                        <th class="bg-secondary" style="width: 40%;">OBSERVATION</th>
+                        <th class="bg-secondary" style="width: 20%;">Service</th>
+                        <th class="bg-secondary text-center" style="width: 20%;">Prix Service</th>
+                        <th class="bg-secondary text-center" style="width: 15%;">Bénéfice</th>
+                        <th class="bg-secondary text-center" style="width: 15%;">Total</th>
+                        <th class="bg-secondary" style="width: 30%;">Observation</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,23 +71,57 @@
                                 {{ $amount->service->name }}
                             </td>
                             <td class="text-right pr-5">
-                                {{ moneyFormat($amount->amount) }}
+                                {{ moneyFormat($amount->amount) }} GNF
+                            </td>
+                            <td class="text-right pr-5">
+                                {{ moneyFormat($amount->benefit) }} GNF
+                            </td>
+                            <td class="text-right pr-5">
+                                {{ moneyFormat($amount->amount + $amount->benefit) }} GNF
                             </td>
                             <td>
                                 {{ $amount->service->description }}
                             </td>
                         </tr>
                     @endforeach
-                    <tr>
-                        <th>TOTAL</th>
-                        <td class="bg-secondary">
-                            {{ moneyFormat($invoice->amounts_sum_amount) }}
-                        </td>
-                        <td></td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <hr class="pt-0 mt-0 text-gray">
+
+    <div class="row">
+        <div class="col-md-5 pl-3 pr-5">
+        </div>
+        <div class="col-md-7">
+            <table class="table table-sm table-head-fixed- text-nowrap-">
+                <tbody>
+                <tr>
+                    <th style="width: 50%">Sous-Total</th>
+                    <td class="text-right" style=" width: 45%">
+                        {{ moneyFormat($invoice->subtotal, 0, '') }}
+                    </td>
+                    <td style="width: 20px;">GNF</td>
+                </tr>
+                @if($invoice->tva_id)
+                    <tr>
+                        <th>TVA</th>
+                        <td class="text-right">
+                            {{ moneyFormat($invoice->tax, 0, '') }}
+                        </td>
+                        <td>GNF</td>
+                    </tr>
+                @endif
+                <tr>
+                    <th>Total</th>
+                    <td class="text-right">
+                        <span class="text-nowrap">{{ moneyFormat($invoice->total, 0, '') }}</span>
+                    </td>
+                    <td>GNF</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <hr class="pt-0 mt-0 text-gray">

@@ -25,8 +25,10 @@
                         <thead>
                         <tr>
                             <th class="text-center" style="width: 5%">#</th>
-                            <th style="width: 60%;">Service</th>
-                            <th style="width: 30%;">Prix</th>
+                            <th style="width: 30%;">Service</th>
+                            <th style="width: 20%;">Prix Service</th>
+                            <th style="width: 20%;">Bénéfice</th>
+                            <th style="width: 20%;">Total</th>
                             <th class="text-center" style="width: 5%">
                                 <button wire:click.prevent="addAmount" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                     <i class="fas fa-plus"></i>
@@ -49,6 +51,12 @@
                                 <td>
                                     <input type="text" wire:model.lazy="amounts.{{$i}}.amount" wire:change="setTotal" class="form-control px-1 text-right" required>
                                 </td>
+                                <td>
+                                    <input type="text" wire:model.lazy="amounts.{{$i}}.benefit" wire:change="setTotal" class="form-control px-1 text-right" required>
+                                </td>
+                                <td>
+                                    {{ moneyFormat($amount->amount + $amount->benefit) }} GNF
+                                </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                                     <button wire:click.prevent="removeAmount('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                         <i class="fas fa-times"></i>
@@ -68,14 +76,14 @@
             <div class="col-md-7">
                 <table class="table table-sm table-head-fixed- text-nowrap-">
                     <tbody>
+                    <tr>
+                        <th style="width: 50%">Sous-Total</th>
+                        <td class="text-right" style=" width: 45%">
+                            {{ moneyFormat($invoice->subtotal, 0, '') }}
+                        </td>
+                        <td style="width: 20px;">GNF</td>
+                    </tr>
                     @if($invoice->tva_id)
-                        <tr>
-                            <th style="width: 50%">Sous-Total</th>
-                            <td class="text-right" style=" width: 45%">
-                                {{ moneyFormat($invoice->subtotal, 0, '') }}
-                            </td>
-                            <td style="width: 20px;">GNF</td>
-                        </tr>
                         <tr>
                             <th>TVA</th>
                             <td class="text-right">

@@ -37,6 +37,7 @@ class InvoiceForm extends Component
             'invoice.total'      => ['required', 'numeric'],
             'amounts.*.service_id' => 'required',
             'amounts.*.amount'     => ['required', 'numeric'],
+            'amounts.*.benefit'     => ['required', 'numeric'],
         ];
     }
 
@@ -75,7 +76,7 @@ class InvoiceForm extends Component
 
     public function setTotal()
     {
-        $this->invoice->subtotal = $this->amounts->sum('amount');
+        $this->invoice->subtotal = $this->amounts->sum('amount') + $this->amounts->sum('benefit');
         if ($this->invoice->tva_id && $this->tva) {
             $this->invoice->tax = $this->invoice->subtotal * $this->tva->rate / 100;
         }
@@ -87,6 +88,7 @@ class InvoiceForm extends Component
         $this->amounts->add([
             'service_id' => null,
             'amount' => null,
+            'benefit' => null,
         ]);
     }
 

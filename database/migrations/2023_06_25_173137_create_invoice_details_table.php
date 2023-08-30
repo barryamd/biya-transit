@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('invoice_id');
             $table->foreignId('service_id')->constrained('services');
             $table->integer('amount');
+            $table->integer('benefit');
 
             $table->foreign('invoice_id')->references('id')->on('invoices')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
