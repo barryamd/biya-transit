@@ -175,19 +175,26 @@ class UserTable extends DataTableComponent
         $this->validate();
 
         try {
-            if (!$this->isEditMode)
-                $this->user->password = Hash::make(Str::random());
+            $password = Str::random(8);
 
-            DB::transaction(function () {
-                $this->user->saveOrFail();
-                $this->user->syncRoles([$this->role]);
-            });
+            DB::beginTransaction();
+                if (!$this->isEditMode) {
+                    $user = User::create(
+                        array_merge($this->user->toArray(), ['password' => Hash::make($password)])
+                    );
+                    $user->syncRoles([$this->role]);
+                } else {
+                    $this->user->save();
+                    $this->user->syncRoles([$this->role]);
+                }
+            DB::commit();
 
             $this->closeModal('userFormModal');
             $this->alert('success', __('The user has been created successfully.'));
 
             if (!$this->isEditMode) {
-                $this->user->sendPasswordResetNotification(csrf_token());
+                $user->password = $password;
+                $user->sendEmailVerificationNotification();
             }
         } catch (\Exception $exception) {
             $this->alert('error', "Erreur! .".$exception->getMessage());
