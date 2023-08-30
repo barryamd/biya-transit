@@ -9,9 +9,7 @@
     </a>
     <ul class="nav nav-treeview">
         @foreach($menu['children'] as $child)
-            @can($child['permission'])
-                <x-nav-item :item="$child"></x-nav-item>
-            @endcan
+            <x-nav-item :item="$child"></x-nav-item>
         @endforeach
     </ul>
 </li>

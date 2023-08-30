@@ -20,11 +20,11 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $user = User::factory()->create([
-            'first_name' => 'Admin',
-            'last_name' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'first_name' => 'Super Admin',
+            'email' => 'admin@biyatransit.com',
+            'password' => 'biyatransit@2023'
         ]);
-        $role = Role::create(['name' => 'Admin']);
+        $role = Role::create(['name' => 'Super Admin']);
         $user->assignRole($role);
 
         // create permissions
