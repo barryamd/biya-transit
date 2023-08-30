@@ -3,7 +3,7 @@
 # @lang('Hello!') @lang('Welcome to') {{ config('app.name') }} !
 
 {{-- Intro Lines --}}
-{{ str_replace(':app_name', config('app.name'), __("Your account to access the \":app_name\" intranet has just been created.")) }}
+{{ str_replace(':app_name', config('app.name'), __("Your account to access the \":app_name\" application has just been created.")) }}
 
 @component('mail::panel')
 # @lang('Here are your login details'):

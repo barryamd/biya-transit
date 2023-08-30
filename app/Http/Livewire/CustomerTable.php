@@ -6,6 +6,7 @@ use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Views\Column\DateColumn;
 use App\LivewireTables\Views\Column\SwitchColumn;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -112,23 +113,27 @@ class CustomerTable extends DataTableComponent
         $this->validate();
 
         try {
-            if (!$this->isEditMode)
-                $this->user->password = Hash::make(Str::random(8));
+            $password = Str::random(8);
 
-            DB::transaction(function () {
-                $this->user->saveOrFail();
+            DB::beginTransaction();
                 if (!$this->isEditMode) {
-                    $this->user->givePermissionTo(['create-folder', 'read-folder', 'update-folder']);
-                    $this->customer->user_id = $this->user->id;
+                    $user = User::create(
+                        array_merge($this->user->toArray(), ['password' => Hash::make($password)])
+                    );
+                    $user->givePermissionTo(['create-folder', 'read-folder', 'update-folder']);
+                    $this->customer->user_id = $user->id;
+                } else {
+                    $this->user->save();
                 }
                 $this->customer->save();
-            });
+            DB::commit();
 
             $this->closeModal();
             $this->alert('success', "Le client a été enregistré avec succès.");
 
-            if (!$this->isEditMode) {
-                $this->user->sendPasswordResetNotification(csrf_token());
+            if (isset($user)) {
+                $user->password = $password;
+                $user->sendEmailVerificationNotification();
             }
         } catch (\Exception $exception) {
             $this->alert('error', "Erreur! .".$exception->getMessage());
