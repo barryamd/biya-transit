@@ -76,7 +76,7 @@ return [
     [
         'title'      => 'Gestion financière',
         'type'       => 'collapse',
-        'icon'       => 'users',
+        'icon'       => 'money-bill',
         'permission' => 'read-charge|read-invoice',
         'children'   => [
             [
