@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('folder_charges', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('folder_id')->nullable();
-            $table->string('type', 30);
+            $table->unsignedBigInteger('folder_id');
+            $table->string('name', 30);
             $table->integer('amount');
-            $table->text('description')->nullable();
-            $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('folder_charges');
     }
 };

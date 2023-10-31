@@ -4,6 +4,10 @@
     </x-slot>
 
     <x-slot name="form">
+        <x-jet-action-message class="mr-3 alert alert-success" on="saved">
+            {{ __('Saved.') }}
+        </x-jet-action-message>
+
         <div class="row">
             <div class="col-md-8">
                 <x-form.password label="{{ __('Current Password') }}" wire:model.defer="state.current_password" autocomplete="current-password"></x-form.password>

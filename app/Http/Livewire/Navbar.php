@@ -27,8 +27,8 @@ class Navbar extends Component
 
         //$sales = Sale::query()->withSum('saleProducts', 'profit')->get();
         //$payments = EmployeePayment::all();
-        //$expenses = Expense::all();
-        //$this->caisse = $sales->sum(fn($item) => $item->sale_products_sum_profit) - $expenses->sum(fn($item) => $item->amount) - $payments->sum(fn($item) => $item->amount);
+        //$charges = FolderCharge::all();
+        //$this->caisse = $sales->sum(fn($item) => $item->sale_products_sum_profit) - $charges->sum(fn($item) => $item->amount) - $payments->sum(fn($item) => $item->amount);
     }
 
     /**

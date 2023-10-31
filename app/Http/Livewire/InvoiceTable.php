@@ -37,10 +37,12 @@ class InvoiceTable extends DataTableComponent
             Column::make("Numero du dossier", 'folder.number')
                 ->sortable(),
             Column::make("Sous-total", "subtotal")
+                ->format(fn($value, $row) => moneyFormat($value))
                 ->sortable(),
             Column::make("TVA", "tva.rate")
                 ->sortable(),
             Column::make("Montant TVA", "tax")
+                ->format(fn($value, $row) => moneyFormat($value))
                 ->sortable(),
             Column::make("Total", "total")
                 ->sortable(),

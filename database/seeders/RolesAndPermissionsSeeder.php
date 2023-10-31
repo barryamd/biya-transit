@@ -30,7 +30,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create permissions
         $tables = [
-            'user', 'role', 'folder', 'customer', 'transporter', 'expense', 'invoice'
+            'user', 'role', 'folder', 'customer', 'transporter', 'charge', 'invoice'
         ];
 
         foreach ($tables as $table) {

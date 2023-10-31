@@ -41,11 +41,11 @@ class RoleShow extends Component
             'settings'    => 'Gestion des paramètres',
             'customer'    => 'Gestion des clients',
             'transporter' => 'Gestion des transporteurs',
-            'expense'     => 'Gestion des dépenses',
+            'charge'     => 'Gestion des charges',
             'invoice'     => 'Gestion des factures',
             'folder'      => 'Gestion des dossiers',
         ];
-        $this->tables = ['user', 'role', 'customer', 'transporter', 'expense', 'invoice', 'folder'];
+        $this->tables = ['user', 'role', 'customer', 'transporter', 'charge', 'invoice', 'folder'];
     }
 
     public function render()

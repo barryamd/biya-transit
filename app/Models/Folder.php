@@ -96,4 +96,9 @@ class Folder extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function charges(): HasMany
+    {
+        return $this->hasMany(FolderCharge::class, 'folder_id');
+    }
 }

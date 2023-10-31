@@ -4,7 +4,7 @@
     </x-slot>
 
     <x-slot name="form">
-        <x-jet-action-message class="mr-3" on="saved">
+        <x-jet-action-message class="mr-3 alert alert-success" on="saved">
             {{ __('Saved.') }}
         </x-jet-action-message>
 
@@ -29,7 +29,7 @@
 
                 <!-- Current Profile Photo -->
                 <div class="user-image mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="img-circle elevation-2" style="width:5rem; height:5rem;">
+                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->first_name }} {{ $this->user->last_name }}" class="img-circle elevation-2" style="width:5rem; height:5rem;">
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -52,8 +52,12 @@
             @endif
 
             <!-- Name -->
-            <div class="col-md-8">
-                <x-form.input label="{{ __('Name') }}" wire:model.defer="state.name"></x-form.input>
+            <div class="col-md-6">
+                <x-form.input label="Prenom" wire:model.defer="state.first_name"></x-form.input>
+            </div>
+            <div class="col-md-6">
+                <x-form.input label="{{ __('Name') }}" wire:model.defer="state.last_name"></x-form.input>
+                <x-input-error for="last_name" class="mt-2"></x-input-error>
             </div>
 
             <!-- Email -->

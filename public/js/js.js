@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     $('#cheque_date').val(today);
 
-    if( parseFloat($('#amount').val()) + parseFloat($('#expense_amount').val()) == parseFloat($('#invoice_amount').val()) )
+    if( parseFloat($('#amount').val()) + parseFloat($('#charge_amount').val()) == parseFloat($('#invoice_amount').val()) )
         $("#receipt_create").attr('disabled', 'disabled');
 
     $("input[type='radio']").click(function () {
@@ -48,7 +48,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "get",
-            url: app_url+"/admin/get_invoice_rtv_expense",
+            url: app_url+"/admin/get_invoice_rtv_charge",
             data: {
                 customer_id: $("#customer_id").val(),
             },
@@ -110,7 +110,7 @@ function submit_permision() {
 
                 $("#invoice_amount").removeAttr('readonly', 'readonly');
 //                        $("#rtv_amount").removeAttr('readonly', 'readonly');
-                $("#expense_amount").removeAttr('readonly', 'readonly');
+                $("#charge_amount").removeAttr('readonly', 'readonly');
 
                 $("#receipt_create").removeAttr('disabled', 'disabled');
             }
@@ -119,7 +119,7 @@ function submit_permision() {
                 $("#total_amount").css('color', 'red');
                 $("#invoice_amount").attr('readonly', 'readonly');
 //                        $("#rtv_amount").attr('readonly', 'readonly');
-                $("#expense_amount").attr('readonly', 'readonly');
+                $("#charge_amount").attr('readonly', 'readonly');
                 $("#receipt_create").attr('disabled', 'disabled');
             }
         } else {
@@ -129,7 +129,7 @@ function submit_permision() {
 
                 $("#invoice_amount").removeAttr('readonly', 'readonly');
 //                        $("#rtv_amount").removeAttr('readonly', 'readonly');
-                $("#expense_amount").removeAttr('readonly', 'readonly');
+                $("#charge_amount").removeAttr('readonly', 'readonly');
 
                 $("#receipt_create").removeAttr('disabled', 'disabled');
             }else {
@@ -137,7 +137,7 @@ function submit_permision() {
                 $("#total_amount").css('color', 'red');
                 $("#invoice_amount").attr('readonly', 'readonly');
 //                        $("#rtv_amount").attr('readonly', 'readonly');
-                $("#expense_amount").attr('readonly', 'readonly');
+                $("#charge_amount").attr('readonly', 'readonly');
                 $("#receipt_create").attr('disabled', 'disabled');
             }
         }
