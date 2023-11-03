@@ -44,9 +44,6 @@
                                     @if(array_key_exists('update-'.$table, $permissions))
                                         <x-form.checkbox label="Modifier" wire:model.defer="rolePermissions" :value="$permissions['update-'.$table]"></x-form.checkbox>
                                     @endif
-                                    @if(array_key_exists('update-'.$table, $permissions))
-                                        <x-form.checkbox label="Modifier" wire:model.defer="rolePermissions" :value="$permissions['update-'.$table]"></x-form.checkbox>
-                                    @endif
                                 </td>
                                 <td>
                                     @if(array_key_exists('delete-'.$table, $permissions))

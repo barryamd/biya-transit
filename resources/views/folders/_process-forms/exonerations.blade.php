@@ -5,7 +5,7 @@
                 <thead>
                 <tr>
                     <th class="text-center" style="width: 5%">#</th>
-                    <th style="width: 20%;">Conteneur</th>
+                    <th style="width: 20%;">CNT/LTA</th>
                     <th style="width: 15%;">Numéro</th>
                     <th style="width: 15%;">Date</th>
                     <th style="width: 20%;">Produits</th>
@@ -21,7 +21,7 @@
                 @foreach ($exonerations as $i => $item)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $item->container->number }}</td>
+                        <td>{{ $item->folder->num_cnt }}</td>
                         <td>{{ $item->number }}</td>
                         <td>{{ dateFormat($item->date) }}</td>
                         <td>{{ $item->products->pluck('designation')->implode(', ') }}</td>
@@ -59,15 +59,17 @@
     <x-form-modal id="exonerationFormModal" size="lg" submit="saveExoneration" title="Ajouter une exoneration">
         <x-slot name="content">
             <div class="row" wire:ignore>
+                {{--
                 <div class="col-md-6">
-                    <x-form.select label="Conteneur" wire:model.defer="exoneration.container_id"
-                                   :options="$containers" required :disabled="$isEditMode"></x-form.select>
+                    <x-form.select label="CNT/LTA" wire:model.defer="exoneration.folder_id"
+                                   :options="$containersCntLta" required :disabled="$isEditMode"></x-form.select>
                 </div>
+                --}}
                 <div class="col-md-6">
                     <x-form.input label="Numéro d'exonération" wire:model.defer="exoneration.number" required></x-form.input>
                 </div>
                 <div class="col-md-6">
-                    <x-form.date label="Date d'exonération" wire:model.defer="exoneration.date" required></x-form.date>
+                    <x-form.input type="date" label="Date d'exonération" wire:model.defer="exoneration.date" required></x-form.input>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Chargé d'étude" wire:model.defer="exoneration.responsible" required></x-form.input>

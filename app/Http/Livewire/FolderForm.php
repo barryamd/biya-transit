@@ -57,6 +57,7 @@ class FolderForm extends Component
             'containers.*.type_id'        => 'required',
             'containers.*.number'         => [
                 'required', 'string',
+                Rule::unique('containers', 'number')->ignore($this->folder->id, 'folder_id'),
                 function ($attribute, $value, $fail) {
 //                    if ($value == $this->folder->num_cnt) {
 //                        $fail('Ce numéro doit être identique au CNT.');
@@ -66,7 +67,6 @@ class FolderForm extends Component
                         $fail('Ce numéro est dupliqué.');
                     }
                 },
-                Rule::unique('containers', 'number')->ignore($this->folder->id, 'folder_id')
             ],
             'containers.*.weight'         => ['required', 'string'],
             'containers.*.package_number' => ['required', 'string'],
@@ -237,5 +237,24 @@ class FolderForm extends Component
     public function render()
     {
         return view('folders.form');
+    }
+
+    public function downloadDocumentFile($id)
+    {
+        $document = Document::query()->find($id);
+        $filePath = public_path('uploads/'.$document->attach_file_path);
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            abort(404, 'File not found');
+        }
+        return null;
+    }
+
+    public function deleteDocumentFile($id)
+    {
+        $document = Document::query()->find($id);
+        $document?->deleteFile();
     }
 }

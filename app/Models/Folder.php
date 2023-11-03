@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Folder extends Model
 {
@@ -40,6 +41,11 @@ class Folder extends Model
 //        }
         $id = Folder::query()->count() + 1;
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
+    }
+
+    public function author()
+    {
+
     }
 
     public function customer(): BelongsTo
@@ -100,5 +106,32 @@ class Folder extends Model
     public function charges(): HasMany
     {
         return $this->hasMany(FolderCharge::class, 'folder_id');
+    }
+
+    public function hasLta(): bool
+    {
+        $documents = $this->documents;
+        $documents->load('type');
+        foreach ($documents as $document) {
+            if ($document->type->label == 'LTA') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getCntOrLta(): string
+    {
+        $documents = $this->documents;
+        $documents->load('type');
+        foreach ($documents as $document) {
+            if ($document->type->label == 'LTA') {
+                return $document->number;
+            }
+            if ($document->type->label == 'BL (CONNAISSEMENT)') {
+                return Str::after($document->number, 'BL');
+            }
+        }
+        return '';
     }
 }

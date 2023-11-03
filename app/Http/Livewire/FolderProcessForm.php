@@ -7,9 +7,11 @@ use App\Models\DdiOpening;
 use App\Models\Declaration;
 use App\Models\Delivery;
 use App\Models\DeliveryFile;
+use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +50,7 @@ class FolderProcessForm extends Component
     public $bcmFiles = [], $bctFiles = [];
 
     public Delivery|null $delivery = null;
-    public Collection $transporterContainers, $containers;
+    public Collection $transporterContainers, $containers, $foldersCntLta;
     public string|null $container, $transporter;
     public $deliveryExitFile, $deliveryReturnFile;
 
@@ -64,7 +66,7 @@ class FolderProcessForm extends Component
             'ddiOpening.ddi_number'        => ['nullable'],
             'ddiOpening.ddi_obtained_date' => ['nullable', 'date'],
 
-            'exoneration.container_id'=> ['nullable'],
+            //'exoneration.container_id'=> ['nullable'],
             'exoneration.number'      => ['nullable'],
             'exoneration.date'        => ['nullable'],
             'exoneration.responsible' => ['nullable'],
@@ -108,8 +110,10 @@ class FolderProcessForm extends Component
         }
         $this->exoneration = new Exoneration();
         $this->products = $this->folder->products->pluck('designation', 'id')->toArray();
+
         $this->containers = Container::query()->where('folder_id', $this->folder->id)
-            ->get()->pluck('number', 'id');
+            ->pluck('number', 'id');
+        $this->foldersCntLta = Folder::query()->pluck('num_cnt', 'id');
 
         $this->ddiOpening = $this->folder->ddiOpening;
         if ($this->ddiOpening) {
@@ -141,11 +145,10 @@ class FolderProcessForm extends Component
         }
     }
 
-
     public function saveExoneration()
     {
         $this->validate([
-            'exoneration.container_id'=> ['required', Rule::unique('exonerations', 'container_id')->ignore($this->exoneration->id)],
+            //'exoneration.container_id'=> ['required'],
             'exoneration.number'      => ['required', Rule::unique('exonerations', 'number')->ignore($this->exoneration->id)],
             'exoneration.date'        => ['required', 'date'],
             'exoneration.responsible' => ['required', 'string'],

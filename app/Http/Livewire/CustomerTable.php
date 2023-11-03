@@ -38,7 +38,7 @@ class CustomerTable extends DataTableComponent
         return [
             Column::make("NIF", "customer.nif")
                 ->sortable()->searchable(),
-            Column::make("Prenoms et Nom", "first_name")
+            Column::make("Importateur", "first_name")
                 ->format(fn($value, $row) => $row->full_name)
                 ->sortable()->searchable(),
             Column::make("", "last_name")

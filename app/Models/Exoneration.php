@@ -18,6 +18,10 @@ class Exoneration extends Model
 
     protected $fillable = ['folder_id', 'number', 'date', 'responsible'];
 
+    protected $casts = [
+        'date' => 'string'
+    ];
+
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);

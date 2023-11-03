@@ -60,7 +60,10 @@ class FolderDetails extends Component
     public function downloadFile($collection, $attribute = 'attach_file_path', $modelId = null)
     {
         $filePath = '';
-        if ($collection == 'exonerations') {
+        if ($collection == 'folders') {
+            $document = $this->documents->where('id', $modelId)->first();
+            $filePath = $document->$attribute;
+        } elseif ($collection == 'exonerations') {
             $exoneration = $this->exonerations->where('id', $modelId)->first();
             $filePath = $exoneration->$attribute;
         } elseif ($collection == 'ddi_openings') {

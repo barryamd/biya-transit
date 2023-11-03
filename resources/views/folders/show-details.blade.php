@@ -19,7 +19,7 @@
                         <td>{{ $folder->customer->name }}</td>
                     </tr>
                     <tr>
-                        <th>Numéro CNT</th>
+                        <th>Numéro CNT/LTA</th>
                         <td>{{ $folder->num_cnt }}</td>
                     </tr>
                     <tr>
@@ -50,6 +50,11 @@
                         <th>Status</th>
                         <td>{{ $folder->status }}</td>
                     </tr>
+                    <tr>
+                        <th>Auteur</th>
+                        <td></td>
+                    </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -124,7 +129,7 @@
                                 {{ $document->number }}
                             </td>
                             <td class="align-middle">
-                                <button wire:click="download('folders', {{$document->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
+                                <button wire:click="downloadFile('folders', 'attach_file_path', {{$document->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
                             </td>
                         </tr>
                     @endforeach
@@ -284,7 +289,7 @@
                                 <th>Copie de la declaration</th>
                                 <td>
                                     @if($item->declaration_file_path)
-                                        <button wire:click="downloadFile('declarations', 'declaration_file_path')" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'declaration_file_path', {{$item->id}})" class="btn btn-xs btn-success">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
                                         <button wire:click="deleteFile('declarations', 'declaration_file_path')" class="btn btn-xs btn-danger">
@@ -308,7 +313,7 @@
                                 <th>Copie du bulletin de liquidation</th>
                                 <td>
                                     @if($item->liquidation_file_path)
-                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path')" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path', {{$item->id}})" class="btn btn-xs btn-success">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
                                         <button wire:click="deleteFile('declarations', 'liquidation_file_path')" class="btn btn-xs btn-danger">
@@ -335,10 +340,10 @@
                                 <th>Copie de la quittance</th>
                                 <td>
                                     @if($item->receipt_file_path)
-                                        <button wire:click="downloadFile('declarations', 'receipt_file_path')" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'receipt_file_path', {{$item->id}})" class="btn btn-xs btn-success">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'receipt_file_path')" class="btn btn-xs btn-danger">
+                                        <button wire:click="deleteFile('declarations', 'receipt_file_path', {{$item->id}})" class="btn btn-xs btn-danger">
                                             <i class="fas fa-trash"></i> Supprimer
                                         </button>
                                     @else
@@ -359,10 +364,10 @@
                                 <th>Copie du bon</th>
                                 <td>
                                     @if($item->bon_file_path)
-                                        <button wire:click="downloadFile('declarations', 'bon_file_path')" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'bon_file_path', {{$item->id}})" class="btn btn-xs btn-success">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'bon_file_path')" class="btn btn-xs btn-danger">
+                                        <button wire:click="deleteFile('declarations', 'bon_file_path', {{$item->id}})" class="btn btn-xs btn-danger">
                                             <i class="fas fa-trash"></i> Supprimer
                                         </button>
                                     @else
@@ -422,15 +427,15 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="align-middle">
-                                @if($file['bcm_file_path'])
-                                    <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
+                                @if($file->bcm_file_path)
+                                    <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file->id}})" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @endif
                             </td>
                             <td class="align-middle">
-                                @if($file['bct_file_path'])
-                                    <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
+                                @if($file->bct_file_path)
+                                    <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file->id}})" class="btn btn-sm btn-success">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @endif
@@ -502,10 +507,10 @@
                             @forelse($containers as $container)
                                 <tr>
                                     <td>{{ $container->number }}</td>
-                                    <td>{{ $container->transporter->numberplate }}</td>
-                                    <td>{{ $container->transporter->marque }}</td>
-                                    <td>{{ $container->transporter->driver_name }}</td>
-                                    <td>{{ $container->transporter->driver_phone }}</td>
+                                    <td>{{ $container->transporter?->numberplate }}</td>
+                                    <td>{{ $container->transporter?->marque }}</td>
+                                    <td>{{ $container->transporter?->driver_name }}</td>
+                                    <td>{{ $container->transporter?->driver_phone }}</td>
                                 </tr>
                             @empty
                                 <tr>
