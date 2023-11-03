@@ -43,10 +43,6 @@ class FolderForm extends Component
         return [
             'folder.customer_id' => 'nullable',
             'folder.type'        => 'required',
-            'folder.num_cnt'     => [
-                'required', 'string',
-                Rule::unique('folders', 'num_cnt')->ignore($this->folder->id)
-            ],
             'folder.harbor'      => ['required', 'string'],
             'folder.country'     => ['required', 'string'],
             'folder.observation' => ['nullable', 'string'],
@@ -193,6 +189,7 @@ class FolderForm extends Component
             DB::beginTransaction();
 
             $this->folder->save();
+            $this->folder->num_cnt = $this->folder->getCntOrLta();
             $this->folder->products()->sync($this->selectedProducts);
 
             if ($this->folder->id) {
