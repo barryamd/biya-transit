@@ -48,7 +48,7 @@ class FolderForm extends Component
             'folder.observation' => ['nullable', 'string'],
             'selectedProducts'   => ['required'],
 
-            'containers'                  => 'required',
+            'containers'                  => 'nullable',
             'containers.*.folder_id'      => 'nullable',
             'containers.*.type_id'        => 'required',
             'containers.*.number'         => [

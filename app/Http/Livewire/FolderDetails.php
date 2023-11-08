@@ -71,7 +71,7 @@ class FolderDetails extends Component
         } elseif ($collection == 'declarations') {
             $declaration = $this->declarations->where('id', $modelId)->first();
             $filePath = $declaration->$attribute;
-        } elseif ($collection == 'delivery_notes') {
+        } elseif ($collection == 'delivery_files') {
             $deliveryNote = $this->deliveryFiles->where('id', $modelId)->first();
             $filePath = $deliveryNote->$attribute;
         } elseif ($collection == 'deliveries') {

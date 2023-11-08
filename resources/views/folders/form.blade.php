@@ -13,11 +13,9 @@
                     <x-form.select label="Type de dossier" wire:model="folder.type" :options="['IMPORT' => 'IMPORT', 'EXPORT'=> 'EXPORT']"
                                          required placeholder="Selectionner le type"></x-form.select>
                 </div>
-                {{--
                 <div class="col-md-6">
-                    <x-form.input label="Numero BL" wire:model.defer="folder.num_cnt" required></x-form.input>
+                    <x-form.input label="Numéro CNT/LTA" wire:model.defer="folder.num_cnt" required></x-form.input>
                 </div>
-                --}}
                 <div class="col-md-6">
                     <x-form.input label="Poids Total de la marchandise" wire:model.defer="totalWeight" disabled></x-form.input>
                 </div>
@@ -100,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            @if($folder->hasLta())
+            @if(!$folder->hasLta())
             <hr>
                 <div class="row">
                     <div class="col-12">
