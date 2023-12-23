@@ -17,6 +17,7 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
     public int|null $rowDeletingId = null;
     public string|null $exportClass =  null;
     protected string|null $printView = null;
+    protected string $resourceName = 'Resource';
 
     protected $listeners = [
         'refreshDatatable' => '$refresh',
@@ -301,86 +302,58 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
         return '<span class="badge badge-' . $type . ' ml-' . $margin . '">' . __($text) . '</span>';
     }
 
-    public function button($route, $param, $type, $title, $icon, $name = '', $target = '_self'): Column|LinkColumn
+    public function button($route, $color, $icon, $title = '', $target = '_self'): Column|LinkColumn
     {
-        return LinkColumn::make('Edit')
+        return LinkColumn::make($title)
             ->title(fn($row) => "<i class='fa fa-$icon . '></i>")
-            ->location(fn($row) => route($route, $param))
-            ->attributes(function($row) use($title, $name, $type, $target) {
+            ->location(fn($row) => route($route, $row))
+            ->attributes(function($row) use($title, $color, $target) {
                 return [
+                    'class' => "px-3 btn btn-xs btn-$color",
                     'title' => $title,
-                    'data-name' => $name,
                     'target' => $target,
-                    'class' => "px-3 btn btn-xs btn-$type",
                 ];
             });
     }
 
-    public function viewButton($route, $param = 'id'): LinkColumn|Column
+    public function viewButton($route): LinkColumn|Column
     {
         return LinkColumn::make('View')
             ->title(fn($row) => '<i class="fas fa-eye"></i>')
-            ->location(fn($row) => route($route, $param))
+            ->location(fn($row) => route($route, $row))
             ->attributes(function($row) {
                 return [
-                    'title' => __('Show'),
-                    'target' => '_blanc',
-                    'class' => 'btn text-success text-lg',
+                    'class' => 'btn text-info text-lg',
+                    'title' => __('View'),
                 ];
             });
     }
 
-    public function editButton($route, $param = 'id', $title = 'Edit'): LinkColumn|Column
+    public function editButton($route, $modal = null): LinkColumn|Column
     {
-        return LinkColumn::make($title)
-            ->title(fn($row) => '<i class="fa fa-edit"></i>')
-            ->location(fn($value) => dd($value))
-            ->attributes(function($row) use($title) {
-                return [
-                    'title' => __($title),
-                    'target' => '_self',
-                    'class' => 'btn text-warning text-lg',
-                ];
-            });
-    }
-
-    public function editButtonForModal($modalId, $param = 'id', $title = 'Edit'): LinkColumn|Column
-    {
-        return LinkColumn::make($title)
+        return LinkColumn::make('Edit')
             ->title(fn($row) => '<i class="fas fa-edit"></i>')
-            ->location(fn($row) => 'javascript:void(0)')
-            ->attributes(function($row) use($title) {
+            ->location(fn($row) => $modal ? 'javascript:void(0)' : route($route, $row))
+            ->attributes(function($row) use($route, $modal) {
                 return [
-                    'title' => __($title),
-                    'target' => '_self',
-                    'class' => 'btn text-warning text-lg',
-                    'wire:click' => "openEditModal({{ $row->id }}, 'customerFormModal')"
+                    'class' => 'btn text-primary text-lg',
+                    'wire:click' => $this->model ? "openEditModal('$row->id', '$modal')" : null,
+                    'title' => __('Edit'),
                 ];
             });
     }
 
-    public function deleteButton($title = 'Delete'): LinkColumn|Column
+    public function deleteButton(): LinkColumn|Column
     {
-        return LinkColumn::make($title)
+        return LinkColumn::make('Delete')
             ->title(fn($row) => '<i class="fas fa-trash"></i>')
             ->location(fn($row) => 'javascript:void(0)')
-            ->attributes(function($row) use($title) {
+            ->attributes(function($row) {
                 return [
-                    'title' => __($title),
-                    'target' => '_self',
                     'class' => 'btn text-danger text-lg',
-                    'wire:click' => "delete(".$row->id.")",
+                    'wire:click' => "delete('$row->id')",
+                    'title' => __('Delete'),
                 ];
             });
     }
-
-    /*
-    ButtonGroupColumn::make('Actions')
-    ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
-    ->buttons([
-        //$this->viewButton('customers.details'),
-        $this->editButtonForModal('customerFormModal'),
-        $this->deleteButton(),
-    ])->hideIf(!Auth::user()->hasRole('Admin')),
-     */
 }

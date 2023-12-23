@@ -40,7 +40,7 @@ class FolderDetails extends Component
         $this->documents = Document::with('type')
             ->where('folder_id', $this->folder->id)->get();
 
-        $this->exonerations = Exoneration::with('container', 'products')
+        $this->exonerations = Exoneration::with('products')
             ->where('folder_id', $this->folder->id)->get();
 
         $this->ddiOpening = $this->folder->ddiOpening;

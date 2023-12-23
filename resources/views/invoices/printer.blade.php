@@ -74,6 +74,7 @@
                             </td>
                         </tr>
                     @endforeach
+                    </tbody>
                     <tr>
                         <th>TOTAL</th>
                         <th class="bg-secondary-">
@@ -81,7 +82,6 @@
                         </th>
                         <td></td>
                     </tr>
-                    </tbody>
                 </table>
             </div>
         </div>

@@ -40,7 +40,7 @@ class RoleForm extends Component
 
     public function mount(Role $role)
     {
-        $action = $role->id ? 'edit' : 'create';
+        $action = $role->id ? 'update' : 'create';
         $this->authorize($action.'-role');
 
         $this->role = $role;

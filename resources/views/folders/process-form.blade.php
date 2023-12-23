@@ -4,31 +4,31 @@
         <div class="stepwizard">
             <div class="stepwizard-row setup-panel">
                 <div class="multi-wizard-step">
-                    <a href="#step-2" type="button"
+                    <a href="#step-2" type="button" wire:click="setStep(1)"
                        class="btn {{ $currentStep != 1 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-exoneration')) disabled="disabled" @endif>1</a>
                     <p>Exonérations</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-1" type="button"
+                    <a href="#step-1" type="button" wire:click="setStep(2)"
                        class="btn {{ $currentStep != 2 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-ddi-opening')) disabled="disabled" @endif>2</a>
                     <p>Ouverture DDI</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-3" type="button"
+                    <a href="#step-3" type="button" wire:click="setStep(3)"
                        class="btn {{ $currentStep != 3 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-declaration')) disabled="disabled" @endif>3</a>
                     <p>Déclarations</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-4" type="button"
+                    <a href="#step-4" type="button" wire:click="setStep(4)"
                        class="btn {{ $currentStep != 4 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-delivery-note')) disabled="disabled" @endif>4</a>
                     <p>Bons de livraisons</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-5" type="button"
+                    <a href="#step-5" type="button" wire:click="setStep(5)"
                        class="btn {{ $currentStep != 5 ? 'btn-default' : 'btn-primary' }}"
                        @if(!($declaration->id || auth()->user()->can('add-delivery-details'))) disabled="disabled" @endif>5</a>
                     <p>Détails de la livraison</p>

@@ -1,14 +1,14 @@
 <div class="col-md-12">
     <h4>Bons de livraison</h4>
-    <div class="row">
-        <div class="col-md-6">
-            <x-form.input label="Numero Bon de CM" wire:model.defer="folder.bcm" class="form-control" required></x-form.input>
-        </div>
-        <div class="col-md-6">
-            <x-form.input label="Numero Bon de CT" wire:model.defer="folder.bct" class="form-control" required></x-form.input>
-        </div>
-    </div>
     @can('add-delivery-note')
+        <div class="row">
+            <div class="col-md-6">
+                <x-form.input label="Numero Bon de CM" wire:model.defer="folder.bcm" class="form-control" required></x-form.input>
+            </div>
+            <div class="col-md-6">
+                <x-form.input label="Numero Bon de CT" wire:model.defer="folder.bct" class="form-control" required></x-form.input>
+            </div>
+        </div>
         <div class="table-responsive table-bordered-">
             <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                 <thead>
@@ -64,13 +64,13 @@
             </table>
             @error('deliveryFiles')<div class="text-danger">{{ $message }}</div>@enderror
         </div>
-        <div>
-            @can('add-declaration')
-                <button class="btn btn-secondary" wire:click="setStep(3)" type="button">Retourner</button>
-            @endcan
-            <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryNoteStep" type="button">Sauvegarder et Passer</button>
-        </div>
+        <button class="btn btn-primary nextBtn float-right ml-2" wire:click="submitDeliveryNoteStep" type="button">Sauvegarder et Passer</button>
     @else
         <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
+
+    <div>
+        <button class="btn btn-secondary" wire:click="setStep(3)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
+        <button class="btn btn-secondary float-right" wire:click="setStep(5)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
 </div>

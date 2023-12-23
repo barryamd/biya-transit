@@ -27,10 +27,10 @@ class Exoneration extends Model
         return $this->belongsTo(Folder::class);
     }
 
-    public function container(): BelongsTo
-    {
-        return $this->belongsTo(Container::class);
-    }
+//    public function container(): BelongsTo
+//    {
+//        return $this->belongsTo(Container::class);
+//    }
 
     public function products(): BelongsToMany
     {

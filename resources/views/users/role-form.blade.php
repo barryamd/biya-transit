@@ -27,6 +27,12 @@
                         </tr>
                         </thead>--}}
                         <tbody>
+                        <tr>
+                            <th>Gestion des paramètres</th>
+                            <td colspan="4">
+                                <x-form.checkbox label="Modifier les paramètres" wire:model.defer="rolePermissions" :value="$permissions['update-settings']"></x-form.checkbox>
+                            </td>
+                        </tr>
                         @foreach($tables as $key => $table)
                             <tr>
                                 <th>{{ $groupPermissions[$table] }}</th>

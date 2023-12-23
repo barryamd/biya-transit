@@ -1,9 +1,11 @@
 <div class="col-md-12">
     <h4>
         Déclarations
+        @can('add-declaration')
         <button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#declarationFormModal" title="Ajouter une déclaration">
             <i class="fa fa-plus"></i>
         </button>
+        @endcan
     </h4>
     @can('add-declaration')
         @forelse($declarations as $i => $item)
@@ -131,17 +133,13 @@
         @empty
             <span class="text-danger">Les infos de la déclaration sont obligatoires</span>
         @endforelse
-        <div>
-            @can('add-exoneration')
-                <button class="btn btn-secondary" wire:click="setStep(2)" type="button">Retourner</button>
-            @endcan
-            @can('add-delivery-note')
-                <button class="btn btn-secondary" wire:click="setStep(4)" type="button">Passer au suivant</button>
-            @endcan
-        </div>
     @else
         <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
+    <div>
+        <button class="btn btn-secondary" wire:click="setStep(2)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
+        <button class="btn btn-secondary float-right" wire:click="setStep(4)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
 
     <x-form-modal id="declarationFormModal" size="lg" submit="saveDeclaration" title="Ajouter une déclaration">
         <x-slot name="content">

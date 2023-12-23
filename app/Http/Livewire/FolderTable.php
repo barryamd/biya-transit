@@ -8,6 +8,7 @@ use App\Models\Folder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 
 class FolderTable extends DataTableComponent
@@ -33,6 +34,7 @@ class FolderTable extends DataTableComponent
 
     public function columns(): array
     {
+        $user = Auth::user();
         return [
             Column::make('number')->hideIf(true)->searchable(),
             LinkColumn::make("Numero du dossier")
@@ -52,9 +54,16 @@ class FolderTable extends DataTableComponent
             Column::make("Client", "customer.nif")
                 ->format(fn($value, $row) => $row->customer->user->full_name),
             Column::make("Entreprise", "customer.name"),
-            Column::make('Actions', 'id')
-                ->format(fn($value, $row) => view('folders.action-buttons',
-                    ['row' => $row, 'status' => $this->status])),
+//            Column::make('Actions', 'id')
+//                ->format(fn($value, $row) => view('folders.action-buttons',
+//                    ['row' => $row, 'status' => $this->status])),
+            ButtonGroupColumn::make('Actions')
+                ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
+                ->buttons([
+                    $this->viewButton('folders.show')->hideIf(!$user->can('read-folder')),
+                    $this->editButton('folders.edit')->hideIf(!$user->can('update-folder')),
+                    $this->deleteButton()->hideIf(!$user->can('delete-folder'))
+                ]),
         ];
     }
 

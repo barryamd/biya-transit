@@ -90,15 +90,11 @@
                 </div>
             </div>
             <br>
-            <div>
-                @can('add-delivery-note')
-                    <button class="btn btn-secondary" wire:click="setStep(4)" type="button">Retourner</button>
-                @endcan
-                <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryDetailsStep" type="button">Sauvegarder</button>
-            </div>
+            <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryDetailsStep" type="button">Sauvegarder</button>
         @else
             <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
         @endcan
+        <button class="btn btn-secondary" wire:click="setStep(4)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
     </div>
     <x-form-modal id="transporterFormModal" submit="addTransporter" title="Ajouter un nouveau transporteur">
         <x-slot name="content">

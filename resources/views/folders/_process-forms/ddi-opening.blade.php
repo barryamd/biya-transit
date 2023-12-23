@@ -33,12 +33,11 @@
                 </div>
             </div>
         </div>
-        <div>
-            @can('add-exoneration')
-                <button class="btn btn-secondary" wire:click="setStep(1)" type="button">Retourner</button>
-            @endcan
-            <button class="btn btn-primary nextBtn float-right" wire:click="submitDdiOpeningStep"
-                    type="button">Sauvegarder et Passer</button>
-        </div>
+        <button class="btn btn-primary float-right ml-2" wire:click="submitDdiOpeningStep"
+                type="button">Sauvegarder et Passer</button>
     @endcan
+    <div>
+        <button class="btn btn-secondary" wire:click="setStep(1)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
+        <button class="btn btn-secondary float-right" wire:click="setStep(3)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
 </div>

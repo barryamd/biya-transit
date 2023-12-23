@@ -1,4 +1,5 @@
 @props(['menu'])
+@if(auth()->user()->isAdmin() || auth()->user()->hasAnyPermission($menu['permission']))
 <li class="nav-item has-treeview {{ menuOpen($menu['children']) }}">
     <a href="#" class="nav-link ">
         <i class="nav-icon fas fa-{{ $menu['icon'] }}"></i>
@@ -13,3 +14,4 @@
         @endforeach
     </ul>
 </li>
+@endcan

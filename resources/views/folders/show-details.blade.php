@@ -148,7 +148,6 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 20%;">Conteneur</th>
                         <th style="width: 15%;">Numéro</th>
                         <th style="width: 15%;">Date</th>
                         <th style="width: 20%;">Produits</th>
@@ -164,7 +163,6 @@
                     @foreach ($exonerations as $i => $item)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $item->container->number }}</td>
                             <td>{{ $item->number }}</td>
                             <td>{{ dateFormat($item->date) }}</td>
                             <td>{{ $item->products->pluck('designation')->implode(', ') }}</td>
@@ -531,15 +529,11 @@
 
     <x-slot name="footer">
         <x-cancel-button><i class="fas fa-arrow-left"></i> {{__('Back')}}</x-cancel-button>
-        @if($folder->status == 'En attente')
+        @if($folder->status == 'En attente' || $folder->status == 'En cours')
             @can('update-folder')
                 <a href="{{route('folders.edit', $folder)}}" class="btn btn-warning"><i class="fas fa-edit"></i> Modifier le dossier</a>
             @endcan
-        @endif
-        @if($folder->status == 'En attente' || $folder->status == 'En cours')
-            @can('process-folder')
-                <a href="{{route('folders.process', $folder)}}" class="btn btn-success"><i class="fas fa-edit"></i> Traiter le dossier</a>
-            @endcan
+            <a href="{{route('folders.process', $folder)}}" class="btn btn-success"><i class="fas fa-edit"></i> Traiter le dossier</a>
         @endif
         @if($folder->status == 'En cours')
             @can('close-folder')

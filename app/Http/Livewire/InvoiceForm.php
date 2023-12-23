@@ -43,7 +43,7 @@ class InvoiceForm extends Component
 
     public function mount(Invoice $invoice)
     {
-        $action = $invoice->id ? 'edit' : 'create';
+        $action = $invoice->id ? 'update' : 'create';
         $this->authorize($action.'-invoice');
 
         $this->invoice = $invoice;

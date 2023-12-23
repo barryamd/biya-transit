@@ -12,7 +12,7 @@ return [
         'title'      => 'Tiers',
         'type'       => 'collapse',
         'icon'       => 'users',
-        'permission' => 'read-customer|read-transporter',
+        'permission' => ['read-customer', 'read-transporter'],
         'children'   => [
             [
                 'title' => 'Clients',
@@ -34,7 +34,7 @@ return [
         'title'      => 'Suivi dossiers',
         'type'       => 'collapse',
         'icon'       => 'folder',
-        'permission' => 'read-folder',
+        'permission' => ['read-folder'],
         'children'   => [
             [
                 'title' => 'Ajouter un dossier',
@@ -77,7 +77,7 @@ return [
         'title'      => 'Gestion financière',
         'type'       => 'collapse',
         'icon'       => 'money-bill',
-        'permission' => 'read-charge|read-invoice',
+        'permission' => ['read-charge', 'read-invoice'],
         'children'   => [
             [
                 'title' => 'Charges dossiers',
@@ -120,7 +120,7 @@ return [
         'title'      => 'Administration',
         'type'       => 'collapse',
         'icon'       => 'cog',
-        'permission' => 'update-settings|read-user',
+        'permission' => ['update-settings', 'read-user'],
         'children'   => [
             [
                 'title'      => 'Utilisateurs',

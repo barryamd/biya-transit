@@ -32,7 +32,7 @@ class FolderProcessForm extends Component
     public bool $isEditMode = false;
 
     public Folder $folder;
-    public User $user;
+    public $user;
 
     public $exonerations;
     public Exoneration $exoneration;
@@ -101,7 +101,7 @@ class FolderProcessForm extends Component
 
         $this->user = Auth::user();
 
-        $this->folder->load('exonerations.container', 'exonerations.products');
+        $this->folder->load('exonerations', 'exonerations.products');
         $this->exonerations = $this->folder->exonerations;
         if ($this->exonerations->count() > 0) {
             $this->currentStep = 2;
@@ -170,7 +170,7 @@ class FolderProcessForm extends Component
 
             $this->closeModal('exonerationFormModal');
 
-            $this->exonerations = Exoneration::with('container', 'products')
+            $this->exonerations = Exoneration::with('products')
                 ->where('folder_id', $this->folder->id)->get();
 
             $this->alert('success', "L'exoneration a été enregistré avec succès.");
@@ -265,6 +265,8 @@ class FolderProcessForm extends Component
             if ($this->bonFile) {
                 $this->declaration->addFile($this->bonFile, 'bon_file_path');
             }
+
+            $this->declarations = Declaration::with('container')->where('folder_id', $this->folder->id)->get();
 
             $this->closeModal('declarationFormModal');
             $this->alert('success', "La declaration a été enregistrée avec succès.");

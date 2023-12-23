@@ -8,12 +8,15 @@ use App\LivewireTables\Views\Column\SwitchColumn;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Customer;
+use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
+use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 
 class CustomerTable extends DataTableComponent
 {
@@ -96,7 +99,7 @@ class CustomerTable extends DataTableComponent
         ];
     }
 
-    public function openEditModal(int $id, $modalId = null)
+    public function openEditModal($id, $modalId = null)
     {
         try {
             $this->user = $this->model::findOrFail($id);

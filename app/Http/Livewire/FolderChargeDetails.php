@@ -29,7 +29,7 @@ class FolderChargeDetails extends Component
 
     public function mount(Folder $folder)
     {
-        $action = $folder->id ? 'edit' : 'create';
+        $action = $folder->id ? 'update' : 'create';
         $this->authorize($action.'-charge');
 
         $this->folder = $folder;

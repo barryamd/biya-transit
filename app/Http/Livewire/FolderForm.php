@@ -91,7 +91,7 @@ class FolderForm extends Component
 
     public function mount(Folder $folder)
     {
-        $this->authorize(($folder->id ? 'edit' : 'create').'-folder');
+        $this->authorize(($folder->id ? 'update' : 'create').'-folder');
 
         $this->folder = $folder;
         if ($this->folder->id) {

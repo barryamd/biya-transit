@@ -49,12 +49,12 @@
                 @endforeach
                 </tbody>
             </table>
-        @can('add-ddi-opening')
-            <button class="btn btn-secondary" wire:click="setStep(2)" type="button">Passer au suivant</button>
-        @endcan
     @else
         <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
+    <div>
+        <button class="btn btn-secondary float-right" wire:click="setStep(2)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
 
     <x-form-modal id="exonerationFormModal" size="lg" submit="saveExoneration" title="Ajouter une exoneration">
         <x-slot name="content">

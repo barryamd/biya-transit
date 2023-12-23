@@ -27,7 +27,7 @@
                             <th class="text-center" style="width: 5%">#</th>
                             <th style="width: 30%;">Service</th>
                             <th style="width: 20%;">Prix Service</th>
-                            <th style="width: 20%;">Bénéfice</th>
+                            <th style="width: 20%;">Marge</th>
                             <th style="width: 20%;">Total</th>
                             <th class="text-center" style="width: 5%">
                                 <button wire:click.prevent="addAmount" title="Ajouter" class="btn btn-sm btn-primary w-100-">

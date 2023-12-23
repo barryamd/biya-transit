@@ -59,7 +59,7 @@
                     <tr>
                         <th class="bg-secondary" style="width: 20%;">Service</th>
                         <th class="bg-secondary text-center" style="width: 20%;">Prix Service</th>
-                        <th class="bg-secondary text-center" style="width: 15%;">Bénéfice</th>
+                        <th class="bg-secondary text-center" style="width: 15%;">Marge</th>
                         <th class="bg-secondary text-center" style="width: 15%;">Total</th>
                         <th class="bg-secondary" style="width: 30%;">Observation</th>
                     </tr>

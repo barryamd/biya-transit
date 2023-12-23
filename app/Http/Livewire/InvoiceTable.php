@@ -45,6 +45,7 @@ class InvoiceTable extends DataTableComponent
                 ->format(fn($value, $row) => moneyFormat($value))
                 ->sortable(),
             Column::make("Total", "total")
+                ->format(fn($value, $row) => moneyFormat($value))
                 ->sortable(),
             DateColumn::make("Date", "created_at")
                 ->sortable(),

@@ -20,6 +20,12 @@
                     </tr>
                     </thead>--}}
                     <tbody>
+                    <tr>
+                        <th>Gestion des paramètres</th>
+                        <td colspan="4">
+                            <x-form.checkbox label="Modifier les paramètres" wire:model.defer="rolePermissions" :value="$permissions['update-settings']" disabled></x-form.checkbox>
+                        </td>
+                    </tr>
                     @foreach($tables as $key => $table)
                         <tr>
                             <th>{{ $groupPermissions[$table] }}</th>
@@ -55,7 +61,7 @@
                             <x-form.checkbox label="Ajouter Déclaration" wire:model.defer="rolePermissions" :value="$permissions['add-declaration']" disabled></x-form.checkbox>
                             <x-form.checkbox label="Ajouter Bon de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-note']" disabled></x-form.checkbox>
                             <x-form.checkbox label="Ajouter Détails de livraison" wire:model.defer="rolePermissions" :value="$permissions['add-delivery-details']" disabled></x-form.checkbox>
-                            <x-form.checkbox label="Fermer un dossier" wire:model.defer="rolePermissions" :value="$permissions['close-folder']"></x-form.checkbox>
+                            <x-form.checkbox label="Fermer un dossier" wire:model.defer="rolePermissions" :value="$permissions['close-folder']" disabled></x-form.checkbox>
                         </td>
                         <td></td>
                     </tr>
