@@ -38,7 +38,7 @@
 {{--            @endif--}}
 
             <div class="col-md-6">
-                <x-form.select2 label="Role" wire:model.defer="role" :options="$roles" placeholder="Séléctionner le rôle" required></x-form.select2>
+                <x-form.select2 label="Role" wire:model.defer="role" :options="$roles" placeholder="Séléctionner le rôle" required modalId="userFormModal"></x-form.select2>
             </div>
             <div class="col-md-6">
                 <x-form.textarea label="Adresse" wire:model.defer="user.address" required></x-form.textarea>

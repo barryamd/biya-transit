@@ -192,7 +192,7 @@ class UserTable extends DataTableComponent
             $this->closeModal('userFormModal');
             $this->alert('success', __('The user has been created successfully.'));
 
-            if (!$this->isEditMode) {
+            if (!$this->isEditMode && $user) {
                 $user->password = $password;
                 $user->sendEmailVerificationNotification();
             }

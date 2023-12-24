@@ -60,7 +60,9 @@ class Dashboard extends Component
         array_push($this->years, 'Toutes les années');
         $this->year = now()->format('Y');
 
-        $this->folders = Folder::query()->get();
+        $customer = Auth::user()->customer;
+        $this->folders = Folder::query()
+            ->when($customer, fn(Builder $builder) => $builder->where('customer_id', $customer->id))->get();
 
         $firstFolder = $this->folders->first();
         if ($firstFolder)
