@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->date('date');
             $table->string('responsible');
             $table->string('attach_file_path')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->timestamps();
 
@@ -25,6 +26,9 @@ return new class extends Migration {
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreign('container_id')->references('id')->on('containers')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

@@ -49,6 +49,8 @@ class InvoiceTable extends DataTableComponent
                 ->sortable(),
             DateColumn::make("Date", "created_at")
                 ->sortable(),
+            Column::make("Autheur", "user.first_name")
+                ->format(fn($value, $row) => $row->user?->full_name),
             Column::make('Actions', 'id')
                 ->view('invoices.action-buttons')
         ];
@@ -56,6 +58,6 @@ class InvoiceTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Invoice::with('folder')->with('tva');
+        return Invoice::query()->with(['folder', 'tva', 'user'])->select('last_name');
     }
 }

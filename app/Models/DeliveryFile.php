@@ -14,10 +14,20 @@ class DeliveryFile extends Model
 
     public const PATH = 'delivery_files';
 
-    protected $fillable = ['id', 'folder_id', 'bcm_file_path', 'bct_file_path'];
+    protected $fillable = ['id', 'folder_id', 'bcm_file_path', 'bct_file_path', 'user_id'];
 
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

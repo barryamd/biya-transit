@@ -18,9 +18,11 @@
             <x-small-box type="danger" icon="fas fa-folder-open" text="Dossiers en retards"
                          :number="$total['late_folders'] ?? 0" route="progress-folders"></x-small-box>
         </div>
+        @if(!auth()->user()->customer)
         <div class="col-lg-3 col-6">
             <x-small-box type="info" icon="fas fa-users" text="Total clients"
                          :number="$total['customers'] ?? 0" route="customers"></x-small-box>
         </div>
+        @endif
     </div>
 </div>

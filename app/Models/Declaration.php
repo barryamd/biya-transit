@@ -29,7 +29,8 @@ class Declaration extends Model
         'receipt_file_path',
         'bon_number',
         'bon_date',
-        'bon_file_path'
+        'bon_file_path',
+        'user_id'
     ];
 
     public function folder(): BelongsTo
@@ -40,5 +41,15 @@ class Declaration extends Model
     public function container(): BelongsTo
     {
         return $this->belongsTo(Container::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

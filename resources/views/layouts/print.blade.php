@@ -65,8 +65,5 @@
 
     <!-- AdminLTE App -->
     <script src="{{ asset('js/adminlte.min.js') }}"></script>
-    <script>
-        window.addEventListener("load", window.print());
-    </script>
 </body>
 </html>

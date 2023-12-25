@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('type_id');
             $table->string('number', 30);
             $table->string('attach_file_path')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->index('number');
 
@@ -28,6 +29,9 @@ return new class extends Migration
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
 
             $table->foreign('type_id')->references('id')->on('document_types');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

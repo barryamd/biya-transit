@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -57,6 +58,8 @@ class InvoicePaymentTable extends DataTableComponent
                 ->footer(fn($rows) => '<strong>Total: </strong>'.moneyFormat($rows->sum('amount')))->html(),
             Column::make("Details du paiement", "note"),
             //Column::make("Caissier(e)", "user.name"),
+            Column::make("Autheur", "user.first_name")
+                ->format(fn($value, $row) => $row->user?->full_name),
             Column::make('Actions', 'id')
                 ->view('invoice-payments.actions-buttons')
         ];
@@ -85,8 +88,8 @@ class InvoicePaymentTable extends DataTableComponent
 
     public function query(): Builder
     {
-        return Payment::query()->with('folder.customer')->with('invoice')
-            //->select('invoice_payments.*', 'invoices.number')
+        return Payment::query()->with(['folder.customer', 'invoice', 'user'])
+            ->select('last_name')
             ->when($this->invoiceId, fn(Builder $query, $invoiceId) => $query->where('invoice_id', '=', $invoiceId));
     }
 
@@ -150,8 +153,8 @@ class InvoicePaymentTable extends DataTableComponent
         $this->validate();
 
         try {
+            $this->payment->user_id = Auth::user()->id;
             DB::transaction(function () {
-                //$this->payment->user_id = auth()->user()->id;
                 $this->payment->saveOrFail();
                 if ($this->invoice->total <= ($this->invoice->payments_sum_amount + $this->payment->amount)) {
                     //$this->invoice->status = 'paid';

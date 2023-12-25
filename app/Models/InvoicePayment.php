@@ -11,7 +11,7 @@ class InvoicePayment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type', 'bank', 'date', 'check_number', 'amount', 'note', 'invoice_id', 'folder_id'
+        'type', 'bank', 'date', 'check_number', 'amount', 'note', 'invoice_id', 'folder_id', 'user_id'
     ];
 
     public $timestamps = false;
@@ -43,5 +43,15 @@ class InvoicePayment extends Model
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

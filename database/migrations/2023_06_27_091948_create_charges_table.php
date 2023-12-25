@@ -21,7 +21,11 @@ return new class extends Migration
             $table->integer('amount');
             $table->string('attach_file_path')->nullable();
             $table->text('details')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

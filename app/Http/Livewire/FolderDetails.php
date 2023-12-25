@@ -32,15 +32,15 @@ class FolderDetails extends Component
     {
         $this->folder->loadSum('containers', 'weight')
             ->loadSum('containers', 'package_number')
-            ->load('customer.user');
+            ->load('customer.user', 'user');
 
-        $this->containers = Container::with('type', 'transporter')
+        $this->containers = Container::with('type', 'transporter', 'user')
             ->where('folder_id', $this->folder->id)->get();
 
-        $this->documents = Document::with('type')
+        $this->documents = Document::with('type', 'user')
             ->where('folder_id', $this->folder->id)->get();
 
-        $this->exonerations = Exoneration::with('products')
+        $this->exonerations = Exoneration::with('products', 'user')
             ->where('folder_id', $this->folder->id)->get();
 
         $this->ddiOpening = $this->folder->ddiOpening;

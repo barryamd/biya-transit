@@ -14,10 +14,10 @@
                         @if($delivery->exit_file_path)
                             <label>Bon de sorti du conteneur</label>
                             <div class="">
-                                <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-success">
+                                <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-sm btn-success">
                                     <i class="fas fa-download"></i> Telecharger
                                 </button>
-                                <button wire:click="deleteFile('deliveries', 'exit_file_path')" class="btn btn-danger">
+                                <button wire:click="deleteFile('deliveries', 'exit_file_path')" class="btn btn-sm btn-danger">
                                     <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             </div>
@@ -32,10 +32,10 @@
                         @if($delivery->return_file_path)
                             <label>Bon de retour</label>
                             <div class="">
-                                <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-success">
+                                <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-sm btn-success">
                                     <i class="fas fa-download"></i> Telecharger
                                 </button>
-                                <button wire:click="deleteFile('deliveries', 'return_file_path')" class="btn btn-danger">
+                                <button wire:click="deleteFile('deliveries', 'return_file_path')" class="btn btn-sm btn-danger">
                                     <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             </div>

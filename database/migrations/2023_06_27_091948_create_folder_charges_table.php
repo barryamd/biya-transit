@@ -18,9 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('folder_id');
             $table->string('name', 30);
             $table->integer('amount');
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

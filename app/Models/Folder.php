@@ -26,7 +26,8 @@ class Folder extends Model
         'observation',
         'status',
         'bcm',
-        'bct'
+        'bct',
+        'user_id'
     ];
 
     protected array $searchableFields = ['*'];
@@ -41,11 +42,6 @@ class Folder extends Model
 //        }
         $id = Folder::query()->count() + 1;
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
-    }
-
-    public function author()
-    {
-
     }
 
     public function customer(): BelongsTo
@@ -133,5 +129,15 @@ class Folder extends Model
             }
         }
         return '';
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

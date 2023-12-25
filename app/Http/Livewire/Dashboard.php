@@ -68,18 +68,16 @@ class Dashboard extends Component
         if ($firstFolder)
             $this->years = range(Date::create($firstFolder->created_at)->format('Y'), (int)$this->year);
 
-        //if(Auth::user()->isAdmin()) {
-            $this->total['folders'] = $this->folders->count();
-            $this->total['pending_folders'] = $this->folders->where('status', 'En attente')->count();
-            $this->total['process_folders'] = $this->folders->where('status', 'En cours')->count();
-            $this->total['closed_folders'] = $this->folders->where('status', 'Fermé')->count();
-            $this->total['late_folders'] = Folder::query()->where('status', '<>','Fermé')
-                ->whereHas('containers', function (Builder $query) {
-                    $query->whereDate('arrival_date', '<=', now()->format('Y-m-d'));
-                })
-                ->count();
-            $this->total['customers'] = Customer::query()->count();
-        //}
+        $this->total['folders'] = $this->folders->count();
+        $this->total['pending_folders'] = $this->folders->where('status', 'En attente')->count();
+        $this->total['process_folders'] = $this->folders->where('status', 'En cours')->count();
+        $this->total['closed_folders'] = $this->folders->where('status', 'Fermé')->count();
+        $this->total['late_folders'] = Folder::query()->where('status', '<>','Fermé')
+            ->whereHas('containers', function (Builder $query) {
+                $query->whereDate('arrival_date', '<=', now()->format('Y-m-d'));
+            })
+            ->count();
+        $this->total['customers'] = Customer::query()->count();
     }
 
     public function render()

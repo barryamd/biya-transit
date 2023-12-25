@@ -21,10 +21,14 @@ return new class extends Migration
             $table->integer('tax')->default(0);
             $table->integer('total');
             $table->foreignId('tva_id')->nullable()->constrained('tvas');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

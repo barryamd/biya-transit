@@ -12,7 +12,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['number','subtotal','tax','total','tva_id'];
+    protected $fillable = ['number','subtotal','tax','total','tva_id', 'user_id'];
 
     public function generateUniqueNumber()
     {
@@ -44,5 +44,15 @@ class Invoice extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(InvoicePayment::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

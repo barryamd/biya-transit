@@ -21,6 +21,7 @@ class Container extends Model
         'package_number',
         'arrival_date',
         'transporter_id',
+        'user_id'
     ];
 
     protected array $searchableFields = ['*'];
@@ -48,5 +49,15 @@ class Container extends Model
     public function exoneration(): HasOne
     {
         return $this->hasOne(Exoneration::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

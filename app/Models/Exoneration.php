@@ -16,7 +16,7 @@ class Exoneration extends Model
 
     public const PATH = 'exonerations';
 
-    protected $fillable = ['folder_id', 'number', 'date', 'responsible'];
+    protected $fillable = ['folder_id', 'number', 'date', 'responsible', 'user_id'];
 
     protected $casts = [
         'date' => 'string'
@@ -27,13 +27,18 @@ class Exoneration extends Model
         return $this->belongsTo(Folder::class);
     }
 
-//    public function container(): BelongsTo
-//    {
-//        return $this->belongsTo(Container::class);
-//    }
-
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

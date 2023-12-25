@@ -23,6 +23,7 @@ return new class extends Migration {
                 ->default('En attente');
             $table->string('bcm')->nullable();
             $table->string('bct')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->index('number');
 
@@ -30,6 +31,9 @@ return new class extends Migration {
 
             $table->foreign('customer_id')->references('id')->on('customers')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

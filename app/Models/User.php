@@ -28,9 +28,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         // 'name',
-        'email',
-        'password',
-        'first_name', 'last_name', 'birth_date', 'birth_place', 'phone_number', 'address'
+        'email', 'password', 'first_name', 'last_name', 'birth_date', 'birth_place', 'phone_number', 'address'
     ];
 
     /**
@@ -97,7 +95,7 @@ class User extends Authenticatable
 
     public function customer(): HasOne
     {
-        return $this->hasOne(Customer::class);
+        return $this->hasOne(Customer::class, 'user_id');
     }
 
     public function getFullNameAttribute(): string

@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Tva;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -107,6 +108,7 @@ class InvoiceForm extends Component
                 $folder = Folder::query()->find($this->invoice->folder_id);
                 $this->invoice->number = Str::substr($folder->number, 2, 3);
             }
+            $this->invoice->user_id = Auth::user()->id;
 
             DB::beginTransaction();
 

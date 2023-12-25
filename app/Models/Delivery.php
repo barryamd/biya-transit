@@ -24,6 +24,7 @@ class Delivery extends Model
         'return_file_path',
         'delivery_status',
         'customer_satisfaction',
+        'user_id'
     ];
 
     protected $casts = [
@@ -40,5 +41,15 @@ class Delivery extends Model
     public function transporters(): BelongsToMany
     {
         return $this->belongsToMany(Transporter::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

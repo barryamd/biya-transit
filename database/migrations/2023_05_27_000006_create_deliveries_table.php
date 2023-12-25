@@ -19,11 +19,15 @@ return new class extends Migration {
             $table->boolean('customer_satisfaction')->nullable();
             $table->string('exit_file_path')->nullable();
             $table->string('return_file_path')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('package_number', 30);
             $table->date('arrival_date')->nullable();
             $table->unsignedBigInteger('transporter_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->index('number');
 
@@ -28,6 +29,9 @@ return new class extends Migration {
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreign('type_id')->references('id')->on('container_types');
             $table->foreign('transporter_id')->references('id')->on('transporters');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

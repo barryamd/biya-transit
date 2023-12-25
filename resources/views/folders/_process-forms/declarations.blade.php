@@ -47,7 +47,7 @@
                                         <i class="fas fa-trash"></i> Supprimer
                                     </button>
                                 @else
-                                    <div class="text-danger">Il manque la copie de la declaration</div>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -71,7 +71,7 @@
                                         <i class="fas fa-trash"></i> Supprimer
                                     </button>
                                 @else
-                                    <div class="text-danger">Il manque la copie du bulletin de liquidation</div>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -98,7 +98,7 @@
                                             <i class="fas fa-trash"></i> Supprimer
                                         </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie du bulletin de la quittance</div>
+                                        <span class="text-danger">Ce fichier est obligatoire</span>
                                     @endif
                                 </td>
                             </tr>
@@ -122,7 +122,7 @@
                                             <i class="fas fa-trash"></i> Supprimer
                                         </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie du bon</div>
+                                        <span class="text-danger">Ce fichier est obligatoire</span>
                                     @endif
                                 </td>
                             </tr>
@@ -162,11 +162,11 @@
                         @if($declaration->declaration_file_path)
                             <label>Copie de la declaration</label>
                             <div class="">
-                                <button wire:click="downloadFile('declarations', 'declaration_file_path', {{$declaration->id}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i> Telecharger
+                                <button wire:click="downloadFile('declarations', 'declaration_file_path', {{$declaration->id}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i>
                                 </button>
-                                <button wire:click="deleteFile('declarations', 'declaration_file_path', {{$declaration->id}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Supprimer
+                                <button wire:click="deleteFile('declarations', 'declaration_file_path', {{$declaration->id}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         @else
@@ -189,11 +189,11 @@
                         @if($declaration->liquidation_file_path)
                             <label>Copie du bulletin de liquidation</label>
                             <div class="">
-                                <button wire:click="downloadFile('declarations', 'liquidation_file_path', {{$declaration->id}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i> Telecharger
+                                <button wire:click="downloadFile('declarations', 'liquidation_file_path', {{$declaration->id}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i>
                                 </button>
-                                <button wire:click="deleteFile('declarations', 'liquidation_file_path', {{$declaration->id}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Supprimer
+                                <button wire:click="deleteFile('declarations', 'liquidation_file_path', {{$declaration->id}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         @else
@@ -214,11 +214,11 @@
                         @if($declaration->receipt_file_path)
                             <label>Copie de la quittance</label>
                             <div class="">
-                                <button wire:click="downloadFile('declarations', 'receipt_file_path', {{$declaration->id}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i> Telecharger
+                                <button wire:click="downloadFile('declarations', 'receipt_file_path', {{$declaration->id}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i>
                                 </button>
-                                <button wire:click="deleteFile('declarations', 'receipt_file_path', {{$declaration->id}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Supprimer
+                                <button wire:click="deleteFile('declarations', 'receipt_file_path', {{$declaration->id}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         @else
@@ -239,11 +239,11 @@
                         @if($declaration->bon_file_path)
                             <label>Copie du bon</label>
                             <div class="">
-                                <button wire:click="downloadFile('declarations', 'bon_file_path', {{$declaration->id}})" class="btn btn-success">
-                                    <i class="fas fa-download"></i> Telecharger
+                                <button wire:click="downloadFile('declarations', 'bon_file_path', {{$declaration->id}})" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i>
                                 </button>
-                                <button wire:click="deleteFile('declarations', 'bon_file_path', {{$declaration->id}})" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Supprimer
+                                <button wire:click="deleteFile('declarations', 'bon_file_path', {{$declaration->id}})" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         @else

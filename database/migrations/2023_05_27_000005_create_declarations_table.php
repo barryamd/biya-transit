@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('bon_number', 30)->nullable();
             $table->date('bon_date')->nullable();
             $table->string('bon_file_path')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->index('number');
             $table->index('liquidation_bulletin');
@@ -39,6 +40,9 @@ return new class extends Migration
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

@@ -34,6 +34,8 @@ class FolderChargeTable extends DataTableComponent
                 ->format(fn($value, $row) => moneyFormat($row->charges_sum_amount)),
             Column::make("Montant facturé", "id")
                 ->format(fn($value, $row) => moneyFormat($row->invoices_sum_total)),
+            Column::make("Autheur", "user.first_name")
+                ->format(fn($value, $row) => $row->user?->full_name),
             Column::make('Actions', 'id')
                 ->view('folder-charges.action-buttons')
         ];
@@ -41,8 +43,9 @@ class FolderChargeTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Folder::query()->select('folders.*')->withSum('invoices', 'total')
-            ->withSum('charges', 'amount');
+        return Folder::query()->select('folders.*', 'last_name')
+            ->withSum('invoices', 'total')
+            ->withSum('charges', 'amount')->with('user');
     }
 
     /*

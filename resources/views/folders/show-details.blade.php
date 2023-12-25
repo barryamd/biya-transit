@@ -12,7 +12,7 @@
                     </tr>
                     <tr>
                         <th>Nom du client</th>
-                        <td>{{ $folder->customer->user->full_name }}</td>
+                        <td>{{ $folder->customer->user?->full_name }}</td>
                     </tr>
                     <tr>
                         <th>Nom de l'entreprise</th>
@@ -52,7 +52,7 @@
                     </tr>
                     <tr>
                         <th>Auteur</th>
-                        <td></td>
+                        <td>{{ $folder->user?->full_name }}</td>
                     </tr>
 
                     </tbody>
@@ -70,11 +70,12 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 25%;">Type du conteneur</th>
+                        <th style="width: 20%;">Type du conteneur</th>
                         <th style="width: 25%;">Numéro du conteneur</th>
                         <th style="width: 15%;">Poids</th>
-                        <th style="width: 15%;">Nombre de colis</th>
-                        <th style="width: 15%">Date d'arrivé</th>
+                        <th style="width: 10%;">Nombre de colis</th>
+                        <th style="width: 10%">Date d'arrivé</th>
+                        <th>Autheur</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -96,6 +97,7 @@
                             <td class="align-middle">
                                 {{ dateFormat($container->arrival_date) }}
                             </td>
+                            <td>{{ $container->user?->full_name }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -113,9 +115,10 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 30%;">Type de document</th>
-                        <th style="width: 35%;">Numéro du document</th>
-                        <th style="width: 30%;">Fichier jointe</th>
+                        <th style="width: 25%;">Type de document</th>
+                        <th style="width: 25%;">Numéro du document</th>
+                        <th style="width: 25%;">Fichier jointe</th>
+                        <th>Autheur</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -129,8 +132,9 @@
                                 {{ $document->number }}
                             </td>
                             <td class="align-middle">
-                                <button wire:click="downloadFile('folders', 'attach_file_path', {{$document->id}})" class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Telecharger</button>
+                                <button wire:click="downloadFile('folders', 'attach_file_path', {{$document->id}})" class="btn btn-xs btn-primary"><i class="fas fa-download"></i> Telecharger</button>
                             </td>
+                            <td>{{ $document->user?->full_name }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -150,13 +154,9 @@
                         <th class="text-center" style="width: 5%">#</th>
                         <th style="width: 15%;">Numéro</th>
                         <th style="width: 15%;">Date</th>
-                        <th style="width: 20%;">Produits</th>
-                        <th style="width: 15%;">Fichier</th>
-                        <th class="text-center" style="width: 10%">
-                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exonerationFormModal" title="Ajouter une exoneration">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </th>
+                        <th style="width: 30%;">Produits</th>
+                        <th style="width: 20%;">Fichier</th>
+                        <th>Autheur</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -168,24 +168,14 @@
                             <td>{{ $item->products->pluck('designation')->implode(', ') }}</td>
                             <td>
                                 @if($item->attach_file_path)
-                                    <button wire:click="downloadFile('exonerations', 'attach_file_path', {{$item->id}})" class="btn btn-sm btn-success">
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                    <button wire:click="deleteFile('exonerations', 'attach_file_path', {{$item->id}})" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
+                                    <button wire:click="downloadFile('exonerations', 'attach_file_path', {{$item->id}})" class="btn btn-xs btn-primary">
+                                        <i class="fas fa-download"></i> Télécharger
                                     </button>
                                 @else
-                                    <span class="text-danger">Il manque le fichier d'exoneration</span>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
-                            <td>
-                                <button wire:click="editExoneration('{{ $item->id }}')" class="btn btn-sm btn-warning" title="Modifier l'exoneration">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button wire:click="deleteExoneration('{{ $item->id }}')" class="btn btn-sm btn-danger" title="Supprimer l'exoneration">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
+                            <td>{{ $container->user?->full_name }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -203,6 +193,10 @@
                     <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                         <tbody>
                         <tr>
+                            <th>Autheur</th>
+                            <td>{{ $ddiOpening->user?->full_name }}</td>
+                        </tr>
+                        <tr>
                             <th style="width: 40%">Numéro DVT</th>
                             <td>{{ $ddiOpening->dvt_number }}</td>
                         </tr>
@@ -216,7 +210,7 @@
                                 @if($ddiOpening->ddi_number)
                                     {{ $ddiOpening->ddi_number }}
                                 @else
-                                    <span class="text-danger" >Il manque le Numéro DDI</span>
+                                    <span class="text-danger">Ce numéro est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -226,7 +220,7 @@
                                 @if($ddiOpening->ddi_obtained_date)
                                     {{ dateFormat($ddiOpening->ddi_obtained_date) }}
                                 @else
-                                    <span class="text-danger" >Il manque la Date d'obtention DDI</span>
+                                    <span class="text-danger">Cette date est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -234,11 +228,11 @@
                             <th>Fichier DDI</th>
                             <td>
                                 @if($ddiOpening->attach_file_path)
-                                    <button wire:click="downloadFile('ddi_openings')" class="btn btn-sm btn-success">
+                                    <button wire:click="downloadFile('ddi_openings')" class="btn btn-xs btn-primary">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else
-                                    <span class="text-danger" >Il manque la copie du Fichier DDI</span>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -258,18 +252,14 @@
             @forelse($declarations as $i => $item)
                 <h5>
                     Déclaration n°: {{ $item->number }}
-                    <div class="float-right">
-                        <button wire:click="editDeclaration('{{ $item->id }}')" class="btn btn-sm btn-warning" title="Modifier la déclaration">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button wire:click="deleteDeclaration('{{ $item->id }}')" class="btn btn-sm btn-danger" title="Supprimer la déclaration">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </div>
                 </h5>
                 <div class="row">
                     <div class="col-md-6">
                         <table class="mb-1 table table-sm table-striped">
+                            <tr>
+                                <th>Autheur</th>
+                                <td>{{ $item->user?->full_name }}</td>
+                            </tr>
                             <tr>
                                 <th>Date de declaration</th>
                                 <td>{{ dateFormat($item->date) }}</td>
@@ -287,38 +277,44 @@
                                 <th>Copie de la declaration</th>
                                 <td>
                                     @if($item->declaration_file_path)
-                                        <button wire:click="downloadFile('declarations', 'declaration_file_path', {{$item->id}})" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'declaration_file_path', {{$item->id}})" class="btn btn-xs btn-primary">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'declaration_file_path')" class="btn btn-xs btn-danger">
-                                            <i class="fas fa-trash"></i> Supprimer
-                                        </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie de la declaration</div>
+                                        <span class="text-danger">Ce fichier est obligatoire</span>
                                     @endif
                                 </td>
                             </tr>
 
                             <tr>
                                 <th>Numéro du bulletin de liquidation</th>
-                                <td>{{ $item->liquidation_bulletin }}</td>
+                                <td>
+                                    @if($item->liquidation_bulletin)
+                                        {{ $item->liquidation_bulletin }}
+                                    @else
+                                        <span class="text-danger">Ce numéro est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Date de liquidation</th>
-                                <td>{{ $item->liquidation_date }}</td>
+                                <td>
+                                    @if($item->liquidation_date)
+                                        {{ dateFormat($item->liquidation_date) }}
+                                    @else
+                                        <span class="text-danger">Cette date est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Copie du bulletin de liquidation</th>
                                 <td>
                                     @if($item->liquidation_file_path)
-                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path', {{$item->id}})" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'liquidation_file_path', {{$item->id}})" class="btn btn-xs btn-primary">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'liquidation_file_path')" class="btn btn-xs btn-danger">
-                                            <i class="fas fa-trash"></i> Supprimer
-                                        </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie du bulletin de liquidation</div>
+                                        <div class="text-danger">Ce fichier est obligatoire</div>
                                     @endif
                                 </td>
                             </tr>
@@ -328,48 +324,66 @@
                         <table class="mb-1 table table-sm table-striped">
                             <tr>
                                 <th>Numéro de la quittance</th>
-                                <td>{{ $item->receipt_number }}</td>
+                                <td>
+                                    @if($item->receipt_number)
+                                        {{ $item->receipt_number }}
+                                    @else
+                                        <span class="text-danger">Ce numéro est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Date de la quittance</th>
-                                <td>{{ $item->receipt_date }}</td>
+                                <td>
+                                    @if($item->receipt_date)
+                                        {{ dateFormat($item->receipt_date) }}
+                                    @else
+                                        <span class="text-danger">Cette date est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Copie de la quittance</th>
                                 <td>
                                     @if($item->receipt_file_path)
-                                        <button wire:click="downloadFile('declarations', 'receipt_file_path', {{$item->id}})" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'receipt_file_path', {{$item->id}})" class="btn btn-xs btn-primary">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'receipt_file_path', {{$item->id}})" class="btn btn-xs btn-danger">
-                                            <i class="fas fa-trash"></i> Supprimer
-                                        </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie du bulletin de la quittance</div>
+                                        <div class="text-danger">Ce fichier est obligatoire</div>
                                     @endif
                                 </td>
                             </tr>
 
                             <tr>
                                 <th>Numéro du bon</th>
-                                <td>{{ $item->bon_number }}</td>
+                                <td>
+                                    @if($item->bon_number)
+                                        {{ $item->bon_number }}
+                                    @else
+                                        <span class="text-danger">Ce numéro est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Date du bon</th>
-                                <td>{{ $item->bon_date }}</td>
+                                <td>
+                                    @if($item->bon_date)
+                                        {{ dateFormat($item->bon_date) }}
+                                    @else
+                                        <span class="text-danger">Cette date est obligatoire</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>Copie du bon</th>
                                 <td>
                                     @if($item->bon_file_path)
-                                        <button wire:click="downloadFile('declarations', 'bon_file_path', {{$item->id}})" class="btn btn-xs btn-success">
+                                        <button wire:click="downloadFile('declarations', 'bon_file_path', {{$item->id}})" class="btn btn-xs btn-primary">
                                             <i class="fas fa-download"></i> Telecharger
                                         </button>
-                                        <button wire:click="deleteFile('declarations', 'bon_file_path', {{$item->id}})" class="btn btn-xs btn-danger">
-                                            <i class="fas fa-trash"></i> Supprimer
-                                        </button>
                                     @else
-                                        <div class="text-danger">Il manque la copie du bon</div>
+                                        <div class="text-danger">Ce fichier est obligatoire</div>
                                     @endif
                                 </td>
                             </tr>
@@ -395,7 +409,7 @@
                         @if($folder->bcm)
                             {{ $folder->bcm }}
                         @else
-                            <span class="text-danger">Il manque le Bon de CM</span>
+                            <span class="text-danger">Ce numéro est obligatoire</span>
                         @endif
                     </td>
                 </tr>
@@ -405,7 +419,7 @@
                         @if($folder->bcm)
                             {{ $folder->bct }}
                         @else
-                            <span class="text-danger">Il manque le Bon de CT</span>
+                            <span class="text-danger">Ce numéro est obligatoire</span>
                         @endif
                     </td>
                 </tr>
@@ -416,8 +430,9 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 10%">#</th>
-                        <th style="width: 45%;">Fichier Bon de CM</th>
-                        <th style="width: 45%;">Fichier Bon de CT</th>
+                        <th style="width: 35%;">Fichier Bon de CM</th>
+                        <th style="width: 35%;">Fichier Bon de CT</th>
+                        <th>Autheur</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -426,18 +441,23 @@
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="align-middle">
                                 @if($file->bcm_file_path)
-                                    <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file->id}})" class="btn btn-sm btn-success">
+                                    <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file->id}})" class="btn btn-xs btn-primary">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
+                                @else
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                             <td class="align-middle">
                                 @if($file->bct_file_path)
-                                    <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file->id}})" class="btn btn-sm btn-success">
+                                    <button wire:click="downloadFile('delivery_files', 'bct_file_path', {{$file->id}})" class="btn btn-xs btn-primary">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
+                                @else
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
+                            <td>{{ $file->user?->full_name }}</td>
                         </tr>
                     @empty
                         <p class="text-danger">Les bons de livraison sont obligatoires</p>
@@ -457,6 +477,10 @@
                     <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                         <tbody>
                         <tr>
+                            <th>Autheur</th>
+                            <td>{{ $delivery->user?->full_name }}</td>
+                        </tr>
+                        <tr>
                             <th style="width: 40%">Date de livraison</th>
                             <td>{{ dateFormat($delivery->date) }}</td>
                         </tr>
@@ -468,11 +492,11 @@
                             <th>Bon de sorti du conteneur</th>
                             <td>
                                 @if($delivery->exit_file_path)
-                                    <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-sm btn-success">
+                                    <button wire:click="downloadFile('deliveries', 'exit_file_path')" class="btn btn-xs btn-primary">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else
-                                    <span class="text-danger" >Il manque la copie du Bon de sorti du conteneur</span>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                         </tr>
@@ -480,11 +504,11 @@
                             <th>Bon de retour</th>
                             <td>
                                 @if($delivery->return_file_path)
-                                    <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-sm btn-success">
+                                    <button wire:click="downloadFile('deliveries', 'return_file_path')" class="btn btn-xs btn-primary">
                                         <i class="fas fa-download"></i> Telecharger
                                     </button>
                                 @else
-                                    <span class="text-danger" >Il manque la copie du Bon de retour</span>
+                                    <span class="text-danger">Ce fichier est obligatoire</span>
                                 @endif
                             </td>
                         </tr>

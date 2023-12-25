@@ -23,12 +23,16 @@ return new class extends Migration
             $table->string('check_number')->nullable();
             $table->decimal('amount', 15)->nullable();
             $table->string('note')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreign('invoice_id')->references('id')->on('invoices')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

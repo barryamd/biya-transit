@@ -14,7 +14,7 @@ class Document extends Model
 
     public const PATH = 'folders';
 
-    protected $fillable = ['folder_id','type_id','number','attach_file_path'];
+    protected $fillable = ['folder_id','type_id','number','attach_file_path', 'user_id'];
 
     public function folder(): BelongsTo
     {
@@ -24,5 +24,15 @@ class Document extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class, 'type_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

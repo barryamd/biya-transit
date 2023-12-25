@@ -52,8 +52,10 @@ class FolderTable extends DataTableComponent
             DateColumn::make("Date d'ouverture", "created_at")
                 ->sortable(),
             Column::make("Client", "customer.nif")
-                ->format(fn($value, $row) => $row->customer->user->full_name),
+                ->format(fn($value, $row) => $row->customer?->user?->full_name),
             Column::make("Entreprise", "customer.name"),
+            Column::make("Autheur", "user.first_name")
+                ->format(fn($value, $row) => $row->user?->full_name),
 //            Column::make('Actions', 'id')
 //                ->format(fn($value, $row) => view('folders.action-buttons',
 //                    ['row' => $row, 'status' => $this->status])),
@@ -69,7 +71,7 @@ class FolderTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Folder::query()->with('customer.user')->select('folders.*')
+        return Folder::query()->with('customer.user', 'user')->select('folders.*')
             ->when($this->status, fn(Builder $query, $status) => $query->where('status', '=', $status))
             ->when($this->customerId, fn(Builder $query, $customerId) => $query->where('customer_id', '=', $customerId));
     }

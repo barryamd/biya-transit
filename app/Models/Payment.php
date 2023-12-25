@@ -23,6 +23,7 @@ class Payment extends Model
         'invoice_number',
         'type',
         'amount',
+        'user_id'
     ];
 
     protected array $searchableFields = ['*'];
@@ -30,5 +31,15 @@ class Payment extends Model
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->user();
     }
 }

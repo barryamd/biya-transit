@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->enum('type', ['DVT', 'DDI', 'PDT', 'TM', 'CT']);
             $table->integer('amount');
             $table->string('attach_file_path')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->index('invoice_number');
 
@@ -24,6 +25,9 @@ return new class extends Migration {
 
             $table->foreign('folder_id')->references('id')->on('folders')
                 ->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('SET NULL');
         });
     }
 

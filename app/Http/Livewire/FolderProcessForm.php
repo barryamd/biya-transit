@@ -85,10 +85,11 @@ class FolderProcessForm extends Component
 
             'folder.bcm' => ['required', 'string'],
             'folder.bct' => ['required', 'string'],
-            'deliveryFiles.*.id' => 'nullable',
-            'deliveryFiles.*.folder_id' => 'nullable',
+            'deliveryFiles.*.id'            => 'nullable',
+            'deliveryFiles.*.folder_id'     => 'nullable',
             'deliveryFiles.*.bcm_file_path' => 'nullable',
             'deliveryFiles.*.bct_file_path' => 'nullable',
+            'deliveryFiles.*.user_id'       => 'nullable',
 
             'delivery.date'  => ['required', 'date'],
             'delivery.place' => ['required'],
@@ -160,6 +161,8 @@ class FolderProcessForm extends Component
             if (!$this->isEditMode)
                 $this->exoneration->folder_id = $this->folder->id;
 
+            $this->exoneration->user_id = Auth::user()->id;
+
             DB::beginTransaction();
             $this->exoneration->save();
             $this->exoneration->products()->sync($this->exonerationProducts);
@@ -200,7 +203,6 @@ class FolderProcessForm extends Component
         $this->alert('success', "L'exoneration a été supprimée avec succès.");
     }
 
-
     public function submitDdiOpeningStep()
     {
         $this->validate([
@@ -213,6 +215,7 @@ class FolderProcessForm extends Component
 
         try {
             $this->ddiOpening->folder_id = $this->folder->id;
+            $this->ddiOpening->user_id = Auth::user()->id;
             $this->ddiOpening->save();
             if ($this->ddiFile) {
                 $this->ddiOpening->addFile($this->ddiFile);
@@ -228,7 +231,6 @@ class FolderProcessForm extends Component
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
-
 
     public function saveDeclaration()
     {
@@ -252,6 +254,7 @@ class FolderProcessForm extends Component
 
         try {
             $this->declaration->folder_id = $this->folder->id;
+            $this->declaration->user_id = Auth::user()->id;
             $this->declaration->save();
             if ($this->declarationFile) {
                 $this->declaration->addFile($this->declarationFile, 'declaration_file_path');
@@ -301,6 +304,7 @@ class FolderProcessForm extends Component
             'folder_id' => null,
             'bcm_file_path' => null,
             'bct_file_path' => null,
+            'user_id' => Auth::user()->id
         ]);
     }
 
@@ -390,6 +394,7 @@ class FolderProcessForm extends Component
 
         try {
             $this->delivery->folder_id = $this->folder->id;
+            $this->delivery->user_id = Auth::user()->id;
             $this->delivery->save();
             if ($this->deliveryExitFile) {
                 $this->delivery->addFile($this->deliveryExitFile, 'exit_file_path');
@@ -401,8 +406,8 @@ class FolderProcessForm extends Component
             $this->transporterContainers = Container::with('transporter')
                 ->where('folder_id', $this->folder->id)->whereHas('transporter')->get();
 
-            $this->alert('success', "Les détails de la livraison ont été enregistrés avec succès.");
-            //redirect()->route('folders.show', $this->folder);
+            $this->flash('success', "Les détails de la livraison ont été enregistrés avec succès.");
+            redirect()->route('folders.show', $this->folder);
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }

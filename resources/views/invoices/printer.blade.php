@@ -78,7 +78,7 @@
                     <tr>
                         <th>TOTAL</th>
                         <th class="bg-secondary-">
-                            {{ moneyFormat($invoice->amounts_sum_amount) }}
+                            {{ moneyFormat($invoice->total) }}
                         </th>
                         <td></td>
                     </tr>

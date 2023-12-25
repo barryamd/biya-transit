@@ -68,6 +68,7 @@ class FolderForm extends Component
             'containers.*.weight'         => ['required', 'string'],
             'containers.*.package_number' => ['required', 'string'],
             'containers.*.arrival_date'   => ['required', 'date'],
+            'containers.*.user_id'        => 'nullable',
 
             'documents'             => 'required',
             'documents.*.folder_id' => 'nullable',
@@ -85,6 +86,7 @@ class FolderForm extends Component
                 },
                 Rule::unique('documents', 'number')->ignore($this->folder->id, 'folder_id')
             ],
+            'documents.*.user_id'   => 'nullable',
             'documentsFiles.*'      => ['required', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
         ];
     }
@@ -151,6 +153,7 @@ class FolderForm extends Component
             'weight' => null,
             'package_number' => null,
             'arrival_date' => null,
+            'user_id' => Auth::user()->id
         ]);
     }
 
@@ -171,6 +174,7 @@ class FolderForm extends Component
             'type_id' => null,
             'number' => null,
             'attach_file_path' => null,
+            'user_id' => Auth::user()->id
         ]);
     }
 
@@ -184,8 +188,12 @@ class FolderForm extends Component
         $this->validate();
 
         try {
-            if (!$this->folder->id)
+            if (!$this->folder->id) {
                 $this->folder->generateUniqueNumber();
+                $this->folder->user_id = Auth::user()->id;
+            }
+            if (!$this->folder->user_id)
+                $this->folder->user_id = Auth::user()->id;
 
             DB::beginTransaction();
 

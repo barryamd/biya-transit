@@ -6,6 +6,7 @@ use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Views\Column\DateColumn;
 use App\Models\Charge;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
@@ -45,6 +46,8 @@ class ChargeTable extends DataTableComponent
                 ->view('charges.download-btn'),
                 //->format(fn($value, $row) => moneyFormat($value)),
             Column::make('Details')->collapseOnTablet(),
+            Column::make("Autheur", "user.first_name")
+                ->format(fn($value, $row) => $row->user?->full_name),
             Column::make('Actions', 'id')
                 ->view('charges.action-buttons')
         ];
@@ -52,7 +55,8 @@ class ChargeTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return Charge::query()->where('type', $this->type);
+        return Charge::query()->with('user')->select('last_name')
+            ->where('type', $this->type);
     }
 
     protected function rules(): array
@@ -83,6 +87,7 @@ class ChargeTable extends DataTableComponent
         $this->validate();
 
         try {
+            $this->charge->user_id = Auth::user()->id;
             $this->charge->save();
             if ($this->file)
                 $this->charge->addFile($this->file);
