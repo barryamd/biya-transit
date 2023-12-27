@@ -40,7 +40,8 @@ class Folder extends Model
 //        } else {
 //            $id = 1;
 //        }
-        $id = Folder::query()->count() + 1;
+        //$id = Folder::query()->latest()->first()->select('number') + 1;
+        $id = (int)Folder::query()->latest()->select('number')->get()->first()->number + 1;
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
     }
 

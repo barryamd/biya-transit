@@ -6,7 +6,6 @@ use App\LivewireTables\DataTableComponent;
 use App\LivewireTables\Traits\WithCrudActions;
 use App\Models\Tva;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\DocumentType;
 
 class TvaTable extends DataTableComponent
 {

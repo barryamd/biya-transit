@@ -17,7 +17,6 @@ abstract class DataTableComponent extends \Rappasoft\LaravelLivewireTables\DataT
     public int|null $rowDeletingId = null;
     public string|null $exportClass =  null;
     protected string|null $printView = null;
-    protected string $resourceName = 'Resource';
 
     protected $listeners = [
         'refreshDatatable' => '$refresh',
