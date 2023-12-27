@@ -29,7 +29,6 @@ class Dashboard extends Component
 
     public function mount()
     {
-        dd();
         $this->colors = [
             '#64748b', '#364152','#1a202e', // cool-gray
             '#f05252', '#c81e1e', '#771d1d', // red
