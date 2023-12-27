@@ -51,7 +51,7 @@
                         <td>{{ $folder->status }}</td>
                     </tr>
                     <tr>
-                        <th>Auteur</th>
+                        <th>Autheur</th>
                         <td>{{ $folder->user?->full_name }}</td>
                     </tr>
 
