@@ -301,6 +301,7 @@ class FolderProcessForm extends Component
     public function addDeliveryFile()
     {
         $this->deliveryFiles->add([
+            'id' => null,
             'folder_id' => null,
             'bcm_file_path' => null,
             'bct_file_path' => null,
@@ -308,8 +309,14 @@ class FolderProcessForm extends Component
         ]);
     }
 
-    public function removeDeliveryFile($index)
+    public function removeDeliveryFile($index, $id = null)
     {
+        $deliveryFile = DeliveryFile::query()->find($id);
+        if ($deliveryFile) {
+            $this->deleteFile('delivery_files', 'bcm_file_path', $id);
+            $this->deleteFile('delivery_files', 'bct_file_path', $id);
+            $deliveryFile->delete();
+        }
         $this->deliveryFiles = $this->deliveryFiles->except([$index])->values();
     }
 

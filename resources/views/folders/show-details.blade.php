@@ -54,7 +54,6 @@
                         <th>Autheur</th>
                         <td>{{ $folder->user?->full_name }}</td>
                     </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -144,6 +143,8 @@
     </div>
     <hr />
 
+    @php($user = Auth::user())
+    @if($user->isNotCustomer() || ($user->isCustomer() && $folder->status == 'Fermé'))
     <div class="row">
         <div class="col-12">
             <h4>Exonérations</h4>
@@ -550,6 +551,7 @@
         </div>
     </div>
     <hr>
+    @endif
 
     <x-slot name="footer">
         <x-cancel-button><i class="fas fa-arrow-left"></i> {{__('Back')}}</x-cancel-button>
@@ -557,9 +559,11 @@
             @can('update-folder')
                 <a href="{{route('folders.edit', $folder)}}" class="btn btn-warning"><i class="fas fa-edit"></i> Modifier le dossier</a>
             @endcan
+            @if($user->isNotCustomer())
             <a href="{{route('folders.process', $folder)}}" class="btn btn-success"><i class="fas fa-edit"></i> Traiter le dossier</a>
+            @endif
         @endif
-        @if($folder->status == 'En cours')
+        @if($user->isNotCustomer() && $folder->status == 'En cours')
             @can('close-folder')
                 <button wire:click="closeFolder" class="btn btn-danger"><i class="fas fa-close"></i> Fermer le dossier</button>
             @endcan

@@ -79,6 +79,16 @@ class User extends Authenticatable
         return $this->hasRole('Super Admin') || $this->hasRole('admin');
     }
 
+    public function isCustomer(): bool
+    {
+        return $this->customer != null;
+    }
+
+    public function isNotCustomer(): bool
+    {
+        return $this->customer == null;
+    }
+
     public function isActive() {
         return $this->active;
     }

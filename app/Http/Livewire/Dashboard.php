@@ -61,8 +61,11 @@ class Dashboard extends Component
         $this->year = now()->format('Y');
 
         $customer = Auth::user()->customer;
-        $this->folders = Folder::query()
-            ->when($customer, fn(Builder $builder) => $builder->where('customer_id', $customer->id))->get();
+        $query = Folder::query();
+        if ($customer) {
+            $query->where('customer_id', $customer->id);
+        }
+        $this->folders = $query->get();
 
         $firstFolder = $this->folders->first();
         if ($firstFolder)

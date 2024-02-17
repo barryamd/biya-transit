@@ -29,10 +29,10 @@
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="align-middle">
                             @if($file['bcm_file_path'])
-                                <button wire:click="downloadFile('delivery_notes', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
+                                <button wire:click="downloadFile('delivery_files', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-success">
                                     <i class="fas fa-download"></i> Telecharger
                                 </button>
-                                <button wire:click="deleteFile('delivery_notes', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-danger">
+                                <button wire:click="deleteFile('delivery_files', 'bcm_file_path', {{$file['id']}})" class="btn btn-sm btn-danger">
                                     <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             @else
@@ -54,7 +54,7 @@
                             @endif
                         </td>
                         <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                            <button wire:click.prevent="removeDeliveryFile({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                            <button wire:click.prevent="removeDeliveryFile({{$i}}, {{$file['id']}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                 <i class="fas fa-times"></i>
                             </button>
                         </td>
