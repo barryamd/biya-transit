@@ -50,6 +50,7 @@ class FolderForm extends Component
             'selectedProducts'   => ['required'],
 
             'containers'                  => 'nullable',
+            'containers.*.id'             => 'nullable',
             'containers.*.folder_id'      => 'nullable',
             'containers.*.type_id'        => 'required',
             'containers.*.number'         => [
@@ -71,6 +72,7 @@ class FolderForm extends Component
             'containers.*.user_id'        => 'nullable',
 
             'documents'             => 'required',
+            'documents.*.id'        => 'nullable',
             'documents.*.folder_id' => 'nullable',
             'documents.*.type_id'   => 'required',
             'documents.*.number'    => [
@@ -147,6 +149,7 @@ class FolderForm extends Component
     public function addContainer()
     {
         $this->containers->add([
+            'id' => null,
             'folder_id' => null,
             'type_id' => null,
             'number' => null,
@@ -157,19 +160,22 @@ class FolderForm extends Component
         ]);
     }
 
+    public function removeContainer($index, $id = null)
+    {
+        $container = Container::query()->find($id);
+        $container?->delete();
+        $this->containers = $this->containers->except([$index])->values();
+    }
+
     public function setTotalWeight()
     {
         $this->totalWeight = $this->containers->sum('weight');
     }
 
-    public function removeContainer($index)
-    {
-        $this->containers = $this->containers->except([$index])->values();
-    }
-
     public function addDocument()
     {
         $this->documents->add([
+            'id' => null,
             'folder_id' => null,
             'type_id' => null,
             'number' => null,
@@ -178,9 +184,37 @@ class FolderForm extends Component
         ]);
     }
 
-    public function removeDocument($index)
+    public function removeDocument($index, $id = null)
     {
+        $document = $this->deleteDocumentFile($id);
+        $document?->delete();
         $this->documents = $this->documents->except([$index])->values();
+    }
+
+    public function downloadDocumentFile($id)
+    {
+        $document = Document::query()->find($id);
+        $filePath = public_path('uploads/'.$document->attach_file_path);
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            abort(404, 'File not found');
+        }
+        return null;
+    }
+
+    public function deleteDocumentFile($id)
+    {
+        $document = Document::query()->find($id);
+        $document?->deleteFile();
+        return $document;
+    }
+
+    public function closeModal()
+    {
+        $this->dispatchBrowserEvent('close-addProductModal');
+        $this->productDesignation = '';
     }
 
     public function save()
@@ -234,33 +268,8 @@ class FolderForm extends Component
         }
     }
 
-    public function closeModal()
-    {
-        $this->dispatchBrowserEvent('close-addProductModal');
-        $this->productDesignation = '';
-    }
-
     public function render()
     {
         return view('folders.form');
-    }
-
-    public function downloadDocumentFile($id)
-    {
-        $document = Document::query()->find($id);
-        $filePath = public_path('uploads/'.$document->attach_file_path);
-
-        if (file_exists($filePath)) {
-            return response()->download($filePath);
-        } else {
-            abort(404, 'File not found');
-        }
-        return null;
-    }
-
-    public function deleteDocumentFile($id)
-    {
-        $document = Document::query()->find($id);
-        $document?->deleteFile();
     }
 }

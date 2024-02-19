@@ -86,7 +86,8 @@
                                         @endif
                                     </td>
                                     <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                        <button wire:click.prevent="removeDocument('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                        <button wire:click.prevent="removeDocument({{$i}}, {{$document['id']}})"
+                                                class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </td>
@@ -150,7 +151,7 @@
                                             @error("containers.$i.arrival_date") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                            <button wire:click.prevent="removeContainer('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                            <button wire:click.prevent="removeContainer({{$i}}, {{$container['id']}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </td>

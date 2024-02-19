@@ -34,14 +34,12 @@ class Folder extends Model
 
     public function generateUniqueNumber()
     {
-//        $lastFolder = Folder::query()->latest()->get()->first();
-//        if ($lastFolder) {
-//            $id = $lastFolder->id + 1;
-//        } else {
-//            $id = 1;
-//        }
-        //$id = Folder::query()->latest()->first()->select('number') + 1;
-        $id = (int)substr(Folder::query()->latest()->select('number')->get()->first()->number, -6) + 1;
+        $lastFolderNumber = Folder::query()->latest()->select('number')->get()->first()->number;
+        if (str_starts_with($lastFolderNumber, date('y'))) {
+            $id = (int)substr($lastFolderNumber, -6) + 1;
+        } else {
+            $id = 1;
+        }
         $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
     }
 
