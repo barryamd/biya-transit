@@ -27,6 +27,12 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+            <li class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ currentRouteActive('dashboard') }}">
+                    <i class="nav-icon fa-solid fa-tachometer-alt"></i>
+                    <p>{{ __('Dashboard') }}</p>
+                </a>
+            </li>
             @foreach(config('menu-items') as $item)
                 @if($item['type'] == 'group')
                     <li class="nav-header">{{ $item['title'] }}</li>

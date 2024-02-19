@@ -37,6 +37,9 @@ class FolderTable extends DataTableComponent
         $user = Auth::user();
         return [
             Column::make('number')->hideIf(true)->searchable(),
+            Column::make('bcm')->hideIf(true)->searchable(),
+            Column::make('bct')->hideIf(true)->searchable(),
+            Column::make('number')->hideIf(true)->searchable(),
             LinkColumn::make("Numero du dossier")
                 ->title(fn($row) => $row->number)
                 ->location(fn($row) => route('folders.show', $row))
@@ -44,9 +47,9 @@ class FolderTable extends DataTableComponent
             Column::make("Type de dossier", 'type')
                 ->sortable(),
             Column::make("Numero CNT", "num_cnt")
-                ->sortable(),
+                ->sortable()->searchable(),
             Column::make("Port", "harbor")
-                ->sortable(),
+                ->sortable()->searchable(),
             Column::make("Status", "status")
                 ->sortable()->hideIf((bool)$this->status),
             DateColumn::make("Date d'ouverture", "created_at")
@@ -56,22 +59,23 @@ class FolderTable extends DataTableComponent
             Column::make("Entreprise", "customer.name"),
             Column::make("Autheur", "user.first_name")
                 ->format(fn($value, $row) => $row->user?->full_name),
-//            Column::make('Actions', 'id')
-//                ->format(fn($value, $row) => view('folders.action-buttons',
-//                    ['row' => $row, 'status' => $this->status])),
-            ButtonGroupColumn::make('Actions')
-                ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
-                ->buttons([
-                    $this->viewButton('folders.show')->hideIf(!$user->can('read-folder')),
-                    $this->editButton('folders.edit')->hideIf(!$user->can('update-folder')),
-                    $this->deleteButton()->hideIf(!$user->can('delete-folder'))
-                ]),
+            Column::make('Actions', 'id')
+                ->format(fn($value, $row) => view('folders.action-buttons',
+                    ['row' => $row, 'status' => $this->status])),
+//            ButtonGroupColumn::make('Actions')
+//                ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
+//                ->buttons([
+//                    $this->viewButton('folders.show')->hideIf(!$user->can('read-folder')),
+//                    $this->editButton('folders.edit')->hideIf(!$user->can('update-folder')),
+//                    $this->deleteButton()->hideIf(!$user->can('delete-folder'))
+//                ]),
         ];
     }
 
     public function builder(): Builder
     {
         return Folder::query()->with('customer.user', 'user')->select('folders.*')
+            ->when(is_null($this->status), fn(Builder $query, $status) => $query->where('status', '<>', 'Fermé'))
             ->when($this->status, fn(Builder $query, $status) => $query->where('status', '=', $status))
             ->when($this->customerId, fn(Builder $query, $customerId) => $query->where('customer_id', '=', $customerId));
     }

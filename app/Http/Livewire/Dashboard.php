@@ -61,11 +61,10 @@ class Dashboard extends Component
         $this->year = now()->format('Y');
 
         $customer = Auth::user()->customer;
-        $query = Folder::query();
-        if ($customer) {
-            $query->where('customer_id', $customer->id);
-        }
-        $this->folders = $query->get();
+
+        $this->folders = Folder::query()
+            ->when($customer, fn(Builder $query, $customer) => $query->where('customer_id', '=', $customer->id))
+            ->get();
 
         $firstFolder = $this->folders->first();
         if ($firstFolder)
@@ -79,6 +78,7 @@ class Dashboard extends Component
             ->whereHas('containers', function (Builder $query) {
                 $query->whereDate('arrival_date', '<=', now()->format('Y-m-d'));
             })
+            ->when($customer, fn(Builder $query, $customer) => $query->where('customer_id', '=', $customer->id))
             ->count();
         $this->total['customers'] = Customer::query()->count();
     }
