@@ -110,7 +110,7 @@ class AjaxRequestController extends Controller
         if ($search != '') {
             $query->whereHas('customer', function(Builder $query) use ($search) {
                 $query->where('nif', 'LIKE', $search . '%')
-                    ->where(function (Builder $query) use($search) {
+                    ->orWhere(function (Builder $query) use($search) {
                         $query->whereNotNull('name')->where('name', 'LIKE', $search . '%');
                     });
             })

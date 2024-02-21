@@ -235,6 +235,7 @@ class FolderForm extends Component
             $this->folder->num_cnt = $this->folder->getCntOrLta();
             $this->folder->products()->sync($this->selectedProducts);
 
+            /*
             if ($this->folder->id) {
                 Container::query()->where('folder_id', $this->folder->id)
                     ->whereNotIn('id', $this->containers->pluck('id'))->delete();
@@ -244,11 +245,21 @@ class FolderForm extends Component
                 $item['folder_id'] = $this->folder->id;
                 return $item;
             });
-            Container::query()->upsert($containers->toArray(), ['id']);
+            Container::query()->upsert($containers->toArray(), ['id']);*/
+
+            foreach ($this->containers as $containerInputs) {
+                $containerInputs['folder_id'] = $this->folder->id;
+                if (array_key_exists('id', $containerInputs) && $containerInputs['id']) {
+                    $containers = $this->folder->containers()->where('id', $containerInputs['id'])->first();
+                    $containers->update($containerInputs);
+                } else {
+                    Container::query()->create($containerInputs);
+                }
+            }
 
             foreach ($this->documents as $index => $documentInputs) {
                 $documentInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $documentInputs)) {
+                if (array_key_exists('id', $documentInputs) && $documentInputs['id']) {
                     $document = $this->folder->documents->where('id', $documentInputs['id'])->first();
                     $document->update($documentInputs);
                 } else {

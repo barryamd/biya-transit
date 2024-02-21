@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -313,8 +314,8 @@ class FolderProcessForm extends Component
     {
         $deliveryFile = DeliveryFile::query()->find($id);
         if ($deliveryFile) {
-            $this->deleteFile('delivery_files', 'bcm_file_path', $id);
-            $this->deleteFile('delivery_files', 'bct_file_path', $id);
+            $deliveryFile->deleteFile('bcm_file_path');
+            $deliveryFile->deleteFile('bct_file_path');
             $deliveryFile->delete();
         }
         $this->deliveryFiles = $this->deliveryFiles->except([$index])->values();
@@ -338,7 +339,7 @@ class FolderProcessForm extends Component
             $this->folder->save();
             foreach ($this->deliveryFiles as $index => $deliveryFileInputs) {
                 $deliveryFileInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $deliveryFileInputs)) {
+                if (array_key_exists('id', $deliveryFileInputs) && $deliveryFileInputs['id']) {
                     $deliveryFile = $this->folder->deliveryFiles->where('id', $deliveryFileInputs['id'])->first();
                     $deliveryFile->update($deliveryFileInputs);
                 } else {
@@ -478,15 +479,15 @@ class FolderProcessForm extends Component
     public function deleteFile($collection, $attribute = 'attach_file_path', $modelId = null)
     {
         if ($collection == 'exonerations') {
-            $exoneration = $this->exonerations->where('id', $modelId)->first();
+            $exoneration = Exoneration::query()->find($modelId); //$this->exonerations->where('id', $modelId)->first();
             $exoneration?->deleteFile($attribute);
         } elseif ($collection == 'ddi_openings') {
             $this->ddiOpening?->deleteFile($attribute);
         } elseif ($collection == 'declarations') {
-            $declaration = $this->declarations->where('id', $modelId)->first();
+            $declaration = Declaration::query()->find($modelId); //$this->declarations->where('id', $modelId)->first();
             $declaration?->deleteFile($attribute);
         } elseif ($collection == 'delivery_files') {
-            $deliveryFile = $this->deliveryFiles->where('id', $modelId)->first();
+            $deliveryFile = DeliveryFile::query()->find($modelId); //$this->deliveryFiles->where('id', $modelId)->first();
             $deliveryFile?->deleteFile($attribute);
         } elseif ($collection == 'deliveries') {
             $this->delivery?->deleteFile($attribute);

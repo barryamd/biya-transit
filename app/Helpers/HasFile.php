@@ -43,11 +43,13 @@ trait HasFile
         if ($attribute == null)
             $attribute = $this->getFileAttribute();
 
-        Storage::disk($this->fileDisk())->delete($this->$attribute);
+        if ($this->$attribute && Storage::disk($this->fileDisk())->exists($this->$attribute)) {
+            Storage::disk($this->fileDisk())->delete($this->$attribute);
 
-        $this->forceFill([
-            $attribute => null,
-        ])->save();
+            $this->forceFill([
+                $attribute => null,
+            ])->save();
+        }
     }
 
     /**
