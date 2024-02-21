@@ -43,6 +43,8 @@ class AjaxRequestController extends Controller
         if ($search != '') {
             $query->where(function($query) use ($search) {
                 $query->whereNotNull('numberplate')->where('numberplate', 'LIKE', $search . '%');
+            })->orWhere(function($query) use ($search) {
+                $query->whereNotNull('driver_phone')->where('driver_phone', 'LIKE', '%' . $search . '%');
             });
         }
         $records = $query->get();
