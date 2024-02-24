@@ -29,7 +29,8 @@ class FolderChargeTable extends DataTableComponent
             Column::make("Dossier", 'number')
 //                ->title(fn($row) => $row->number)
 //                ->location(fn($row) => route('invoices.show', $row))
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
             Column::make("Total des charges", "id")
                 ->format(fn($value, $row) => moneyFormat($row->charges_sum_amount)),
             Column::make("Montant facturé", "id")

@@ -58,7 +58,7 @@
                                     {{ moneyFormat($amount['amount'] + $amount['benefit']) }} GNF
                                 </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                    <button wire:click.prevent="removeAmount('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                    <button wire:click.prevent="removeAmount({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </td>

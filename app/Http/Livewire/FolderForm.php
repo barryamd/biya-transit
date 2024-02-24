@@ -97,19 +97,20 @@ class FolderForm extends Component
     {
         $this->authorize(($folder->id ? 'update' : 'create').'-folder');
 
-        $this->folder = $folder;
-        if ($this->folder->id) {
-            $this->folder->load('customer.user');
+        if ($folder->id) {
+            $folder->load('customer.user');
             $this->selectedCustomer = [[
-                'id' => $this->folder->customer->id,
-                'text' => $this->folder->customer->user->full_name
+                'id' => $folder->customer->id,
+                'text' => $folder->customer->user->full_name
             ]];
 
-            $this->containers = $this->folder->containers->collect();
-            $this->documents = $this->folder->documents->collect();
+            $folder->load(['containers', 'documents', 'products']);
 
-            $this->selectedProducts = $this->folder->products->pluck('id')->toArray();
-            $this->products = $this->folder->products->map(function ($product) {
+            $this->containers = $folder->containers->collect();
+            $this->documents = $folder->documents->collect();
+
+            $this->selectedProducts = $folder->products->pluck('id')->toArray();
+            $this->products = $folder->products->map(function ($product) {
                 return ['id' => $product->id, 'text' => $product->designation];
             })->toArray();
         } else {
@@ -118,9 +119,10 @@ class FolderForm extends Component
 
             $user = Auth::user();
             if ($user->customer) {
-                $this->folder->customer_id = $user->customer->id;
+                $folder->customer_id = $user->customer->id;
             }
         }
+        $this->folder = $folder;
 
         $this->containerTypes = ContainerType::all()->pluck('label', 'id');
         $this->documentTypes = DocumentType::all()->pluck('label', 'id');
@@ -162,9 +164,10 @@ class FolderForm extends Component
 
     public function removeContainer($index, $id = null)
     {
-        $container = Container::query()->find($id);
+        $container = $this->folder->containers->where('id', $id)->first();
         $container?->delete();
         $this->containers = $this->containers->except([$index])->values();
+        $this->alert('success', 'Le conteneur a été supprimé avec succès');
     }
 
     public function setTotalWeight()
@@ -189,6 +192,7 @@ class FolderForm extends Component
         $document = $this->deleteDocumentFile($id);
         $document?->delete();
         $this->documents = $this->documents->except([$index])->values();
+        $this->alert('success', 'Le document a été supprimé avec succès');
     }
 
     public function downloadDocumentFile($id)
@@ -206,7 +210,7 @@ class FolderForm extends Component
 
     public function deleteDocumentFile($id)
     {
-        $document = Document::query()->find($id);
+        $document = $this->folder->documents->where('id', $id)->first();
         $document?->deleteFile();
         return $document;
     }
@@ -245,26 +249,18 @@ class FolderForm extends Component
                 $item['folder_id'] = $this->folder->id;
                 return $item;
             });
-            Container::query()->upsert($containers->toArray(), ['id']);*/
+            Container::query()->upsert($containers->toArray(), ['id']);
+            */
 
             foreach ($this->containers as $containerInputs) {
                 $containerInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $containerInputs) && $containerInputs['id']) {
-                    $containers = $this->folder->containers()->where('id', $containerInputs['id'])->first();
-                    $containers->update($containerInputs);
-                } else {
-                    Container::query()->create($containerInputs);
-                }
+                Container::query()->updateOrCreate($containerInputs);
             }
 
             foreach ($this->documents as $index => $documentInputs) {
                 $documentInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $documentInputs) && $documentInputs['id']) {
-                    $document = $this->folder->documents->where('id', $documentInputs['id'])->first();
-                    $document->update($documentInputs);
-                } else {
-                    $document = Document::query()->create($documentInputs);
-                }
+                unset($documentInputs['type']);
+                $document = Document::query()->updateOrCreate($documentInputs);
                 if (array_key_exists($index, $this->documentsFiles)) {
                     $document->addFile($this->documentsFiles[$index]);
                 }

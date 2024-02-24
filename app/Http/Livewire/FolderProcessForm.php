@@ -97,34 +97,35 @@ class FolderProcessForm extends Component
         ];
     }
 
-    public function mount()
+    public function mount(Folder $folder)
     {
         $this->authorize('update-folder');
 
         $this->user = Auth::user();
 
-        $this->folder->load('exonerations', 'exonerations.products');
-        $this->exonerations = $this->folder->exonerations;
+        $folder->load(['exonerations.products', 'deliveryFiles']);
+
+        $this->exonerations = $folder->exonerations;
         if ($this->exonerations->count() > 0) {
             $this->currentStep = 2;
         } else {
             $this->exonerations = collect();
         }
         $this->exoneration = new Exoneration();
-        $this->products = $this->folder->products->pluck('designation', 'id')->toArray();
+        $this->products = $folder->products->pluck('designation', 'id')->toArray();
 
-        $this->containers = Container::query()->where('folder_id', $this->folder->id)
+        $this->containers = Container::query()->where('folder_id', $folder->id)
             ->pluck('number', 'id');
         $this->foldersCntLta = Folder::query()->pluck('num_cnt', 'id');
 
-        $this->ddiOpening = $this->folder->ddiOpening;
+        $this->ddiOpening = $folder->ddiOpening;
         if ($this->ddiOpening) {
             $this->currentStep = 3;
         } else {
             $this->ddiOpening = new DdiOpening();
         }
 
-        $this->declarations = $this->folder->declarations;
+        $this->declarations = $folder->declarations;
         if ($this->declarations->count()) {
             $this->currentStep = 4;
         } else {
@@ -132,19 +133,20 @@ class FolderProcessForm extends Component
         }
         $this->declaration = new Declaration();
 
-        $this->deliveryFiles = $this->folder->deliveryFiles->collect();
+        $this->deliveryFiles = $folder->deliveryFiles->collect();
         if ($this->folder->bcm) {
             $this->currentStep = 5;
         }
 
-        $this->delivery = $this->folder->deliveryDetails;
+        $this->delivery = $folder->deliveryDetails;
         if ($this->delivery) {
             $this->transporterContainers = Container::with('transporter')
-                ->where('folder_id', $this->folder->id)->whereHas('transporter')->get();
+                ->where('folder_id', $folder->id)->whereHas('transporter')->get();
         } else {
             $this->delivery = new Delivery();
             $this->transporterContainers = collect();
         }
+        $this->folder = $folder;
     }
 
     public function saveExoneration()
@@ -186,7 +188,7 @@ class FolderProcessForm extends Component
     public function editExoneration($id)
     {
         try {
-            $this->exoneration = Exoneration::find($id);
+            $this->exoneration = $this->exonerations->where('id', $id)->first();
             $this->exonerationProducts = $this->exoneration->products->pluck('id')->toArray();
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-exonerationFormModal');
@@ -197,10 +199,12 @@ class FolderProcessForm extends Component
 
     public function deleteExoneration($id)
     {
-        $exoneration = Exoneration::query()->find($id);
-        $exoneration->delete();
-        $this->exonerations = Exoneration::with('container', 'products')
-            ->where('folder_id', $this->folder->id)->get();
+        $exoneration = $this->exonerations->where('id', $id)->first();
+        if ($exoneration) {
+            $exoneration->deleteFile();
+            $exoneration->delete();
+        }
+        $this->exonerations = $this->exonerations->where('id', '<>', $id);
         $this->alert('success', "L'exoneration a été supprimée avec succès.");
     }
 
@@ -282,7 +286,7 @@ class FolderProcessForm extends Component
     public function editDeclaration($id)
     {
         try {
-            $this->declaration = Declaration::find($id);
+            $this->declaration = $this->declarations->where('id', $id)->first();
             $this->isEditMode = true;
             $this->dispatchBrowserEvent('open-declarationFormModal');
         } catch (\Exception $e) {
@@ -292,12 +296,17 @@ class FolderProcessForm extends Component
 
     public function deleteDeclaration($id)
     {
-        $declaration = Declaration::query()->find($id);
-        $declaration->delete();
-        $this->declarations = Declaration::with('container')->where('folder_id', $this->folder->id)->get();
+        $declaration = $this->declarations->where('id', $id)->first();
+        if ($declaration) {
+            $declaration->deleteFile('declaration_file_path');
+            $declaration->deleteFile('liquidation_file_path');
+            $declaration->deleteFile('receipt_file_path');
+            $declaration->deleteFile('bon_file_path');
+            $declaration->delete();
+        }
+        $this->declarations = $this->declarations->where('id', '<>', $id);
         $this->alert('success', "La declaration a été supprimée avec succès.");
     }
-
 
     public function addDeliveryFile()
     {
@@ -312,13 +321,14 @@ class FolderProcessForm extends Component
 
     public function removeDeliveryFile($index, $id = null)
     {
-        $deliveryFile = DeliveryFile::query()->find($id);
+        $deliveryFile = $this->folder->deliveryFiles->where('id', $id)->first();
         if ($deliveryFile) {
             $deliveryFile->deleteFile('bcm_file_path');
             $deliveryFile->deleteFile('bct_file_path');
             $deliveryFile->delete();
         }
         $this->deliveryFiles = $this->deliveryFiles->except([$index])->values();
+        $this->alert('success', "La ligne a été supprimée avec succès.");
     }
 
     public function submitDeliveryNoteStep()
@@ -339,12 +349,7 @@ class FolderProcessForm extends Component
             $this->folder->save();
             foreach ($this->deliveryFiles as $index => $deliveryFileInputs) {
                 $deliveryFileInputs['folder_id'] = $this->folder->id;
-                if (array_key_exists('id', $deliveryFileInputs) && $deliveryFileInputs['id']) {
-                    $deliveryFile = $this->folder->deliveryFiles->where('id', $deliveryFileInputs['id'])->first();
-                    $deliveryFile->update($deliveryFileInputs);
-                } else {
-                    $deliveryFile = DeliveryFile::query()->create($deliveryFileInputs);
-                }
+                $deliveryFile = DeliveryFile::query()->updateOrCreate($deliveryFileInputs);
                 if (array_key_exists($index, $this->bcmFiles)) {
                     $deliveryFile->addFile($this->bcmFiles[$index], 'bcm_file_path');
                 }
@@ -362,7 +367,6 @@ class FolderProcessForm extends Component
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
     }
-
 
     public function addTransporter()
     {
@@ -384,9 +388,9 @@ class FolderProcessForm extends Component
         }
     }
 
-    public function editTransporter($containerId)
+    public function editTransporter($id)
     {
-        $this->container = $containerId;
+        $this->container = $id;
         $this->isEditMode = true;
         $this->dispatchBrowserEvent('open-transporterFormModal');
     }
@@ -461,7 +465,7 @@ class FolderProcessForm extends Component
             $declaration = $this->declarations->where('id', $modelId)->first();
             $filePath = $declaration?->$attribute;
         } elseif ($collection == 'delivery_files') {
-            $deliveryFile = $this->deliveryFiles->where('id', $modelId)->first();
+            $deliveryFile = $this->folder->deliveryFiles->where('id', $modelId)->first();
             $filePath = $deliveryFile?->$attribute;
         } elseif ($collection == 'deliveries') {
             $filePath = $this->delivery?->$attribute;
@@ -479,15 +483,15 @@ class FolderProcessForm extends Component
     public function deleteFile($collection, $attribute = 'attach_file_path', $modelId = null)
     {
         if ($collection == 'exonerations') {
-            $exoneration = Exoneration::query()->find($modelId); //$this->exonerations->where('id', $modelId)->first();
+            $exoneration = $this->exonerations->where('id', $modelId)->first();
             $exoneration?->deleteFile($attribute);
         } elseif ($collection == 'ddi_openings') {
             $this->ddiOpening?->deleteFile($attribute);
         } elseif ($collection == 'declarations') {
-            $declaration = Declaration::query()->find($modelId); //$this->declarations->where('id', $modelId)->first();
+            $declaration = $this->declarations->where('id', $modelId)->first();
             $declaration?->deleteFile($attribute);
         } elseif ($collection == 'delivery_files') {
-            $deliveryFile = DeliveryFile::query()->find($modelId); //$this->deliveryFiles->where('id', $modelId)->first();
+            $deliveryFile = $this->folder->deliveryFiles->where('id', $modelId)->first();
             $deliveryFile?->deleteFile($attribute);
         } elseif ($collection == 'deliveries') {
             $this->delivery?->deleteFile($attribute);

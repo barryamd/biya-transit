@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Charge;
 use App\Models\Folder;
 use App\Models\FolderCharge;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -11,7 +12,7 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-class FolderChargeDetails extends Component
+class FolderChargeForm extends Component
 {
     use AuthorizesRequests;
     use LivewireAlert;
@@ -21,9 +22,10 @@ class FolderChargeDetails extends Component
 
     protected function rules() {
         return [
+            'charges.*.id'        => 'nullable',
             'charges.*.folder_id' => 'required',
-            'charges.*.name'   => ['required', 'string'],
-            'charges.*.amount' => ['required', 'numeric'],
+            'charges.*.name'      => ['required', 'string'],
+            'charges.*.amount'    => ['required', 'numeric'],
         ];
     }
 
@@ -32,6 +34,7 @@ class FolderChargeDetails extends Component
         $action = $folder->id ? 'update' : 'create';
         $this->authorize($action.'-charge');
 
+        $folder->load('charges');
         $this->folder = $folder;
         $this->charges = $folder->charges->collect();
     }
@@ -39,15 +42,19 @@ class FolderChargeDetails extends Component
     public function addCharge()
     {
         $this->charges->add([
+            'id' => null,
             'folder_id' => $this->folder->id,
             'name' => null,
             'amount' => null,
         ]);
     }
 
-    public function removeCharge($index)
+    public function removeCharge($index, $id = null)
     {
+        $charge = $this->folder->charges->where('id', $id)->first();
+        $charge?->delete();
         $this->charges = $this->charges->except([$index])->values();
+        $this->alert('success', 'La charge a été supprimée avec succès');
     }
 
     public function save()
@@ -56,7 +63,10 @@ class FolderChargeDetails extends Component
 
         try {
             DB::beginTransaction();
-            FolderCharge::query()->upsert($this->charges->toArray(), ['id']);
+            // FolderCharge::query()->upsert($this->charges->toArray(), ['id']);
+            foreach ($this->charges as $chargeInputs) {
+                FolderCharge::query()->updateOrCreate($chargeInputs);
+            }
             DB::commit();
 
             $this->flash('success', "Les charges ont été enregistrées avec succès.");

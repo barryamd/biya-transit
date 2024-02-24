@@ -55,7 +55,7 @@
                         </td>
                         <td class="text-center" style="padding-right: 0.3rem; width: 5px">
                             <button wire:click.prevent="removeDeliveryFile({{$i}}, {{$file['id']}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-trash"></i>
                             </button>
                         </td>
                     </tr>

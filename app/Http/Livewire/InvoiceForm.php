@@ -38,7 +38,7 @@ class InvoiceForm extends Component
             'invoice.total'      => ['required', 'numeric'],
             'amounts.*.service_id' => 'required',
             'amounts.*.amount'     => ['required', 'numeric'],
-            'amounts.*.benefit'     => ['required', 'numeric'],
+            'amounts.*.benefit'    => ['required', 'numeric'],
         ];
     }
 
@@ -49,13 +49,14 @@ class InvoiceForm extends Component
 
         $this->invoice = $invoice;
         if ($invoice->id) {
-            $this->amounts = $invoice->amounts;
-            $folder = $this->invoice->folder;
+            $this->amounts = $invoice->amounts->collect();
+            $folder = $invoice->folder;
             $this->selectedFolder = ['id' => $folder->id, 'text' => $folder->number];
         } else {
             $this->invoice->tax = 0;
             $this->amounts = collect();
         }
+
         $this->services = Service::all()->pluck('name', 'id');
         $this->tvas = Tva::all()->pluck('rate', 'id');
     }
@@ -96,6 +97,7 @@ class InvoiceForm extends Component
     public function removeAmount($index)
     {
         $this->amounts = $this->amounts->except([$index])->values();
+        $this->setTotal();
     }
 
     public function save()

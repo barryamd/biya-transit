@@ -31,7 +31,7 @@
                                     <input type="number" wire:model.lazy="charges.{{$i}}.amount" class="form-control" required>
                                 </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                    <button wire:click.prevent="removeCharge('{{$i}}')" class="btn btn-danger btn-sm" title="Supprimer cette charge">
+                                    <button wire:click.prevent="removeCharge({{$i}}, {{$charge['id']}})" class="btn btn-danger btn-sm" title="Supprimer cette charge">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </td>
