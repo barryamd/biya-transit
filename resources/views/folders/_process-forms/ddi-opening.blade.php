@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-12">
     <h4>Ouverture DDI</h4>
     @can('add-ddi-opening')
         <div class="row">
@@ -33,8 +33,9 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-primary float-right ml-2" wire:click="submitDdiOpeningStep"
-                type="button">Sauvegarder et Passer</button>
+        <button class="btn btn-primary float-right ml-2" wire:click="submitDdiOpeningStep" type="button">Sauvegarder et Passer</button>
+    @else
+        <p>Désolé! Vous n'avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
     <div>
         <button class="btn btn-secondary" wire:click="setStep(1)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>

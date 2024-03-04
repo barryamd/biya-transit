@@ -134,7 +134,7 @@
             <span class="text-danger">Les infos de la déclaration sont obligatoires</span>
         @endforelse
     @else
-        <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
+        <p>Désolé! Vous n'avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
     <div>
         <button class="btn btn-secondary" wire:click="setStep(2)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>

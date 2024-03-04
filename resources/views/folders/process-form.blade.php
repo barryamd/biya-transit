@@ -4,13 +4,13 @@
         <div class="stepwizard">
             <div class="stepwizard-row setup-panel">
                 <div class="multi-wizard-step">
-                    <a href="#step-2" type="button" wire:click="setStep(1)"
+                    <a href="#step-1" type="button" wire:click="setStep(1)"
                        class="btn {{ $currentStep != 1 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-exoneration')) disabled="disabled" @endif>1</a>
                     <p>Exonérations</p>
                 </div>
                 <div class="multi-wizard-step">
-                    <a href="#step-1" type="button" wire:click="setStep(2)"
+                    <a href="#step-2" type="button" wire:click="setStep(2)"
                        class="btn {{ $currentStep != 2 ? 'btn-default' : 'btn-primary' }}"
                        @if(!auth()->user()->can('add-ddi-opening')) disabled="disabled" @endif>2</a>
                     <p>Ouverture DDI</p>
@@ -33,14 +33,20 @@
                        @if(!($declaration->id || auth()->user()->can('add-delivery-details'))) disabled="disabled" @endif>5</a>
                     <p>Détails de la livraison</p>
                 </div>
+                <div class="multi-wizard-step">
+                    <a href="#step-6" type="button" wire:click="setStep(6)"
+                       class="btn {{ $currentStep != 6 ? 'btn-default' : 'btn-primary' }}"
+                       @if(!($declaration->id || auth()->user()->can('add-charges'))) disabled="disabled" @endif>6</a>
+                    <p>Charges</p>
+                </div>
             </div>
         </div>
 
-        <div class="row setup-content {{ $currentStep != 1 ? 'd-none' : '' }}" id="step-2">
+        <div class="row setup-content {{ $currentStep != 1 ? 'd-none' : '' }}" id="step-1">
             @include('folders._process-forms.exonerations')
         </div>
 
-        <div class="row setup-content {{ $currentStep != 2 ? 'd-none' : '' }}" id="step-1">
+        <div class="row setup-content {{ $currentStep != 2 ? 'd-none' : '' }}" id="step-2">
             @include('folders._process-forms.ddi-opening')
         </div>
 
@@ -54,6 +60,10 @@
 
         <div class="row setup-content {{ $currentStep != 5 ? 'd-none' : '' }}" id="step-5">
             @include('folders._process-forms.delivery-details')
+        </div>
+
+        <div class="row setup-content {{ $currentStep != 6 ? 'd-none' : '' }}" id="step-6">
+            @include('folders._process-forms.charges')
         </div>
     </x-card>
 </div>

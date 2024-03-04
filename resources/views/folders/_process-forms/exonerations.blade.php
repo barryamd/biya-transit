@@ -50,7 +50,7 @@
                 </tbody>
             </table>
     @else
-        <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
+        <p>Désolé! Vous n'avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
     <div>
         <button class="btn btn-secondary float-right" wire:click="setStep(2)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>

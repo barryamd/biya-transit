@@ -27,6 +27,7 @@ class FolderDetails extends Component
     public $declarations;
     public $deliveryFiles;
     public Delivery|null $delivery = null;
+    public $charges;
 
     public function mount()
     {
@@ -50,6 +51,8 @@ class FolderDetails extends Component
         $this->deliveryFiles = $this->folder->deliveryFiles;
 
         $this->delivery = $this->folder->deliveryDetails;
+
+        $this->charges = $this->folder->charges;
     }
 
     public function render()
@@ -112,6 +115,9 @@ class FolderDetails extends Component
 
             'delivery.exit_file_path'   => 'required',
             'delivery.return_file_path' => 'required',
+
+            'charges.*.name'   => 'required',
+            'charges.*.amount' => 'required',
         ]);
 
         $this->folder->update(['status' => 'Fermé']);

@@ -10,6 +10,7 @@ use App\Models\DeliveryFile;
 use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
+use App\Models\FolderCharge;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -47,13 +48,15 @@ class FolderProcessForm extends Component
     public Declaration $declaration;
     public $declarationFile = null, $liquidationFile, $receiptFile, $bonFile;
 
-    public Collection $deliveryFiles;
+    public Collection|array $deliveryFiles;
     public $bcmFiles = [], $bctFiles = [];
 
     public Delivery|null $delivery = null;
-    public Collection $transporterContainers, $containers, $foldersCntLta;
+    public Collection|array $transporterContainers, $containers, $foldersCntLta;
     public string|null $container, $transporter;
     public $deliveryExitFile, $deliveryReturnFile;
+
+    public Collection|array $charges;
 
     protected $messages = [
         'deliveryFiles' => 'Il faut au minimum un bon',
@@ -94,6 +97,11 @@ class FolderProcessForm extends Component
 
             'delivery.date'  => ['required', 'date'],
             'delivery.place' => ['required'],
+
+            'charges.*.id'        => 'nullable',
+            'charges.*.folder_id' => 'required',
+            'charges.*.name'      => ['required', 'string'],
+            'charges.*.amount'    => ['required', 'numeric'],
         ];
     }
 
@@ -146,6 +154,15 @@ class FolderProcessForm extends Component
             $this->delivery = new Delivery();
             $this->transporterContainers = collect();
         }
+
+        $folder->load('charges');
+        $this->charges = $folder->charges->collect();
+        if ($this->charges->count()) {
+            $this->currentStep = 6;
+        } else {
+            $this->charges = collect();
+        }
+
         $this->folder = $folder;
     }
 
@@ -227,9 +244,9 @@ class FolderProcessForm extends Component
             }
             $this->folder->update(['status' => 'En cours']);
 
-            if ($this->user->can('add-declaration')) {
-                $this->currentStep = 3;
-            }
+//            if ($this->user->can('add-declaration')) {
+//                $this->currentStep = 3;
+//            }
 
             $this->alert('success', "Ouverture ddi éfféctué avec succès.");
         } catch (\Exception $e) {
@@ -358,9 +375,9 @@ class FolderProcessForm extends Component
                 }
             }
 
-            if ($this->user->can('add-delivery-details')) {
-                $this->currentStep = 5;
-            }
+//            if ($this->user->can('add-delivery-details')) {
+//                $this->currentStep = 5;
+//            }
 
             $this->alert('success', "Les bons de livraisons ont été enregistrés avec succès.");
         } catch (\Exception $e) {
@@ -418,7 +435,48 @@ class FolderProcessForm extends Component
             $this->transporterContainers = Container::with('transporter')
                 ->where('folder_id', $this->folder->id)->whereHas('transporter')->get();
 
-            $this->flash('success', "Les détails de la livraison ont été enregistrés avec succès.");
+            $this->alert('success', "Les détails de la livraison ont été enregistrés avec succès.");
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+    }
+
+    public function addCharge()
+    {
+        $this->charges->add([
+            'id' => null,
+            'folder_id' => $this->folder->id,
+            'name' => null,
+            'amount' => null,
+        ]);
+    }
+
+    public function removeCharge($index, $id = null)
+    {
+        $charge = $this->folder->charges->where('id', $id)->first();
+        $charge?->delete();
+        $this->charges = $this->charges->except([$index])->values();
+        $this->alert('success', 'La charge a été supprimée avec succès');
+    }
+
+    public function submitChargesStep()
+    {
+        $this->validate([
+            'charges.*.id'        => 'nullable',
+            'charges.*.folder_id' => 'required',
+            'charges.*.name'      => ['required', 'string'],
+            'charges.*.amount'    => ['required', 'numeric'],
+        ]);
+
+        try {
+            DB::beginTransaction();
+            // FolderCharge::query()->upsert($this->charges->toArray(), ['id']);
+            foreach ($this->charges as $chargeInputs) {
+                FolderCharge::query()->updateOrCreate($chargeInputs);
+            }
+            DB::commit();
+
+            $this->flash('success', "Les charges ont été enregistrées avec succès.");
             redirect()->route('folders.show', $this->folder);
         } catch (\Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());

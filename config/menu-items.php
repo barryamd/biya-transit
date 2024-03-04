@@ -79,13 +79,13 @@ return [
         'icon'       => 'money-bill',
         'permission' => ['read-charge', 'read-invoice'],
         'children'   => [
-            [
-                'title' => 'Charges dossiers',
-                'type'  => 'item',
-                'route' => 'folder-charges.index',
-                'icon'  => 'money-bill',
-                'permission' => 'read-charge',
-            ],
+//            [
+//                'title' => 'Charges dossiers',
+//                'type'  => 'item',
+//                'route' => 'folder-charges.index',
+//                'icon'  => 'money-bill',
+//                'permission' => 'read-charge',
+//            ],
             [
                 'title' => 'Charges courantes',
                 'type'  => 'item',

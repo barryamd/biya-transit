@@ -66,7 +66,7 @@
         </div>
         <button class="btn btn-primary nextBtn float-right ml-2" wire:click="submitDeliveryNoteStep" type="button">Sauvegarder et Passer</button>
     @else
-        <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
+        <p>Désolé! Vous n'avez pas les permissions pour efféctuer ces actions.</p>
     @endcan
 
     <div>

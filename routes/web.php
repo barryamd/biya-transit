@@ -3,7 +3,6 @@
 use App\Http\Controllers\AjaxRequestController;
 use App\Http\Controllers\PrintController;
 use App\Http\Livewire\Dashboard;
-use App\Http\Livewire\FolderChargeForm;
 use App\Http\Livewire\FolderForm;
 use App\Http\Livewire\FolderDetails;
 use App\Http\Livewire\FolderProcessForm;
@@ -12,7 +11,6 @@ use App\Http\Livewire\InvoiceForm;
 use App\Http\Livewire\RoleForm;
 use App\Http\Livewire\RoleShow;
 use App\Http\Livewire\Settings;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,8 +65,8 @@ Route::middleware([
 
     Route::view('occasional-charges','charges.index')->name('occasional-charges.index');
     Route::view('current-charges','charges.index')->name('current-charges.index');
-    Route::view('folder-charges','folder-charges.index')->name('folder-charges.index');
-    Route::get('folder-charges/{folder}/show', FolderChargeForm::class)->name('folder-charges.show');
+    // Route::view('folder-charges','folder-charges.index')->name('folder-charges.index');
+    // Route::get('folder-charges/{folder}/show', FolderChargeForm::class)->name('folder-charges.show');
 
     Route::view('invoices','invoices.index')->name('invoices.index');
     Route::get('invoices/create', InvoiceForm::class)->name('invoices.create');

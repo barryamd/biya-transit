@@ -461,7 +461,11 @@
                             <td>{{ $file->user?->full_name }}</td>
                         </tr>
                     @empty
-                        <p class="text-danger">Les bons de livraison sont obligatoires</p>
+                        <tr>
+                            <td class="text-center text-danger" colspan="4">
+                                <span>Les bons de livraison sont obligatoires</span>
+                            </td>
+                        </tr>
                     @endforelse
                     </tbody>
                 </table>
@@ -538,7 +542,7 @@
                             @empty
                                 <tr>
                                     <td class="text-center text-danger" colspan="5">
-                                        <p>Aucun transporteur n'a été ajouté au dossier</p>
+                                        <span>Aucun transporteur n'a été ajouté au dossier</span>
                                     </td>
                                 </tr>
                             @endforelse
@@ -547,6 +551,39 @@
                 @else
                     <span class="text-danger">Les details de la livraison sont obligatoires</span>
                 @endif
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-12">
+            <h4>Les charges du dossier</h4>
+            <div class="table-responsive table-bordered-">
+                <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
+                    <thead>
+                    <tr>
+                        <th class="text-center" style="width: 10%">#</th>
+                        <th style="width: 60%;">Dépense</th>
+                        <th style="width: 30%;">Montant</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($charges as $i => $charge)
+                        <tr>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td>{{ $charge->name }}</td>
+                            <td>{{ moneyFormat($charge->amount, 0, '') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td class="text-center text-danger" colspan="3">
+                                <span>Les charges du dossier sont obligatoires</span>
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

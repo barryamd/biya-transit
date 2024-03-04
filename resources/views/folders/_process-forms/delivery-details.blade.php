@@ -92,10 +92,14 @@
             <br>
             <button class="btn btn-primary nextBtn float-right" wire:click="submitDeliveryDetailsStep" type="button">Sauvegarder</button>
         @else
-            <p>Désolé! Vous avez pas les permissions pour efféctuer ces actions.</p>
+            <p>Désolé! Vous n'avez pas les permissions pour efféctuer ces actions.</p>
         @endcan
-        <button class="btn btn-secondary" wire:click="setStep(4)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
+        <div>
+            <button class="btn btn-secondary" wire:click="setStep(4)" type="button"><i class="fas fa-arrow-left"></i> Précedent</button>
+            <button class="btn btn-secondary float-right" wire:click="setStep(6)" type="button">Suivant <i class="fas fa-arrow-right"></i></button>
+        </div>
     </div>
+
     <x-form-modal id="transporterFormModal" submit="addTransporter" title="Ajouter un nouveau transporteur">
         <x-slot name="content">
             <x-form.select2-dropdown label="Transporteur" wire:model="transporter" routeName="getTransporters" id="transporter"
