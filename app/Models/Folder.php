@@ -19,6 +19,7 @@ class Folder extends Model
 
     protected $fillable = [
         'customer_id',
+        'type',
         'number',
         'num_cnt',
         'weight',
@@ -36,11 +37,12 @@ class Folder extends Model
     {
         $lastFolderNumber = Folder::query()->latest()->select('number')->get()->first()->number;
         if (str_starts_with($lastFolderNumber, date('y'))) {
-            $id = (int)substr($lastFolderNumber, -6) + 1;
-        } else {
+            $id = (int)substr($lastFolderNumber,-6,-3) + 1;
+        } else {//24001/IM
             $id = 1;
         }
-        $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
+        $type = substr($this->type,0,2);
+        $this->number = date('y') . str_pad($id,3,'0',STR_PAD_LEFT) . '/' . $type;
     }
 
     public function customer(): BelongsTo
