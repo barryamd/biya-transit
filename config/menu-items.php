@@ -74,7 +74,7 @@ return [
         ],
     ],
     [
-        'title'      => 'Gestion financière',
+        'title'      => 'Facturation',
         'type'       => 'collapse',
         'icon'       => 'money-bill',
         'permission' => ['read-charge', 'read-invoice'],

@@ -61,16 +61,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($amounts as $i => $amount)
+                    @foreach ($invoice->charges as $i => $charge)
                         <tr>
                             <td class="text-uppercase">
-                                {{ $amount->service->name }}
+                                {{ $charge->service->name }}
                             </td>
                             <td class="text-right pr-5">
-                                {{ moneyFormat($amount->amount) }}
+                                {{ moneyFormat($charge->amount + $charge->benefit) }}
                             </td>
                             <td>
-                                {{ $amount->service->description }}
+                                {{ $charge->service->description }}
                             </td>
                         </tr>
                     @endforeach

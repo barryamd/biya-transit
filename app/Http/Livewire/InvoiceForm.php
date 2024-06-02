@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\FolderCharge;
 use App\Models\Folder;
 use App\Models\Invoice;
 use App\Models\Service;
@@ -23,7 +24,7 @@ class InvoiceForm extends Component
     use WithFileUploads;
 
     public Invoice $invoice;
-    public Collection|array $amounts;
+    public Collection|array $charges;
     public Collection|array $services = [];
     public Collection|array $tvas = [];
     public $selectedFolder = [];
@@ -36,9 +37,9 @@ class InvoiceForm extends Component
             'invoice.tva_id'     => 'nullable',
             'invoice.tax'        => ['nullable', 'numeric'],
             'invoice.total'      => ['required', 'numeric'],
-            'amounts.*.service_id' => 'required',
-            'amounts.*.amount'     => ['required', 'numeric'],
-            'amounts.*.benefit'    => ['required', 'numeric'],
+            'charges.*.service_id' => 'required',
+            'charges.*.amount'     => ['required', 'numeric'],
+            'charges.*.benefit'    => ['required', 'numeric'],
         ];
     }
 
@@ -49,12 +50,12 @@ class InvoiceForm extends Component
 
         $this->invoice = $invoice;
         if ($invoice->id) {
-            $this->amounts = $invoice->amounts->collect();
+            $this->charges = $invoice->charges->collect();
             $folder = $invoice->folder;
             $this->selectedFolder = ['id' => $folder->id, 'text' => $folder->number];
         } else {
             $this->invoice->tax = 0;
-            $this->amounts = collect();
+            $this->charges = collect();
         }
 
         $this->services = Service::all()->pluck('name', 'id');
@@ -74,29 +75,44 @@ class InvoiceForm extends Component
                 $this->invoice->total = $this->invoice->subtotal;
             }
         }
+
+        if ($property == 'invoice.folder_id') {
+            $charges = FolderCharge::with('service')
+                ->where('folder_id', $this->invoice->folder_id)->get();
+
+            foreach ($charges as $charge) {
+                $this->charges->add([
+                    'service_id' => $charge->service_id,
+                    'amount' => $charge->amount,
+                    'benefit' => null,
+                ]);
+            }
+
+            $this->setTotal();
+        }
     }
 
     public function setTotal()
     {
-        $this->invoice->subtotal = $this->amounts->sum('amount') + $this->amounts->sum('benefit');
+        $this->invoice->subtotal = $this->charges->sum('amount') + $this->charges->sum('benefit');
         if ($this->invoice->tva_id && $this->tva) {
             $this->invoice->tax = $this->invoice->subtotal * $this->tva->rate / 100;
         }
         $this->invoice->total = $this->invoice->subtotal + $this->invoice->tax;
     }
 
-    public function addAmount()
+    public function addCharge()
     {
-        $this->amounts->add([
+        $this->charges->add([
             'service_id' => null,
             'amount' => null,
             'benefit' => null,
         ]);
     }
 
-    public function removeAmount($index)
+    public function removeCharge($index)
     {
-        $this->amounts = $this->amounts->except([$index])->values();
+        $this->charges = $this->charges->except([$index])->values();
         $this->setTotal();
     }
 
@@ -106,17 +122,17 @@ class InvoiceForm extends Component
 
         try {
             if (!$this->invoice->id) {
-                //$this->invoice->generateUniqueNumber();
-                $folder = Folder::query()->find($this->invoice->folder_id);
-                $this->invoice->number = Str::substr($folder->number, 2, 3);
+                $this->invoice->generateUniqueNumber();
+                $this->invoice->user_id = Auth::user()->id;
             }
-            $this->invoice->user_id = Auth::user()->id;
+            if (!$this->invoice->user_id)
+                $this->invoice->user_id = Auth::user()->id;
 
             DB::beginTransaction();
 
             $this->invoice->save();
-            $this->invoice->amounts()->delete();
-            $this->invoice->amounts()->createMany($this->amounts->toArray());
+            $this->invoice->charges()->delete();
+            $this->invoice->charges()->createMany($this->charges->toArray());
 
             DB::commit();
 

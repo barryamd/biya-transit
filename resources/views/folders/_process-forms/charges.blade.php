@@ -6,7 +6,7 @@
                 <thead>
                 <tr>
                     <th class="text-center" style="width: 5%">#</th>
-                    <th style="width: 55%;">Dépense</th>
+                    <th style="width: 55%;">Service</th>
                     <th style="width: 35%;">Montant</th>
                     <th class="text-center" style="width: 5%">
                         <button wire:click.prevent="addCharge" title="Ajouter" class="btn btn-sm btn-primary w-100-">
@@ -20,7 +20,12 @@
                     <tr>
                         <td class="text-center ">{{ $loop->iteration }}</td>
                         <td>
-                            <input type="text" wire:model.lazy="charges.{{$i}}.name" class="form-control" required>
+                            <select wire:model.defer="charges.{{$i}}.service_id" class="form-control px-1" required>
+                                <option value="">-- Selectionner un service rendu --</option>
+                                @foreach($services as $value => $service)
+                                    <option value="{{$value}}">{{ $service }}</option>
+                                @endforeach
+                            </select>
                         </td>
                         <td>
                             <input type="number" wire:model.lazy="charges.{{$i}}.amount" class="form-control" required>

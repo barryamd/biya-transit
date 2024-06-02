@@ -11,6 +11,7 @@ use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
 use App\Models\FolderCharge;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -57,6 +58,7 @@ class FolderProcessForm extends Component
     public $deliveryExitFile, $deliveryReturnFile;
 
     public Collection|array $charges;
+    public Collection|array $services = [];
 
     protected $messages = [
         'deliveryFiles' => 'Il faut au minimum un bon',
@@ -98,10 +100,10 @@ class FolderProcessForm extends Component
             'delivery.date'  => ['required', 'date'],
             'delivery.place' => ['required'],
 
-            'charges.*.id'        => 'nullable',
-            'charges.*.folder_id' => 'required',
-            'charges.*.name'      => ['required', 'string'],
-            'charges.*.amount'    => ['required', 'numeric'],
+            'charges.*.id'         => 'nullable',
+            'charges.*.folder_id'  => 'required',
+            'charges.*.service_id' => 'required',
+            'charges.*.amount'     => ['required', 'numeric'],
         ];
     }
 
@@ -162,6 +164,7 @@ class FolderProcessForm extends Component
         } else {
             $this->charges = collect();
         }
+        $this->services = Service::all()->pluck('name', 'id');
 
         $this->folder = $folder;
     }
@@ -244,9 +247,9 @@ class FolderProcessForm extends Component
             }
             $this->folder->update(['status' => 'En cours']);
 
-//            if ($this->user->can('add-declaration')) {
-//                $this->currentStep = 3;
-//            }
+            // if ($this->user->can('add-declaration')) {
+            //     $this->currentStep = 3;
+            // }
 
             $this->alert('success', "Ouverture ddi éfféctué avec succès.");
         } catch (\Exception $e) {
@@ -375,9 +378,9 @@ class FolderProcessForm extends Component
                 }
             }
 
-//            if ($this->user->can('add-delivery-details')) {
-//                $this->currentStep = 5;
-//            }
+            // if ($this->user->can('add-delivery-details')) {
+            //     $this->currentStep = 5;
+            // }
 
             $this->alert('success', "Les bons de livraisons ont été enregistrés avec succès.");
         } catch (\Exception $e) {
@@ -446,7 +449,7 @@ class FolderProcessForm extends Component
         $this->charges->add([
             'id' => null,
             'folder_id' => $this->folder->id,
-            'name' => null,
+            'service_id' => null,
             'amount' => null,
         ]);
     }
@@ -462,10 +465,10 @@ class FolderProcessForm extends Component
     public function submitChargesStep()
     {
         $this->validate([
-            'charges.*.id'        => 'nullable',
-            'charges.*.folder_id' => 'required',
-            'charges.*.name'      => ['required', 'string'],
-            'charges.*.amount'    => ['required', 'numeric'],
+            'charges.*.id'         => 'nullable',
+            'charges.*.folder_id'  => 'required',
+            'charges.*.service_id' => 'required',
+            'charges.*.amount'     => ['required', 'numeric'],
         ]);
 
         try {

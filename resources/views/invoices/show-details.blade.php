@@ -50,6 +50,7 @@
     <hr class="pt-0 mt-0 text-gray">
     --}}
 
+    @php($user = Auth::user())
     <div class="row">
         <div class="col-12">
             <h5 class="text-center">FACTURATION</h5>
@@ -58,29 +59,33 @@
                     <thead>
                     <tr>
                         <th class="bg-secondary" style="width: 20%;">Service</th>
+                        @if($user->isNotCustomer())
                         <th class="bg-secondary text-center" style="width: 20%;">Prix Service</th>
                         <th class="bg-secondary text-center" style="width: 15%;">Marge</th>
+                        @endif
                         <th class="bg-secondary text-center" style="width: 20%;">Total</th>
                         <th class="bg-secondary" style="width: 25%;">Observation</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($amounts as $i => $amount)
+                    @foreach ($invoice->charges as $i => $charge)
                         <tr>
                             <td class="text-uppercase">
-                                {{ $amount->service->name }}
+                                {{ $charge->service->name }}
+                            </td>
+                            @if($user->isNotCustomer())
+                            <td class="text-right pr-5">
+                                {{ moneyFormat($charge->amount) }}
                             </td>
                             <td class="text-right pr-5">
-                                {{ moneyFormat($amount->amount) }}
+                                {{ moneyFormat($charge->benefit) }}
                             </td>
+                            @endif
                             <td class="text-right pr-5">
-                                {{ moneyFormat($amount->benefit) }}
-                            </td>
-                            <td class="text-right pr-5">
-                                {{ moneyFormat($amount->amount + $amount->benefit) }}
+                                {{ moneyFormat($charge->amount + $charge->benefit) }}
                             </td>
                             <td>
-                                {{ $amount->service->description }}
+                                {{ $charge->service->description }}
                             </td>
                         </tr>
                     @endforeach

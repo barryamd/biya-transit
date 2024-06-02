@@ -30,18 +30,18 @@
                             <th style="width: 20%;">Marge</th>
                             <th style="width: 20%;">Total</th>
                             <th class="text-center" style="width: 5%">
-                                <button wire:click.prevent="addAmount" title="Ajouter" class="btn btn-sm btn-primary w-100-">
+                                <button wire:click.prevent="addCharge" title="Ajouter" class="btn btn-sm btn-primary w-100-">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($amounts as $i => $amount)
+                        @foreach ($charges as $i => $charge)
                             <tr>
                                 <td class="text-center ">{{ $loop->iteration }}</td>
                                 <td>
-                                    <select wire:model.defer="amounts.{{$i}}.service_id" class="form-control px-1" required>
+                                    <select wire:model.defer="charges.{{$i}}.service_id" class="form-control px-1" required>
                                         <option value="">-- Selectionner un service rendu --</option>
                                         @foreach($services as $value => $service)
                                             <option value="{{$value}}">{{ $service }}</option>
@@ -49,16 +49,16 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" wire:model.lazy="amounts.{{$i}}.amount" wire:change="setTotal" class="form-control px-1 text-right" required>
+                                    <input type="number" wire:model.lazy="charges.{{$i}}.amount" wire:change="setTotal" class="form-control px-1 text-right" required>
                                 </td>
                                 <td>
-                                    <input type="text" wire:model.lazy="amounts.{{$i}}.benefit" wire:change="setTotal" class="form-control px-1 text-right" required>
+                                    <input type="number" wire:model.lazy="charges.{{$i}}.benefit" wire:change="setTotal" class="form-control px-1 text-right" required>
                                 </td>
                                 <td>
-                                    {{ moneyFormat($amount['amount'] + $amount['benefit']) }} GNF
+                                    {{ moneyFormat($charge['amount'] + $charge['benefit']) }} GNF
                                 </td>
                                 <td class="text-center" style="padding-right: 0.3rem; width: 5px">
-                                    <button wire:click.prevent="removeAmount({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
+                                    <button wire:click.prevent="removeCharge({{$i}})" class="btn btn-danger btn-sm" title="Supprimer cette ligne">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </td>

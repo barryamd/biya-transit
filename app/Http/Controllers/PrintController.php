@@ -14,20 +14,16 @@ class PrintController extends Controller
 {
     public function generateInvoice(Folder $folder)
     {
-        $folder->load('customer.user', 'containers', 'invoice.amounts.service')
-            ->loadCount('containers');
+        $folder->load('customer.user', 'containers', 'invoice.charges.service')->loadCount('containers');
         $containers = $folder->containers;
         $invoice = $folder->invoice;
-        $invoice->loadSum('amounts', 'amount');
-        $amounts = $invoice->amounts;
 
-        $total = new Money($invoice->amounts_sum_amount, new Currency('GNF'));
         $currencies = new ISOCurrencies();
         $numberFormatter = new \NumberFormatter('fr_FR', \NumberFormatter::SPELLOUT);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
-        $totalInText = $moneyFormatter->format($total);
+        $totalInText = $moneyFormatter->format(new Money($invoice->total, new Currency('GNF')));
         $setting = Setting::query()->find(1);
 
-        return view('invoices.printer', compact('setting', 'folder', 'containers', 'invoice', 'amounts', 'totalInText'));
+        return view('invoices.printer', compact('setting', 'folder', 'containers', 'invoice', 'totalInText'));
     }
 }

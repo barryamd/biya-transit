@@ -10,13 +10,18 @@ class FolderCharge extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'amount', 'folder_id', 'user_id'];
+    protected $fillable = ['service_id', 'amount', 'folder_id', 'user_id'];
 
     public $timestamps = false;
 
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
     }
 
     public function user(): BelongsTo

@@ -16,14 +16,16 @@ class Invoice extends Model
 
     public function generateUniqueNumber()
     {
-//        $lastFolder = Invoice::query()->latest()->get()->first();
-//        if ($lastFolder) {
-//            $id = $lastFolder->id + 1;
-//        } else {
-//            $id = 1;
-//        }
-        $id = Invoice::query()->count() + 1;
-        $this->number = date('y') . str_pad($id, 3, '0', STR_PAD_LEFT) . '/IM' ;
+        $lastInvoicNumber = Invoice::query()->latest('number')->select('number')->get()->first()->number;
+        if ($lastInvoicNumber) {
+            $id = (int)$lastInvoicNumber + 1;
+        } else {
+            $id = 1;
+        }
+        $this->number = str_pad($id,3,'0',STR_PAD_LEFT);
+
+        // $folder = Folder::query()->find($this->folder_id);
+        // $this->number = Str::substr($folder->number, 2, 3);
     }
 
     public function folder(): BelongsTo
@@ -36,7 +38,7 @@ class Invoice extends Model
         return $this->belongsTo(Tva::class);
     }
 
-    public function amounts(): HasMany
+    public function charges(): HasMany
     {
         return $this->hasMany(InvoiceDetail::class, 'invoice_id');
     }

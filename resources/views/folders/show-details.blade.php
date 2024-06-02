@@ -555,7 +555,9 @@
         </div>
     </div>
     <hr>
+    @endif
 
+    @if($user->isNotCustomer())
     <div class="row">
         <div class="col-12">
             <h4>Les charges du dossier</h4>
@@ -564,7 +566,7 @@
                     <thead>
                     <tr>
                         <th class="text-center" style="width: 10%">#</th>
-                        <th style="width: 60%;">Dépense</th>
+                        <th style="width: 60%;">Service</th>
                         <th style="width: 30%;">Montant</th>
                     </tr>
                     </thead>
@@ -572,7 +574,7 @@
                     @forelse($charges as $i => $charge)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $charge->name }}</td>
+                            <td>{{ $charge->service->name }}</td>
                             <td>{{ moneyFormat($charge->amount, 0, '') }}</td>
                         </tr>
                     @empty

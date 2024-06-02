@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\FolderCharge;
 use App\Models\Container;
 use App\Models\DdiOpening;
 use App\Models\Declaration;
@@ -52,7 +53,8 @@ class FolderDetails extends Component
 
         $this->delivery = $this->folder->deliveryDetails;
 
-        $this->charges = $this->folder->charges;
+        $this->charges = FolderCharge::with('service')
+            ->where('folder_id', $this->folder->id)->get();
     }
 
     public function render()
@@ -116,8 +118,8 @@ class FolderDetails extends Component
             'delivery.exit_file_path'   => 'required',
             'delivery.return_file_path' => 'required',
 
-            'charges.*.name'   => 'required',
-            'charges.*.amount' => 'required',
+            'charges.*.service_id' => 'required',
+            'charges.*.amount'     => 'required',
         ]);
 
         $this->folder->update(['status' => 'Fermé']);

@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('folder_charges', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('folder_id');
-            $table->string('name', 30);
-            $table->integer('amount');
+            $table->string('name');
+            $table->decimal('amount');
+
             $table->unsignedBigInteger('user_id')->nullable();
 
             $table->foreign('folder_id')->references('id')->on('folders')
