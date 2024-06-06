@@ -23,7 +23,7 @@ class InvoicePaymentTable extends DataTableComponent
     protected array $createButtonParams = [
         'title' => 'Nouveau paiement',
         'modal' => 'paymentFormModal',
-        'permission' => 'create-invoice'
+        'permission' => 'create-invoice-payment'
     ];
 
     public int|null $invoiceId = null;
@@ -36,7 +36,7 @@ class InvoicePaymentTable extends DataTableComponent
 
     public function mount($invoiceId = null)
     {
-        $this->authorize('view-invoice');
+        $this->authorize('view-invoice-payment');
         $this->invoiceId = $invoiceId;
         $this->date = date('Y-m-d');
         $this->payment = new InvoicePayment(['type' => 'espece']);
