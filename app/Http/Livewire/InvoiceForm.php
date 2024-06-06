@@ -38,7 +38,7 @@ class InvoiceForm extends Component
             'invoice.tax'        => ['nullable', 'numeric'],
             'invoice.total'      => ['required', 'numeric'],
             'charges.*.service_id'   => 'required',
-            'charges.*.service_name' => 'required',
+//            'charges.*.service_name' => 'required',
             'charges.*.amount'       => ['required', 'numeric'],
             'charges.*.benefit'      => ['required', 'numeric'],
         ];
@@ -84,7 +84,7 @@ class InvoiceForm extends Component
             foreach ($charges as $charge) {
                 $this->charges->add([
                     'service_id' => $charge->service_id,
-                    'service_name' => $charge->service->name,
+//                    'service_name' => $charge->service->name,
                     'amount' => $charge->amount,
                     'benefit' => null,
                 ]);
@@ -107,7 +107,7 @@ class InvoiceForm extends Component
     {
         $this->charges->add([
             'service_id' => null,
-            'service_name' => null,
+//            'service_name' => null,
             'amount' => null,
             'benefit' => null,
         ]);
