@@ -15,6 +15,10 @@ use App\Models\Transporter;
 use Illuminate\Support\Collection;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
+use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Money;
 
 class FolderDetails extends Component
 {
@@ -30,6 +34,7 @@ class FolderDetails extends Component
     public Delivery|null $delivery = null;
     public $charges;
     public $invoice;
+    public string $invoiceTotalInText;
 
     public function mount()
     {
@@ -58,6 +63,13 @@ class FolderDetails extends Component
             ->where('folder_id', $this->folder->id)->get();
 
         $this->invoice = $this->folder->invoice;
+
+        if ($this->invoice) {
+            $currencies = new ISOCurrencies();
+            $numberFormatter = new \NumberFormatter('fr_FR', \NumberFormatter::SPELLOUT);
+            $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+            $this->invoiceTotalInText = $moneyFormatter->format(new Money($this->invoice->total, new Currency('GNF')));
+        }
     }
 
     public function render()

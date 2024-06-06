@@ -674,7 +674,7 @@
 
             <hr class="pt-0 mt-0 text-gray">
             <div>
-                <b>Arrêté la présente facture à la somme de :</b> {{ $totalInText }} frangs guinéens
+                <b>Arrêté la présente facture à la somme de :</b> {{ $invoiceTotalInText }} frangs guinéens
             </div>
 
             <hr class="pt-0 mt-0 text-gray">
