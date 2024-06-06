@@ -78,7 +78,7 @@ class InvoiceForm extends Component
         }
 
         if ($property == 'invoice.folder_id') {
-            $charges = FolderCharge::with('service')
+            $charges = FolderCharge::with('service')->whereHas('service')
                 ->where('folder_id', $this->invoice->folder_id)->get();
 
             foreach ($charges as $charge) {
