@@ -597,7 +597,7 @@
     <div class="row">
         <div class="col-12">
             <h4>Facture</h4>
-            @if($invoice->id)
+            @if($invoice)
             <div class="table-responsive table-bordered-">
                 <table class="mb-1 table table-sm table-striped table-hover table-head-fixed- text-nowrap-">
                     <thead>
