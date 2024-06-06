@@ -75,14 +75,14 @@
                             </td>
                             @if($user->isNotCustomer())
                             <td class="text-right pr-5">
-                                {{ moneyFormat($charge->amount) }}
+                                {{ moneyFormat($charge->amount, 0, '') }}
                             </td>
                             <td class="text-right pr-5">
-                                {{ moneyFormat($charge->benefit) }}
+                                {{ moneyFormat($charge->benefit, 0, '') }}
                             </td>
                             @endif
                             <td class="text-right pr-5">
-                                {{ moneyFormat($charge->amount + $charge->benefit) }}
+                                {{ moneyFormat($charge->amount + $charge->benefit, 0, '') }}
                             </td>
                             <td>
                                 {{ $charge->service->description }}

@@ -67,7 +67,7 @@
                                 {{ $charge->service->name }}
                             </td>
                             <td class="text-right pr-5">
-                                {{ moneyFormat($charge->amount + $charge->benefit) }}
+                                {{ moneyFormat($charge->amount + $charge->benefit, 0, '') }}
                             </td>
                             <td>
                                 {{ $charge->service->description }}

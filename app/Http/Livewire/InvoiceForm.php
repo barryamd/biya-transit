@@ -37,9 +37,10 @@ class InvoiceForm extends Component
             'invoice.tva_id'     => 'nullable',
             'invoice.tax'        => ['nullable', 'numeric'],
             'invoice.total'      => ['required', 'numeric'],
-            'charges.*.service_id' => 'required',
-            'charges.*.amount'     => ['required', 'numeric'],
-            'charges.*.benefit'    => ['required', 'numeric'],
+            'charges.*.service_id'   => 'required',
+            'charges.*.service_name' => 'required',
+            'charges.*.amount'       => ['required', 'numeric'],
+            'charges.*.benefit'      => ['required', 'numeric'],
         ];
     }
 
@@ -83,6 +84,7 @@ class InvoiceForm extends Component
             foreach ($charges as $charge) {
                 $this->charges->add([
                     'service_id' => $charge->service_id,
+                    'service_name' => $charge->service->name,
                     'amount' => $charge->amount,
                     'benefit' => null,
                 ]);
@@ -105,6 +107,7 @@ class InvoiceForm extends Component
     {
         $this->charges->add([
             'service_id' => null,
+            'service_name' => null,
             'amount' => null,
             'benefit' => null,
         ]);
@@ -132,7 +135,7 @@ class InvoiceForm extends Component
 
             $this->invoice->save();
             $this->invoice->charges()->delete();
-            $this->invoice->charges()->createMany($this->charges->toArray());
+            $this->invoice->charges()->createMany($this->charges->except(['service_name'])->toArray());
 
             DB::commit();
 

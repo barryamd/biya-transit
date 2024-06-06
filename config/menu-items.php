@@ -112,7 +112,7 @@ return [
                 'type'       => 'item',
                 'route'      => 'invoice-payments.index',
                 'icon'       => 'hand-holding-usd',
-                'permission' => 'read-payment',
+                'permission' => 'read-invoice',
             ],
         ],
     ],

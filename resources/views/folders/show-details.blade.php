@@ -572,11 +572,13 @@
                     </thead>
                     <tbody>
                     @forelse($charges as $i => $charge)
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $charge->service->name }}</td>
-                            <td>{{ moneyFormat($charge->amount, 0, '') }}</td>
-                        </tr>
+                        @if($charge->service)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $charge->service->name }}</td>
+                                <td>{{ moneyFormat($charge->amount, 0, '') }}</td>
+                            </tr>
+                        @endif
                     @empty
                         <tr>
                             <td class="text-center text-danger" colspan="3">

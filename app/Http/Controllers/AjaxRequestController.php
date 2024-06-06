@@ -35,6 +35,29 @@ class AjaxRequestController extends Controller
         return response()->json($response);
     }
 
+    public function getFoldersDoesntHaveInvoice(Request $request): JsonResponse
+    {
+        $query = Folder::query()->whereDoesntHave('invoice')
+            ->select('id', 'number')->limit(5);
+
+        $search = $request->search;
+        if ($search != '') {
+            $query->where(function($query) use ($search) {
+                $query->whereNotNull('number')->where('number', 'LIKE', $search . '%');
+            });
+        }
+        $records = $query->get();
+
+        $response = array();
+        foreach($records as $record){
+            $response[] = array(
+                "id" => $record->id,
+                "text" => $record->number
+            );
+        }
+        return response()->json($response);
+    }
+
     public function getTransporters(Request $request): JsonResponse
     {
         $query = Transporter::query()->select('id', 'numberplate')->limit(5);
