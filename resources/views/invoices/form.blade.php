@@ -41,7 +41,7 @@
                             <tr>
                                 <td class="text-center ">{{ $loop->iteration }}</td>
                                 <td>
-                                    <select wire:model.defer="charges.{{$i}}.service_id" class="form-control px-1" required disabled>
+                                    <select wire:model.defer="charges.{{$i}}.service_id" class="form-control px-1" required>
                                         <option value="">-- Selectionner un service rendu --</option>
                                         @foreach($services as $value => $service)
                                             <option value="{{$value}}">{{ $service }}</option>
