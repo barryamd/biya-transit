@@ -11,6 +11,7 @@ use App\Models\DeliveryFile;
 use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
+use App\Models\Invoice;
 use App\Models\Transporter;
 use Illuminate\Support\Collection;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -62,7 +63,8 @@ class FolderDetails extends Component
         $this->charges = FolderCharge::with('service')
             ->where('folder_id', $this->folder->id)->get();
 
-        $this->invoice = $this->folder->invoice;
+        $this->invoice = Invoice::with('charges')
+            ->where('folder_id', $this->folder->id)->get();
 
         if ($this->invoice) {
             $currencies = new ISOCurrencies();
