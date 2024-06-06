@@ -707,6 +707,7 @@
     </x-slot>
 </x-show-section>
 
+@if($invoice)
 @push('scripts')
     <script id="__net_nfet_printing_s__" type="text/javascript">
         function __net_nfet_printing___print(){
@@ -719,3 +720,4 @@
             src="{{ route('invoice.print', $invoice->folder) }}">
     </iframe>
 @endpush
+@endif
