@@ -8,7 +8,7 @@
             <br>
             <div><b>N° Facture :</b> {{ $invoice->number }}</div>
             <div><b>N° Dossier :</b> {{ $folder->number }}</div>
-            <div><b>N° CNT :</b> {{ $folder->number }}</div>
+            <div><b>N° BL :</b> {{ $folder->num_cnt }}</div>
             <div><b>Nombre de conteneurs :</b> {{ $folder->containers_count }}</div>
             <div><b>Numéro des conteneurs :</b> {{ $folder->containers->pluck('number')->implode(', ') }}</div>
         </div>

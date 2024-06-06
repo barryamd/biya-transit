@@ -55,7 +55,7 @@ class RoleForm extends Component
             'settings'    => 'Gestion des paramètres',
             'customer'    => 'Gestion des clients',
             'transporter' => 'Gestion des transporteurs',
-            'charge'     => 'Gestion des charges',
+            'charge'      => 'Gestion des charges',
             'invoice'     => 'Gestion des factures',
             'folder'      => 'Gestion des dossiers',
         ];

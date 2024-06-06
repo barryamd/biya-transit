@@ -29,6 +29,7 @@ class FolderDetails extends Component
     public $deliveryFiles;
     public Delivery|null $delivery = null;
     public $charges;
+    public $invoice;
 
     public function mount()
     {
@@ -55,6 +56,8 @@ class FolderDetails extends Component
 
         $this->charges = FolderCharge::with('service')
             ->where('folder_id', $this->folder->id)->get();
+
+        $this->invoice = $this->folder->invoice;
     }
 
     public function render()
