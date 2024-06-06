@@ -11,7 +11,6 @@ use App\Models\DeliveryFile;
 use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
-use App\Models\Invoice;
 use App\Models\Transporter;
 use Illuminate\Support\Collection;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -63,10 +62,10 @@ class FolderDetails extends Component
         $this->charges = FolderCharge::with('service')
             ->where('folder_id', $this->folder->id)->get();
 
-        $this->invoice = Invoice::with('charges')
-            ->where('folder_id', $this->folder->id)->get();
+        $this->invoice = $this->folder->invoice;
 
         if ($this->invoice) {
+            $this->invoice->load('charges');
             $currencies = new ISOCurrencies();
             $numberFormatter = new \NumberFormatter('fr_FR', \NumberFormatter::SPELLOUT);
             $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
