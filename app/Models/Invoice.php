@@ -16,16 +16,13 @@ class Invoice extends Model
 
     public function generateUniqueNumber()
     {
-        $lastInvoicNumber = Invoice::query()->latest('number')->select('number')->get()->first()->number;
-        if ($lastInvoicNumber) {
-            $id = (int)$lastInvoicNumber + 1;
+        $lastInvoiceNumber = Invoice::query()->latest('number')->select('number')->get()->first()->number;
+        if (str_starts_with($lastInvoiceNumber, date('y'))) {
+            $id = (int)substr($lastInvoiceNumber,2) + 1; //24001
         } else {
             $id = 1;
         }
-        $this->number = str_pad($id,3,'0',STR_PAD_LEFT);
-
-        // $folder = Folder::query()->find($this->folder_id);
-        // $this->number = Str::substr($folder->number, 2, 3);
+        $this->number = date('y') . str_pad($id,3,'0',STR_PAD_LEFT);
     }
 
     public function folder(): BelongsTo

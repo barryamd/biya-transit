@@ -17,7 +17,7 @@
                     <x-form.input label="Numéro CNT/LTA" wire:model.defer="folder.num_cnt" required></x-form.input>
                 </div>
                 <div class="col-md-6">
-                    <x-form.input label="Poids Total de la marchandise" wire:model.defer="totalWeight" disabled></x-form.input>
+                    <x-form.input type="number" label="Poids Total de la marchandise" wire:model.defer="totalWeight" disabled></x-form.input>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Port" wire:model.defer="folder.harbor" required></x-form.input>
@@ -139,11 +139,11 @@
                                             @error("containers.$i.number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="align-middle">
-                                            <input type="number" wire:model.defer="containers.{{$i}}.weight" wire:change="setTotalWeight" step="000.00" class="form-control px-1" required>
+                                            <input type="number" step="0.00" wire:model.defer="containers.{{$i}}.weight" wire:change="setTotalWeight" step="000.00" class="form-control px-1" required>
                                             @error("containers.$i.weight") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="align-middle">
-                                            <input type="text" wire:model.defer="containers.{{$i}}.package_number" class="form-control px-1" required>
+                                            <input type="number" wire:model.defer="containers.{{$i}}.package_number" class="form-control px-1" required>
                                             @error("containers.$i.package_number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="align-middle">
