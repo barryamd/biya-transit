@@ -139,7 +139,7 @@
                                             @error("containers.$i.number") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="align-middle">
-                                            <input type="number" step="0.00" wire:model.defer="containers.{{$i}}.weight" wire:change="setTotalWeight" step="000.00" class="form-control px-1" required>
+                                            <input type="number" wire:model.defer="containers.{{$i}}.weight" wire:change="setTotalWeight" class="form-control px-1" step="0.01" min="0" required>
                                             @error("containers.$i.weight") <span class="text-xs text-danger">{{ $message }}</span> @enderror
                                         </td>
                                         <td class="align-middle">
