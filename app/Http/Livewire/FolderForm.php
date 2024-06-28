@@ -66,8 +66,8 @@ class FolderForm extends Component
                     }
                 },
             ],
-            'containers.*.weight'         => ['required', 'number'],
-            'containers.*.package_number' => ['required', 'number'],
+            'containers.*.weight'         => ['required', 'numeric'],
+            'containers.*.package_number' => ['required', 'numeric'],
             'containers.*.arrival_date'   => ['required', 'date'],
             'containers.*.user_id'        => 'nullable',
 
