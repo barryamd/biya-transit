@@ -28,13 +28,13 @@
                 <div class="dropdown-divider"></div>
                 <div class="message-center" style="max-height: 400px !important; overflow: scroll;">
                     @foreach($unreadNotifications->take(5) as $notification)
-                        <a href="{{ $notification->data['route'] }}" class="dropdown-item">
+                        <a href="{{ $notification->data['link'] }}" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ $notification->data['image'] }}" alt="Image du produit" class="img-size-50 mr-3 img-circle">
+                                {{--<img src="{{ $notification->data['image'] }}" alt="Image du produit" class="img-size-50 mr-3 img-circle">--}}
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
-                                        {{ $notification->data['name'] }}
+                                        {{ $notification->data['title'] }}
                                         <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                                     </h3>
                                     <p class="text-sm">{{ $notification->data['message'] }}</p>

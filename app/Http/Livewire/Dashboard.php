@@ -4,7 +4,6 @@ namespace App\Http\Livewire;
 
 use App\Models\Customer;
 use App\Models\Folder;
-use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;

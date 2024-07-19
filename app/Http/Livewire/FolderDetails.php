@@ -12,7 +12,12 @@ use App\Models\Document;
 use App\Models\Exoneration;
 use App\Models\Folder;
 use App\Models\Transporter;
+use App\Models\User;
+use App\Notifications\FolderClosed;
+use App\Notifications\NewFolder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Money\Currencies\ISOCurrencies;
@@ -139,6 +144,13 @@ class FolderDetails extends Component
         ]);
 
         $this->folder->update(['status' => 'Fermé']);
+
+        $admins = User::query()->whereHas('roles', function (Builder $query) {
+        $query->whereIn('name', ['Super Admin', 'ADMINISTRATEUR']);
+        })->get();
+        Notification::send($admins, new FolderClosed($this->folder));
+        $this->folder->customer->user->notify(new FolderClosed($this->folder));
+
         $this->flash('success', "Le dossier a été fermé avec succès.");
         redirect()->route('closed-folders.index');
     }

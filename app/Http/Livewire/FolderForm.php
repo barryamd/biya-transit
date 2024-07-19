@@ -8,10 +8,14 @@ use App\Models\DocumentType;
 use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Document;
+use App\Models\User;
+use App\Notifications\NewFolder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -267,6 +271,11 @@ class FolderForm extends Component
             }
 
             DB::commit();
+
+            $admins = User::query()->whereHas('roles', function (Builder $query) {
+                $query->whereIn('name', ['Super Admin', 'ADMINISTRATEUR']);
+            })->get();
+            Notification::send($admins, new NewFolder($this->folder));
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);
