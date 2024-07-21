@@ -123,7 +123,7 @@ class CustomerTable extends DataTableComponent
                     $user = User::create(
                         array_merge($this->user->toArray(), ['password' => Hash::make($password)])
                     );
-                    $user->givePermissionTo(['create-folder', 'read-folder', 'update-folder', 'read-invoice']);
+                    $user->givePermissionTo(['create-folder', 'read-folder', 'update-folder']);
                     $this->customer->user_id = $user->id;
                 } else {
                     $this->user->save();
