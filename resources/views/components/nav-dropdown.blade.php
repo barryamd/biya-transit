@@ -1,6 +1,6 @@
 @props(['menu'])
-@if(auth()->user()->isAdmin() || auth()->user()->hasAnyPermission($menu['permission']))
-<li class="nav-item has-treeview {{ menuOpen($menu['children']) }}">
+@canany(array_column($menu['items'], 'permission'))
+<li class="nav-item has-treeview {{ menuOpen($menu['items']) }}">
     <a href="#" class="nav-link ">
         <i class="nav-icon fas fa-{{ $menu['icon'] }}"></i>
         <p>
@@ -9,9 +9,9 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        @foreach($menu['children'] as $child)
+        @foreach($menu['items'] as $child)
             <x-nav-item :item="$child"></x-nav-item>
         @endforeach
     </ul>
 </li>
-@endcan
+@endcanany

@@ -10,10 +10,9 @@ return [
 //    ],
     [
         'title'      => 'Tiers',
-        'type'       => 'collapse',
+        'type'       => 'dropdown',
         'icon'       => 'users',
-        'permission' => ['read-customer', 'read-transporter'],
-        'children'   => [
+        'items'   => [
             [
                 'title' => 'Clients',
                 'type'  => 'item',
@@ -32,10 +31,9 @@ return [
     ],
     [
         'title'      => 'Suivi dossiers',
-        'type'       => 'collapse',
+        'type'       => 'dropdown',
         'icon'       => 'folder',
-        'permission' => ['read-folder'],
-        'children'   => [
+        'items'   => [
             [
                 'title' => 'Ajouter un dossier',
                 'type'  => 'item',
@@ -75,10 +73,9 @@ return [
     ],
     [
         'title'      => 'Facturation',
-        'type'       => 'collapse',
+        'type'       => 'dropdown',
         'icon'       => 'money-bill',
-        'permission' => ['read-charge', 'read-invoice'],
-        'children'   => [
+        'items'   => [
             [
                 'title' => 'Charges dossiers',
                 'type'  => 'item',
@@ -118,10 +115,9 @@ return [
     ],
     [
         'title'      => 'Administration',
-        'type'       => 'collapse',
+        'type'       => 'dropdown',
         'icon'       => 'cog',
-        'permission' => ['update-settings', 'read-user'],
-        'children'   => [
+        'items'   => [
             [
                 'title'      => 'Utilisateurs',
                 'type'       => 'item',
