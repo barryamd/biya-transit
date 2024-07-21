@@ -16,7 +16,7 @@ class Invoice extends Model
 
     public function generateUniqueNumber()
     {
-        $lastInvoiceNumber = Invoice::query()->latest('number')->select('number')->get()->first()->number;
+        $lastInvoiceNumber = Invoice::query()->latest('number')->select('number')->get()->first()->number ?? 0;
         if (str_starts_with($lastInvoiceNumber, date('y'))) {
             $id = (int)substr($lastInvoiceNumber,2) + 1; //24001
         } else {
