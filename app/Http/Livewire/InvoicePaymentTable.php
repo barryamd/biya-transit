@@ -36,7 +36,7 @@ class InvoicePaymentTable extends DataTableComponent
 
     public function mount($invoiceId = null)
     {
-        $this->authorize('view-invoice');
+        $this->authorize('read-invoice');
         $this->invoiceId = $invoiceId;
         $this->date = date('Y-m-d');
         $this->payment = new InvoicePayment(['type' => 'espece']);
