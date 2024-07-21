@@ -69,7 +69,7 @@ class FolderTable extends DataTableComponent
                 ->searchable(function(Builder $query, $searchTerm) {
                     $query->orWhereRelation('declarations', 'number', $searchTerm)
                         ->orWhereRelation('declarations', 'receipt_number', $searchTerm);
-                }),
+                })->hideIf(true),
 //            ButtonGroupColumn::make('Actions')
 //                ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
 //                ->buttons([
