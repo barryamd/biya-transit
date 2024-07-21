@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewFolder extends Notification
+class EditFolder extends Notification
 {
     use Queueable;
 
@@ -58,8 +58,8 @@ class NewFolder extends Notification
     public function toArray($notifiable)
     {
         return [
-            'title' => 'Nouveau dossier',
-            'message' => $this->folder->user->full_name . " a créé un nouveau dossier",
+            'title' => 'Modification dossier',
+            'message' => $this->folder->user->full_name . ' a modifiée le dossier "' . $this->folder->number . '"',
             'link' => route('folders.show', $this->folder->id),
         ];
     }

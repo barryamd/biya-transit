@@ -9,7 +9,8 @@ use App\Models\Folder;
 use App\Models\Product;
 use App\Models\Document;
 use App\Models\User;
-use App\Notifications\NewFolder;
+use App\Notifications\CreateFolder;
+use App\Notifications\EditFolder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Collection;
@@ -230,6 +231,8 @@ class FolderForm extends Component
         $this->validate();
 
         try {
+            $isEdit = (bool)$this->folder->id;
+
             if (!$this->folder->id) {
                 $this->folder->generateUniqueNumber();
                 $this->folder->user_id = Auth::user()->id;
@@ -275,7 +278,11 @@ class FolderForm extends Component
             $admins = User::query()->whereHas('roles', function (Builder $query) {
                 $query->whereIn('name', ['Super Admin', 'ADMINISTRATEUR']);
             })->get();
-            Notification::send($admins, new NewFolder($this->folder));
+
+            if ($isEdit)
+                Notification::send($admins, new EditFolder($this->folder));
+            else
+                Notification::send($admins, new CreateFolder($this->folder));
 
             $this->flash('success', "L'enregistrement a été effectué avec succès.");
             redirect()->route('folders.show', $this->folder);

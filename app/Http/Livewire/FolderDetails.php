@@ -14,7 +14,7 @@ use App\Models\Folder;
 use App\Models\Transporter;
 use App\Models\User;
 use App\Notifications\FolderClosed;
-use App\Notifications\NewFolder;
+use App\Notifications\CreateFolder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
