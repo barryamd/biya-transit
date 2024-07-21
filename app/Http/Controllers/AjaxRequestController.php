@@ -37,7 +37,8 @@ class AjaxRequestController extends Controller
 
     public function getFoldersDoesntHaveInvoice(Request $request): JsonResponse
     {
-        $query = Folder::query()->whereDoesntHave('invoice')->where('status', 'Fermé')
+        $query = Folder::query()->whereDoesntHave('invoice')
+            ->where('status', 'Fermé')
             ->select('id', 'number')->limit(5);
 
         $search = $request->search;
@@ -61,7 +62,14 @@ class AjaxRequestController extends Controller
     public function getFoldersHaveInvoice(Request $request): JsonResponse
     {
         $query = Folder::query()->whereHas('invoice')
-            ->withSum('payments', 'amount')->select('id', 'number')->limit(5);
+            ->whereHas('invoice', function($query) {
+                $query->whereColumn('total', '=', function($subQuery) {
+                    $subQuery->selectRaw('COALESCE(SUM(amount), 0)')
+                        ->from('invoice_payments')
+                        ->whereColumn('invoice_id', 'invoices.id');
+                });
+            })
+            ->select('id', 'number')->limit(5);
 
         $search = $request->search;
         if ($search != '') {

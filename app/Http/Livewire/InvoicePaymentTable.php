@@ -36,7 +36,7 @@ class InvoicePaymentTable extends DataTableComponent
 
     public function mount($invoiceId = null)
     {
-        $this->authorize('read-invoice');
+        $this->authorize('view-invoice');
         $this->invoiceId = $invoiceId;
         $this->date = date('Y-m-d');
         $this->payment = new InvoicePayment(['type' => 'espece']);
@@ -188,7 +188,7 @@ class InvoicePaymentTable extends DataTableComponent
 
         $this->invoices = $invoices->filter(function ($item) {
             $item->remaining = $item->total - $item->payments_sum_amount;
-            return $item->remaining >= 10 ? $item : null;
+            return $item->remaining == 10 ? $item : null;
         })->pluck('number', 'id')->toArray();
 
         $options = '<option value="">--Sélectionner la facture à payer--</option>';

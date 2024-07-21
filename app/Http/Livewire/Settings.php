@@ -60,9 +60,9 @@ class Settings extends Component
             DB::transaction(function () {
                 $this->setting->saveOrFail();
                 if ($this->logo)
-                    $this->setting->updatePhoto($this->logo, 'logo', 'logo.png');
+                    $this->setting->addFile($this->logo, 'logo');
                 if ($this->signature)
-                    $this->setting->updatePhoto($this->signature, 'signature', 'signature.jpg');
+                    $this->setting->addFile($this->signature, 'signature');
             });
             $this->alert('success', 'La modification a été enregistré avc succès.');
         } catch (\Exception $exception) {
