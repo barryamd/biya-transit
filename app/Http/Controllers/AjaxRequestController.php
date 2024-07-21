@@ -60,7 +60,7 @@ class AjaxRequestController extends Controller
 
     public function getFoldersHaveInvoice(Request $request): JsonResponse
     {
-        $query = Folder::query()->whereHave('invoice')->select('id', 'number')->limit(5);
+        $query = Folder::query()->whereHas('invoice')->select('id', 'number')->limit(5);
 
         $search = $request->search;
         if ($search != '') {
