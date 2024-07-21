@@ -48,6 +48,9 @@ class FolderTable extends DataTableComponent
                 ->sortable(),
             Column::make("Numero CNT", "num_cnt")
                 ->sortable()->searchable(),
+            Column::make("Pays d'origine", 'country')
+                ->format(fn($value) => __($value))
+                ->sortable()->searchable(),
             Column::make("Port", "harbor")
                 ->sortable()->searchable(),
             Column::make("Status", "status")
@@ -62,6 +65,11 @@ class FolderTable extends DataTableComponent
             Column::make('Actions', 'id')
                 ->format(fn($value, $row) => view('folders.action-buttons',
                     ['row' => $row, 'status' => $this->status])),
+            Column::make('', 'id')
+                ->searchable(function(Builder $query, $searchTerm) {
+                    $query->orWhereRelation('declarations', 'number', $searchTerm)
+                        ->orWhereRelation('declarations', 'receipt_number', $searchTerm);
+                }),
 //            ButtonGroupColumn::make('Actions')
 //                ->attributes(fn($row) => ['class' => 'btn-group btn-group-sm'])
 //                ->buttons([
