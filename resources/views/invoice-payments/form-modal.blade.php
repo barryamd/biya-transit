@@ -5,7 +5,7 @@
     <x-slot name="content">
         <div class="row">
             <div class="col-sm-6">
-                <x-form.select2-dropdown label="Dossier" wire:model="payment.folder_id" routeName="getFolders"
+                <x-form.select2-dropdown label="Dossier" wire:model="payment.folder_id" routeName="getFoldersHaveInvoice"
                                                 parentId="paymentFormModal" id="folder" :disabled="$payment->id">
                 </x-form.select2-dropdown>
             </div>

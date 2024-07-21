@@ -81,6 +81,8 @@ Route::middleware([
     Route::post('/getFolders', [AjaxRequestController::class, 'getFolders'])->name('getFolders');
     Route::post('/getFoldersDoesntHaveInvoice', [AjaxRequestController::class, 'getFoldersDoesntHaveInvoice'])
         ->name('getFoldersDoesntHaveInvoice');
+    Route::post('/getFoldersHaveInvoice', [AjaxRequestController::class, 'getFoldersHaveInvoice'])
+        ->name('getFoldersHaveInvoice');
 
     Route::get('invoice/{folder}/print', [PrintController::class, 'generateInvoice'])->name('invoice.print');
 });
