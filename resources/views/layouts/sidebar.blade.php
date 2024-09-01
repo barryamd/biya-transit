@@ -33,7 +33,7 @@
                     <p>{{ __('Dashboard') }}</p>
                 </a>
             </li>
-            @foreach(config('menu-items') as $item)
+            @foreach(config('menu') as $ )
                 @if($item['type'] == 'group')
                     <li class="nav-header">{{ $item['title'] }}</li>
                     @foreach($item['children'] as $menu)
